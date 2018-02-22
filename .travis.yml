@@ -1,0 +1,17 @@
+language: python
+sudo: required
+services:
+- docker
+python:
+- '3.6'
+script: true
+deploy:
+- provider: script
+  script: bash build.sh
+  on:
+    branch: master
+env:
+  matrix:
+  - DOCKER_USER=fridex
+  global:
+    secure: E01vQaXJ7DwZIp4POnuFgcsZpLIgXKOMZa3j+s+OfR25Y82z45kne8f3LGiqzjz3t8LXDWWRQhysIz68vV48ylXi+A7FQhsDnKxHCaD6Jp4HCvv2Y0zO2dSJp7HSn5IbUdVabLv3sgSmHHKdyel1M9JhVSTVeOsutmHGsg/y4fMgWmNChyqsjmNsStS9LfRoD6ycN187Wxa8vMcGWHkTmY2Tzcpj4EYu/oObyFY7SpsuwhgxSBwFVIq5Gg6v71LeEXzD7F8oLTfYrEuzbeCA5hhOGQeNUmEm72RArMAyv81Uk82ilVYXQCME9FuuOeXfoFLAMgejtzpJTw0//6EilgwGIYWmTa84UPpnE231NiRZc5sX1ZR53TAEgMlFXhzUC1emH5v823hgNivJa5O8CEdYQXhcfe75R/qAVBCrML3FlbdJgQkwzqInB3jS9WRzOYhkn8WpfpblqF/2VMj5DoCcWt8QmY9fJfcY4gCXp/i7E+3BrG4hU9wkYA9U31Q4ScMnBwZl7o7ZxubwRAMlbtdvwpqPt1K0qYmE7uRYzBFL+eKdD9UGtJJP71KWF1oA1zldDO19OHDnSIsKXw1FwjNrE412YM7Kp6QBBQUUFghMt3hLX5nNscwkzKyb0BMQIgAbOq8RCZMOw+KgOJgz8eYPe2UKmk3xA8mhz9/sgfs=
