@@ -4,8 +4,8 @@
 import logging
 
 import click
-#from thoth.storages import JanusGraphDatabase
-#from thoth.storages import SolverResultsStore
+from thoth.storages import JanusGraphDatabase
+from thoth.storages import SolverResultsStore
 
 logging.basicConfig()
 _LOGGER = logging.getLogger('thoth.graph_sync_job')
@@ -16,19 +16,29 @@ _LOGGER = logging.getLogger('thoth.graph_sync_job')
               help="Be more verbose about what's going on.")
 def cli(verbose):
     """Graph syncing logic for the Thoth project."""
-    _LOGGER.setLevel(logging.DEBUG if verbose else logging.INFO)
+    logging.getLogger('thoth').setLevel(logging.DEBUG if verbose else logging.INFO)
     _LOGGER.debug('Debug mode is on')
 
 
 @cli.command()
-@click.option('--janusgraph-host', type=str, default='localhost:8182', show_default=True, metavar='HOST',
-              envvar='THOTH_JANUSGRAPH_HOST',
+@click.option('--janusgraph-hosts', type=str, default=[JanusGraphDatabase.DEFAULT_HOST],
+              show_default=True, metavar='HOST',
+              envvar=JanusGraphDatabase.ENVVAR_HOST_NAME, multiple=True,
               help="Hostname to the JanusGraph instance to perform sync to.")
-@click.option('--solver-results-store', type=str, default='localhost', show_default=True, metavar='HOST',
-              envvar='THOTH_SERVER_RESULTS_HOST',
+@click.option('--janusgraph-port', type=int, default=JanusGraphDatabase.DEFAULT_PORT, show_default=True, metavar='HOST',
+              envvar=JanusGraphDatabase.ENVVAR_HOST_PORT,
+              help="Port number to the JanusGraph instance to perform sync to.")
+@click.option('--solver-results-store-host', type=str, show_default=True, metavar='HOST',
+              envvar=SolverResultsStore.ENVVAR_HOST, default=SolverResultsStore.DEFAULT_HOST,
               help="Hostname to solver results store from which the sync should be performed.")
-def sync(solver_results_store, janusgraph_host):
-    _LOGGER.info(f"Syncing from {solver_results_store} to {janusgraph_host}")
+def sync(solver_results_store_host, janusgraph_hosts, janusgraph_port):
+    janus_graph = JanusGraphDatabase(hosts=janusgraph_hosts, port=janusgraph_port)
+    solver_store = SolverResultsStore(host=solver_results_store_host)
+
+    _LOGGER.info(f"Syncing from {solver_results_store_host} to {janusgraph_hosts}")
+    for document_id, document in solver_store.iterate_results():
+        _LOGGER.info(f"Syncing document with id {document_id!r} to JanusGraph")
+        janus_graph.store_pypi_solver_result(document_id, document)
 
 
 if __name__ == '__main__':
