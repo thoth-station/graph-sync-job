@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "d0db86b823321f7453f44556ea98b2573799038f0c573bae12768a7ebe06517f"
+            "sha256": "991aaf1cad53028d55552965f2fa2081ee675b6ec385d925bb3cbfb340f9f34d"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
@@ -176,12 +176,12 @@
             ],
             "version": "==1.10.0"
         },
-        "thoth.storages": {
+        "thoth-storages": {
             "hashes": [
-                "sha256:79d7d8f41004d28b643d039bf510281cc4ab1076689584f1d0958e5e89ffd8fb",
-                "sha256:5b0073ad091ecb037af30136233e9abe23d22a2ef8b2c1d9ce9086e5926db7fe"
+                "sha256:de5d0a556e36bc691d8e8e0574f35ec644ecc83005328eff8540a1172f0b051f",
+                "sha256:f920107d74aea048c134d0caec20a2084d82004df9efeb8f0732c4ad479de063"
             ],
-            "version": "==0.0.1"
+            "version": "==0.0.4"
         },
         "tornado": {
             "hashes": [
@@ -197,6 +197,13 @@
                 "sha256:cc44da8e1145637334317feebd728bd869a35285b93cbb4cca2577da7e62db4f"
             ],
             "version": "==1.22"
+        },
+        "voluptuous": {
+            "hashes": [
+                "sha256:6bbbe83a509d948230e9f921ba2e75173590be988eeb446dbe7a54268bef4da8",
+                "sha256:af7315c9fa99e0bfd195a21106c82c81619b42f0bd9b6e287b797c6b6b6a9918"
+            ],
+            "version": "==0.11.1"
         },
         "yarl": {
             "hashes": [
