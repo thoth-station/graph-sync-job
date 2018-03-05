@@ -38,7 +38,10 @@ def sync(solver_results_store_host, graph_hosts, graph_port):
     _LOGGER.info(f"Syncing from {solver_results_store_host} to {graph_hosts}")
     for document_id, document in solver_store.iterate_results():
         _LOGGER.info(f"Syncing document with id {document_id!r} to graph")
-        graph.store_pypi_solver_result(document_id, document)
+        try:
+            graph.store_pypi_solver_result(document_id, document)
+        except:
+            _LOGGER.exception("Failed to sync solver result with document id %r", document_id)
 
 
 if __name__ == '__main__':
