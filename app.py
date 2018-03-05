@@ -22,7 +22,7 @@ def cli(verbose):
 
 @cli.command()
 @click.option('--graph-hosts', type=str, default=[GraphDatabase.DEFAULT_HOST],
-              show_default=True, metavar='HOST',
+              show_default=True, metavar=GraphDatabase.ENVVAR_HOST_NAME,
               envvar=GraphDatabase.ENVVAR_HOST_NAME, multiple=True,
               help="Hostname to the graph instance to perform sync to.")
 @click.option('--graph-port', type=int, default=GraphDatabase.DEFAULT_PORT, show_default=True, metavar='HOST',
