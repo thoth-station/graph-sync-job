@@ -28,8 +28,7 @@ def cli(verbose):
 @click.option('--graph-port', type=int, default=GraphDatabase.DEFAULT_PORT, show_default=True, metavar='HOST',
               envvar=GraphDatabase.ENVVAR_HOST_PORT,
               help="Port number to the graph instance to perform sync to.")
-@click.option('--solver-results-store-host', type=str, show_default=True, metavar='HOST',
-              envvar=SolverResultsStore.ENVVAR_HOST, default=SolverResultsStore.DEFAULT_HOST,
+@click.option('--solver-results-store-host', type=str, show_default=True, metavar='HOST', default=None,
               help="Hostname to solver results store from which the sync should be performed.")
 def sync(solver_results_store_host, graph_hosts, graph_port):
     graph = GraphDatabase(hosts=graph_hosts, port=graph_port)
