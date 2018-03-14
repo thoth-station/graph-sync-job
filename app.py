@@ -32,7 +32,10 @@ def cli(verbose):
               help="Hostname to solver results store from which the sync should be performed.")
 def sync(solver_results_store_host, graph_hosts, graph_port):
     graph = GraphDatabase(hosts=graph_hosts, port=graph_port)
+    graph.connect()
+
     solver_store = SolverResultsStore(host=solver_results_store_host)
+    solver_store.connect()
 
     _LOGGER.info(f"Syncing from {solver_results_store_host} to {graph_hosts}")
     for document_id, document in solver_store.iterate_results():
