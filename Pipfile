@@ -8,7 +8,7 @@ name = "pypi"
 [packages]
 
 click = "*"
-thoth-storages = ">=0.0.8"
+thoth-storages = ">=0.0.9"
 
 
 [dev-packages]

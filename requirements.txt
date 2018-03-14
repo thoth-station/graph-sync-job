@@ -19,7 +19,7 @@ pyyaml==3.12
 requests==2.18.4
 s3transfer==0.1.13
 six==1.10.0
-thoth-storages==0.0.8
+thoth-storages==0.0.9
 tornado==4.4.1
 urllib3==1.22
 voluptuous==0.11.1
