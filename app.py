@@ -4,10 +4,11 @@
 import logging
 
 import click
+from thoth.common import init_logging
 from thoth.storages import GraphDatabase
 from thoth.storages import SolverResultsStore
 
-logging.basicConfig()
+init_logging()
 _LOGGER = logging.getLogger('thoth.graph_sync_job')
 
 
