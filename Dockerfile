@@ -7,6 +7,7 @@ ENV \
 
 COPY ./ ${THOTH_GRAPH_SYNC_DIR}
 RUN \
+ dnf install -y gcc redhat-rpm-config python3-devel &&\
  mkdir -p ${THOTH_GRAPH_SYNC_DIR} &&\
  cd ${THOTH_GRAPH_SYNC_DIR} &&\
  pip3 install -r requirements.txt &&\
