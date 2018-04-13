@@ -7,6 +7,7 @@ import click
 from thoth.common import init_logging
 from thoth.storages import GraphDatabase
 from thoth.storages import SolverResultsStore
+from thoth.storages import AnalysisResultsStore
 
 init_logging()
 _LOGGER = logging.getLogger('thoth.graph_sync_job')
@@ -38,13 +39,24 @@ def sync(solver_results_store_host, graph_hosts, graph_port):
     solver_store = SolverResultsStore(host=solver_results_store_host)
     solver_store.connect()
 
-    _LOGGER.info(f"Syncing from {solver_results_store_host} to {graph_hosts}")
+    _LOGGER.info(f"Syncing solver results from {solver_results_store_host} to {graph_hosts}")
     for document_id, document in solver_store.iterate_results():
-        _LOGGER.info(f"Syncing document with id {document_id!r} to graph")
+        _LOGGER.info(f"Syncing solver document with id {document_id!r} to graph")
         try:
-            graph.store_pypi_solver_result(document_id, document)
-        except:
+            graph.sync_solver_result(document)
+        except Exception:
             _LOGGER.exception("Failed to sync solver result with document id %r", document_id)
+
+    # TODO: make this configurable
+    analysis_store = AnalysisResultsStore()
+    analysis_store.connect()
+    _LOGGER.info(f"Syncing image analysis results to {graph_hosts}")
+    for document_id, document in analysis_store.iterate_results():
+        _LOGGER.info(f"Syncing analysis document with id {document_id!r} to graph")
+        try:
+            graph.sync_analysis_result(document)
+        except Exception:
+            _LOGGER.exception("Failed to sync analysis result with document id %r", document_id)
 
 
 if __name__ == '__main__':
