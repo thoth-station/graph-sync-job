@@ -1,11 +1,19 @@
 FROM fedora:27
-CMD ["sync"]
-ENTRYPOINT ["/workdir/app.py"]
+
 ENV \
  LANG=en_US.UTF-8 \
  THOTH_GRAPH_SYNC_DIR='/workdir'
 
+LABEL io.k8s.description="Thoth Graph Sync Job" \
+    io.k8s.display-name="Graph Sync" \
+    io.openshift.tags="thoth,ai-stacks,janusgraph," \
+    architecture=x86_64 \
+    name="thoth-graph-sync-job" \
+    vendor="Red Hat Office of the CTO - AI CoE" \
+    license="GPLv3" 
+
 COPY ./ ${THOTH_GRAPH_SYNC_DIR}
+
 RUN \
  dnf install -y gcc redhat-rpm-config python3-devel &&\
  mkdir -p ${THOTH_GRAPH_SYNC_DIR} &&\
@@ -16,3 +24,6 @@ RUN \
  for file in `cat to-be-removed.txt`; do rm $file; done
 
 WORKDIR ${THOTH_GRAPH_SYNC_DIR}
+
+CMD ["sync"]
+ENTRYPOINT ["/workdir/app.py"]
