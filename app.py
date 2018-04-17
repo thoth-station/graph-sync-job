@@ -32,7 +32,9 @@ def cli(verbose):
               help="Port number to the graph instance to perform sync to.")
 @click.option('--solver-results-store-host', type=str, show_default=True, metavar='HOST', default=None,
               help="Hostname to solver results store from which the sync should be performed.")
-def sync(solver_results_store_host, graph_hosts, graph_port):
+@click.option('--analysis-results-store-host', type=str, show_default=True, metavar='HOST', default=None,
+              help="Hostname to analysis results store from which the sync should be performed.")
+def sync(solver_results_store_host, analysis_results_store_host, graph_hosts, graph_port):
     graph = GraphDatabase(hosts=graph_hosts, port=graph_port)
     graph.connect()
 
@@ -47,8 +49,7 @@ def sync(solver_results_store_host, graph_hosts, graph_port):
         except Exception:
             _LOGGER.exception("Failed to sync solver result with document id %r", document_id)
 
-    # TODO: make this configurable
-    analysis_store = AnalysisResultsStore()
+    analysis_store = AnalysisResultsStore(host=analysis_results_store_host)
     analysis_store.connect()
     _LOGGER.info(f"Syncing image analysis results to {graph_hosts}")
     for document_id, document in analysis_store.iterate_results():
