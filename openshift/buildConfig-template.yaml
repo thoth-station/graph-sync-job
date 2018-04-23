@@ -16,26 +16,16 @@ metadata:
 
 objects:
 - apiVersion: v1
-  kind: ImageStream
-  metadata:
-    labels:
-      app: thoth-core
-    name: graph-sync-cronjob
-  spec:
-    name: latest
-    lookupPolicy:
-      local: true
-- apiVersion: v1
   kind: BuildConfig
   metadata:
     labels:
       app: thoth-core
-    name: graph-sync-cronjob
+    name: graph-sync-job
   spec:
     output:
       to:
         kind: ImageStreamTag
-        name: "graph-sync-cronjob:${IMAGE_STREAM_TAG}"
+        name: "graph-sync-job:${IMAGE_STREAM_TAG}"
     runPolicy: Serial
     source:
       git:

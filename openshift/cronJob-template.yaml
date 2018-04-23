@@ -18,7 +18,7 @@ objects:
 - apiVersion: batch/v2alpha1
   kind: CronJob
   metadata:
-    name: graph-sync-cronjob
+    name: graph-sync
     labels:
       app: thoth-core
   spec:
@@ -32,8 +32,8 @@ objects:
         template:
           spec:
             containers:
-            - image: graph-sync-cronjob
-              name: graph-sync-cronjob
+            - image: graph-sync-job
+              name: graph-sync
               env:
               - name: THOTH_DEPLOYMENT_NAME
                 valueFrom:

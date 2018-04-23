@@ -20,7 +20,7 @@ objects:
   metadata:
     labels:
       app: thoth-core
-    name: graph-sync-cronjob
+    name: graph-sync-job
   spec:
     name: latest
     lookupPolicy:
