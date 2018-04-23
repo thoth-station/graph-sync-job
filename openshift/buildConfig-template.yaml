@@ -53,14 +53,14 @@ objects:
       type: ImageChange
 
 parameters:
-- description: Git repository for Thoth's User API
-  displayName: Thoth user-api git repository
+- description: Git repository for Thoth's Graph Sync Job
+  displayName: Thoth graph-sync-job git repository
   required: true
   name: GITHUB_URL
-  value: 'https://github.com/goern/thoth-graph-sync-job'
+  value: 'https://github.com/thoth-station/graph-sync-job'
 
-- description: Git repository for Thoth's User API
-  displayName: Thoth user-api git reference
+- description: Git repository for Thoth's Graph Sync Job
+  displayName: Thoth graph-sync-job git reference
   required: true
   name: GITHUB_REF
   value: 'master'
