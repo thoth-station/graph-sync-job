@@ -33,11 +33,11 @@ objects:
         ref: ${GITHUB_REF}
       type: Git
     strategy:
-      dockerStrategy:
+      type: Source
+      sourceStrategy:
         from:
           kind: ImageStreamTag
           name: python-36-centos7:latest
-      type: Docker
     triggers:
     - imageChange: {}
       type: ImageChange
