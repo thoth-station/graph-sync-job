@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Template
 labels:
-  template: thoth-graph-sync-cronjob-buildconfig
+  template: graph-sync-cronjob-buildconfig
   thoth: 0.1.0
 metadata:
-  name: thoth-graph-sync-cronjob-buildconfig
+  name: graph-sync-cronjob-buildconfig
   annotations:
     description: This is Thoth Graph Sync CronJob BuildConfig, this template is meant to be used by Jenkins, but could also be used by humans...
     openshift.io/display-name: Thoth User API BuildConfig
