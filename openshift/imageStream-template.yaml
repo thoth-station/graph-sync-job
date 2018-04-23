@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: thoth-graph-sync-cronjob-imagestream
+  thoth: 0.1.0
+metadata:
+  name: thoth-graph-sync-cronjob-imagestream
+  annotations:
+    description: This is Thoth Graph Sync CronJob ImageStream, this template is meant to be used by Jenkins, but could also be used by humans...
+    openshift.io/display-name: Thoth User API ImageStream
+    version: 0.1.0
+    tags: poc,thoth,thoth-user-api,ai-stacks
+    template.openshift.io/documentation-url: https://github.com/AICoE/Thoth/
+    template.openshift.io/long-description: This is Thoth Graph Sync CronJob ImageStream, this template is meant to be used by Jenkins, but could also be used by humans...
+    template.openshift.io/provider-display-name: Red Hat, Inc.
+
+objects:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      app: thoth-core
+    name: graph-sync-cronjob
+  spec:
+    name: latest
+    lookupPolicy:
+      local: true
+
