@@ -36,7 +36,7 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: fedora:27
+          name: python-36-centos7:latest
       type: Docker
     triggers:
     - imageChange: {}
