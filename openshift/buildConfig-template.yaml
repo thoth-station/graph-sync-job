@@ -57,7 +57,7 @@ parameters:
   displayName: Thoth user-api git repository
   required: true
   name: GITHUB_URL
-  value: 'https://github.com/goern/thoth-graph-sync-job'
+  value: 'https://github.com/thoth-station/graph-sync-job'
 
 - description: Git repository for Thoth's User API
   displayName: Thoth user-api git reference
