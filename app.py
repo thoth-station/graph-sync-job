@@ -13,16 +13,7 @@ init_logging()
 _LOGGER = logging.getLogger('thoth.graph_sync_job')
 
 
-@click.group()
-@click.option('-v', '--verbose', is_flag=True, envvar='THOTH_GRAPH_SYNC_DEBUG',
-              help="Be more verbose about what's going on.")
-def cli(verbose):
-    """Graph syncing logic for the Thoth project."""
-    logging.getLogger('thoth').setLevel(logging.DEBUG if verbose else logging.INFO)
-    _LOGGER.debug('Debug mode is on')
-
-
-@cli.command()
+@click.command()
 @click.option('--graph-hosts', type=str, default=[GraphDatabase.DEFAULT_HOST],
               show_default=True, metavar=GraphDatabase.ENVVAR_HOST_NAME,
               envvar=GraphDatabase.ENVVAR_HOST_NAME, multiple=True,
@@ -34,7 +25,12 @@ def cli(verbose):
               help="Hostname to solver results store from which the sync should be performed.")
 @click.option('--analysis-results-store-host', type=str, show_default=True, metavar='HOST', default=None,
               help="Hostname to analysis results store from which the sync should be performed.")
-def sync(solver_results_store_host, analysis_results_store_host, graph_hosts, graph_port):
+@click.option('-v', '--verbose', is_flag=True, envvar='THOTH_GRAPH_SYNC_DEBUG',
+              help="Be more verbose about what's going on.")
+def cli(verbose, solver_results_store_host, analysis_results_store_host, graph_hosts, graph_port):
+    logging.getLogger('thoth').setLevel(logging.DEBUG if verbose else logging.INFO)
+    _LOGGER.debug('Debug mode is on')
+
     graph = GraphDatabase(hosts=graph_hosts, port=graph_port)
     graph.connect()
 
