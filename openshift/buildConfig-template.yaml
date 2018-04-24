@@ -38,6 +38,11 @@ objects:
         from:
           kind: ImageStreamTag
           name: python-36-centos7:latest
+        env:
+        - name: ENABLE_PIPENV
+          value: '1'
+        - name: UPGRADE_PIP_TO_LATEST
+          value: ''
     triggers:
     - imageChange: {}
       type: ImageChange
