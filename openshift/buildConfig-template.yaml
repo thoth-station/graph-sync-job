@@ -8,8 +8,8 @@ metadata:
   annotations:
     description: This is Thoth Graph Sync CronJob BuildConfig, this template is meant to be used by Jenkins, but could also be used by humans...
     openshift.io/display-name: Thoth User API BuildConfig
-    version: 0.1.0
-    tags: poc,thoth,thoth-user-api,ai-stacks
+    version: 0.2.0
+    tags: poc,thoth,ai-stacks,graph-sync-job
     template.openshift.io/documentation-url: https://github.com/AICoE/Thoth/
     template.openshift.io/long-description: This is Thoth Graph Sync CronJob BuildConfig, this template is meant to be used by Jenkins, but could also be used by humans...
     template.openshift.io/provider-display-name: Red Hat, Inc.
