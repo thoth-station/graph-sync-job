@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# thoth-graph-sync-job
+# graph-sync-job
 # Copyright(C) 2018 Fridolin Pokorny
 #
 # This program is free software: you can redistribute it and / or modify
@@ -50,7 +50,8 @@ _LOGGER = logging.getLogger('thoth.graph_sync_job')
               help="Force sync of solver results regardless if they exist (duplicate entries will not be created).")
 def cli(verbose, solver_results_store_host, analysis_results_store_host, graph_hosts, graph_port,
         force_solver_results_sync, force_analysis_results_sync):
-    logging.getLogger('thoth').setLevel(logging.DEBUG if verbose else logging.INFO)
+    logging.getLogger('thoth').setLevel(
+        logging.DEBUG if verbose else logging.INFO)
     _LOGGER.debug('Debug mode is on')
 
     graph = GraphDatabase(hosts=graph_hosts, port=graph_port)
@@ -59,29 +60,36 @@ def cli(verbose, solver_results_store_host, analysis_results_store_host, graph_h
     solver_store = SolverResultsStore(host=solver_results_store_host)
     solver_store.connect()
 
-    _LOGGER.info(f"Syncing solver results from {solver_results_store_host} to {graph_hosts}")
+    _LOGGER.info(
+        f"Syncing solver results from {solver_results_store_host} to {graph_hosts}")
     for document_id, document in solver_store.iterate_results():
         if force_solver_results_sync or not graph.solver_records_exist(document):
-            _LOGGER.info(f"Syncing solver document with id {document_id!r} to graph")
+            _LOGGER.info(
+                f"Syncing solver document with id {document_id!r} to graph")
             try:
                 graph.sync_solver_result(document)
             except Exception:
-                _LOGGER.exception("Failed to sync solver result with document id %r", document_id)
+                _LOGGER.exception(
+                    "Failed to sync solver result with document id %r", document_id)
         else:
-            _LOGGER.info(f"Sync of solver document with id {document_id!r} skipped - already synced")
+            _LOGGER.info(
+                f"Sync of solver document with id {document_id!r} skipped - already synced")
 
     analysis_store = AnalysisResultsStore(host=analysis_results_store_host)
     analysis_store.connect()
     _LOGGER.info(f"Syncing image analysis results to {graph_hosts}")
     for document_id, document in analysis_store.iterate_results():
         if force_analysis_results_sync or not graph.analysis_records_exist(document):
-            _LOGGER.info(f"Syncing analysis document with id {document_id!r} to graph")
+            _LOGGER.info(
+                f"Syncing analysis document with id {document_id!r} to graph")
             try:
                 graph.sync_analysis_result(document)
             except Exception:
-                _LOGGER.exception("Failed to sync analysis result with document id %r", document_id)
+                _LOGGER.exception(
+                    "Failed to sync analysis result with document id %r", document_id)
         else:
-            _LOGGER.info(f"Sync of analysis document with id {document_id!r} skipped - already synced")
+            _LOGGER.info(
+                f"Sync of analysis document with id {document_id!r} skipped - already synced")
 
 
 if __name__ == '__main__':
