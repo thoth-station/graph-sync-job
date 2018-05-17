@@ -50,8 +50,8 @@ _LOGGER = logging.getLogger('thoth.graph_sync_job')
               help="Force sync of solver results regardless if they exist (duplicate entries will not be created).")
 def cli(verbose, solver_results_store_host, analysis_results_store_host, graph_hosts, graph_port,
         force_solver_results_sync, force_analysis_results_sync):
-    logging.getLogger('thoth').setLevel(
-        logging.DEBUG if verbose else logging.INFO)
+    """Sync analyses and solver results to the graph database."""
+    logging.getLogger('thoth').setLevel(logging.DEBUG if verbose else logging.INFO)
     _LOGGER.debug('Debug mode is on')
 
     graph = GraphDatabase(hosts=graph_hosts, port=graph_port)
