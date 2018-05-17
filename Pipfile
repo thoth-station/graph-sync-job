@@ -1,20 +1,13 @@
 [[source]]
-
 url = "https://pypi.python.org/simple"
 verify_ssl = true
 name = "pypi"
 
-
 [packages]
-
 click = ">=6.7"
-thoth-storages = ">=0.0.25"
-
+thoth-storages = ">=0.0.26"
 
 [dev-packages]
 
-
-
 [pipenv]
-
 keep_outdated = true
