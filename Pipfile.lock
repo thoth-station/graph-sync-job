@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "922601a9d579dc31c8e1f8f7d579f4e2b421fac6480d291a976f2ba4f2b8fc01"
+            "sha256": "b30ba9e764c38d695215cb6e9fe98a855da76be663ccc170644cfcb4502761ee"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -257,11 +257,11 @@
         },
         "thoth-storages": {
             "hashes": [
-                "sha256:44d154ba9fdfec6f4baa43dfaa6707a9893196f6c74d577dabedd53285bf4ff1",
-                "sha256:b2d2b82a975f6e011b368f087066804e4952840da424cbfac7fc49bed1e0b2ab"
+                "sha256:7c22ea563ca3679377a0d0d5ce31a03bba4d103040fa16677251f482f2cac545",
+                "sha256:c889eaf8cf98b21ab6bdf69d2c86b93efc105decdbf0e7f98db245d943f8d75d"
             ],
             "index": "pypi",
-            "version": "==0.0.28"
+            "version": "==0.0.29"
         },
         "tornado": {
             "hashes": [
