@@ -4,9 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-click = ">=6.7"
-thoth-storages = ">=0.0.27"
-thoth-common = ">=0.0.6"
+click = "*"
+thoth-storages = "*"
+thoth-common = "*"
 
 [dev-packages]
 coala = "*"
