@@ -8,7 +8,7 @@ metadata:
   annotations:
     description: This is Thoth Core - Graph Sync Job
     openshift.io/display-name: "Thoth: Graph Sync Job"
-    version: 0.2.0
+    version: 0.3.0
     tags: poc,thoth,ai-stacks,graph-sync-job
     template.openshift.io/documentation-url: https://github.com/Thoth-Station/
     template.openshift.io/long-description: This template defines resources needed to deploy Thoth Graph Sync Job as a Proof-of-Concept to OpenShift.

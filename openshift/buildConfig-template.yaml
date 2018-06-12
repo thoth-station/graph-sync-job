@@ -8,7 +8,7 @@ metadata:
   annotations:
     description: This is Thoth Graph Sync CronJob BuildConfig, this template is meant to be used by Jenkins, but could also be used by humans...
     openshift.io/display-name: Thoth User API BuildConfig
-    version: 0.2.0
+    version: 0.3.0
     tags: poc,thoth,ai-stacks,graph-sync-job
     template.openshift.io/documentation-url: https://github.com/AICoE/Thoth/
     template.openshift.io/long-description: This is Thoth Graph Sync CronJob BuildConfig, this template is meant to be used by Jenkins, but could also be used by humans...
@@ -22,6 +22,13 @@ objects:
       app: thoth-core
     name: graph-sync-job
   spec:
+    resources:
+      limits:
+        cpu: 2000m
+        memory: 768Mi
+      requests:
+        cpu: 2000m
+        memory: 768Mi
     output:
       to:
         kind: ImageStreamTag

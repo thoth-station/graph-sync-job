@@ -25,12 +25,27 @@ from thoth.common import init_logging
 from thoth.storages import GraphDatabase
 from thoth.storages import SolverResultsStore
 from thoth.storages import AnalysisResultsStore
+from thoth.storages import __version__ as thoth_storages_version
+
+
+__version__ = '0.3.0' + '+thoth_storage.' + thoth_storages_version
+
 
 init_logging()
 _LOGGER = logging.getLogger('thoth.graph_sync_job')
 
 
+def _print_version(ctx, _, value):
+    """Print package releases version and exit."""
+    if not value or ctx.resilient_parsing:
+        return
+    # Reuse thoth-storages version as we rely on it.
+    click.echo(__version__)
+    ctx.exit()
+
 @click.command()
+@click.option('--version', is_flag=True, is_eager=True, callback=_print_version, expose_value=False,
+              help="Print version and exit.")
 @click.option('--graph-hosts', type=str, default=[GraphDatabase.DEFAULT_HOST],
               show_default=True, metavar=GraphDatabase.ENVVAR_HOST_NAME,
               envvar=GraphDatabase.ENVVAR_HOST_NAME, multiple=True,
@@ -93,4 +108,6 @@ def cli(verbose, solver_results_store_host, analysis_results_store_host, graph_h
 
 
 if __name__ == '__main__':
+    _LOGGER.info(f"graph-sync-job v{__version__} starting...")
+
     cli()
