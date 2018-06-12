@@ -43,6 +43,7 @@ def _print_version(ctx, _, value):
     click.echo(__version__)
     ctx.exit()
 
+
 @click.command()
 @click.option('--version', is_flag=True, is_eager=True, callback=_print_version, expose_value=False,
               help="Print version and exit.")
