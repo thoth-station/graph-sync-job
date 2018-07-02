@@ -28,7 +28,7 @@ from thoth.storages import AnalysisResultsStore
 from thoth.storages import __version__ as thoth_storages_version
 
 
-__version__ = '0.3.0' + '+thoth_storage.' + thoth_storages_version
+__version__ = '0.4.0' + '+thoth_storage.' + thoth_storages_version
 
 
 init_logging()
