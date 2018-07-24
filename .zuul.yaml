@@ -1,20 +1,11 @@
 - project:
     check:
       jobs:
-        - linters:
-            vars:
-              linters:
-                - coala
+        - linters
     gate:
       queue: core
       jobs:
-        - linters:
-            vars:
-              linters:
-                - coala
-    sesheta-auto-gate:
+        - linters
+    kebechet-auto-gate:
       jobs:
-        - linters:
-            vars:
-              linters:
-                - coala
+        - linters
