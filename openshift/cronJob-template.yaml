@@ -25,7 +25,7 @@ objects:
       component: graph-sync
   spec:
     schedule: "@daily"
-    suspend: "${THOTH_SUSPEND_JOB}"
+    suspend: ${{THOTH_SUSPEND_JOB}}
     successfulJobsHistoryLimit: 5
     failedJobsHistoryLimit: 1
     concurrencyPolicy: Forbid
