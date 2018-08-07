@@ -33,6 +33,7 @@ objects:
       spec:
         template:
           metadata:
+            name: graph-sync
             labels:
               app: thoth
               component: graph-sync
