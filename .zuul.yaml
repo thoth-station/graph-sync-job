@@ -3,9 +3,13 @@
       jobs:
         - linters
     gate:
-      queue: core
       jobs:
         - linters
     kebechet-auto-gate:
       jobs:
         - linters
+    post:
+      jobs:
+        - trigger-build:
+            vars:
+              webhook_url: "https://paas.upshift.redhat.com/oapi/v1/namespaces/thoth-test-core/buildconfigs/graph-sync-job/webhooks/"
