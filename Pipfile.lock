@@ -123,7 +123,7 @@
                 "sha256:f3e4860f5458a9875caa3de65e255720c0ed2ce71f0bcdab02497b32104f9db8",
                 "sha256:fc6c20a8ac22202a779ad4c59756647be0826993d2151a03c015e76d2368ae5f"
             ],
-            "markers": "python_version != '3.2.*' and python_version >= '2.6' and python_version != '3.1.*' and python_version != '3.0.*'",
+            "markers": "python_version >= '2.6' and python_version != '3.1.*' and python_version != '3.2.*' and python_version != '3.0.*'",
             "version": "==0.28.5"
         },
         "daiquiri": {
@@ -227,7 +227,6 @@
                 "sha256:63b52e3c866428a224f97cab011de738c36aec0185aa91cfacd418b5d58911d1",
                 "sha256:ec22d826a36ed72a7358ff3fe56cbd4ba69dd7a6718ffd450ff0e9df7a47ce6a"
             ],
-            "markers": "python_version >= '2.6' and python_version != '3.1.*' and python_version != '3.0.*' and python_version != '3.2.*' and python_version < '4' and python_version != '3.3.*'",
             "version": "==2.19.1"
         },
         "rfc5424-logging-handler": {
@@ -253,11 +252,11 @@
         },
         "thoth-common": {
             "hashes": [
-                "sha256:4290b7195a77cd5731e1e9763f27989eb38045aec8c9f46d3274f6eccf56dbb2",
-                "sha256:977f384bdbba1fbd06726e0b4e29e19df6e64149f697b7b15ad2d41db82a64db"
+                "sha256:b04154dc76d86ea8da8a4e30f0387a24ebb3b289fb00e9026d8aefbed97e14f4",
+                "sha256:e8b2984612701d88ff770430eaa9a53126a84c02eb784cffad8f9cf28ba1e7a8"
             ],
             "index": "pypi",
-            "version": "==0.2.6"
+            "version": "==0.2.7"
         },
         "thoth-storages": {
             "hashes": [
@@ -292,7 +291,7 @@
                 "sha256:a68ac5e15e76e7e5dd2b8f94007233e01effe3e50e8daddf69acfd81cb686baf",
                 "sha256:b5725a0bd4ba422ab0e66e89e030c806576753ea3ee08554382c14e685d117b5"
             ],
-            "markers": "python_version >= '2.6' and python_version != '3.1.*' and python_version != '3.0.*' and python_version != '3.2.*' and python_version < '4' and python_version != '3.3.*'",
+            "markers": "python_version != '3.1.*' and python_version != '3.3.*' and python_version >= '2.6' and python_version != '3.0.*' and python_version != '3.2.*' and python_version < '4'",
             "version": "==1.23"
         },
         "uvloop": {
@@ -466,7 +465,6 @@
                 "sha256:63b52e3c866428a224f97cab011de738c36aec0185aa91cfacd418b5d58911d1",
                 "sha256:ec22d826a36ed72a7358ff3fe56cbd4ba69dd7a6718ffd450ff0e9df7a47ce6a"
             ],
-            "markers": "python_version >= '2.6' and python_version != '3.1.*' and python_version != '3.0.*' and python_version != '3.2.*' and python_version < '4' and python_version != '3.3.*'",
             "version": "==2.19.1"
         },
         "sarge": {
@@ -500,7 +498,7 @@
                 "sha256:a68ac5e15e76e7e5dd2b8f94007233e01effe3e50e8daddf69acfd81cb686baf",
                 "sha256:b5725a0bd4ba422ab0e66e89e030c806576753ea3ee08554382c14e685d117b5"
             ],
-            "markers": "python_version >= '2.6' and python_version != '3.1.*' and python_version != '3.0.*' and python_version != '3.2.*' and python_version < '4' and python_version != '3.3.*'",
+            "markers": "python_version != '3.1.*' and python_version != '3.3.*' and python_version >= '2.6' and python_version != '3.0.*' and python_version != '3.2.*' and python_version < '4'",
             "version": "==1.23"
         },
         "yamllint": {
