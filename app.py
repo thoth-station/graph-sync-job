@@ -18,9 +18,13 @@
 
 """Graph syncing logic for the Thoth project."""
 
+import os
 import logging
 
 import click
+
+from prometheus_client import CollectorRegistry, Gauge, push_to_gateway
+
 from thoth.common import init_logging
 from thoth.storages import GraphDatabase
 from thoth.storages import SolverResultsStore
@@ -28,11 +32,19 @@ from thoth.storages import AnalysisResultsStore
 from thoth.storages import __version__ as thoth_storages_version
 
 
-__version__ = '0.4.0' + '+thoth_storage.' + thoth_storages_version
+__version__ = '0.5.0-dev' + '+thoth_storage.' + thoth_storages_version
 
 
 init_logging()
 _LOGGER = logging.getLogger('thoth.graph_sync_job')
+
+prometheus_registry = CollectorRegistry()
+_METRIC_SECONDS = Gauge(
+    'graph_sync_seconds', 'Runtime of graph sync job in seconds.', registry=prometheus_registry)
+_METRIC_SOLVER_RESULTS = Counter(
+    'graph_sync_solver_results', 'Solver results processed', ['processed', 'synced', 'skipped', 'failed'], registry=prometheus_registry)
+_METRIC_ANALYSIS_RESULTS = Counter(
+    'graph_sync_analysis_results', 'Analysis results processed', ['processed', 'synced', 'skipped', 'failed'], registry=prometheus_registry)
 
 
 def _print_version(ctx, _, value):
@@ -64,11 +76,17 @@ def _print_version(ctx, _, value):
               help="Force sync of solver results regardless if they exist (duplicate entries will not be created).")
 @click.option('--force-analysis-results-sync', is_flag=True, envvar='THOTH_GRAPH_SYNC_FORCE_ANALYSIS_RESULTS_SYNC',
               help="Force sync of solver results regardless if they exist (duplicate entries will not be created).")
+@click.option('--metrics-pushgateway-url', type=str, default='pushgateway:80', show_default=True,
+              envvar='THOTH_METRICS_PUSHGATEWAY_URL',
+              help="Send job metrics to a Prometheus pushgateway URL.")
 def cli(verbose, solver_results_store_host, analysis_results_store_host, graph_hosts, graph_port,
-        force_solver_results_sync, force_analysis_results_sync):
+        force_solver_results_sync, force_analysis_results_sync, metrics_pushgateway_url):
     """Sync analyses and solver results to the graph database."""
-    logging.getLogger('thoth').setLevel(logging.DEBUG if verbose else logging.INFO)
+    logging.getLogger('thoth').setLevel(
+        logging.DEBUG if verbose else logging.INFO)
     _LOGGER.debug('Debug mode is on')
+
+    _THOTH_METRICS_PUSHGATEWAY_URL = os.getenv('THOTH_METRICS_PUSHGATEWAY_URL')
 
     graph = GraphDatabase(hosts=graph_hosts, port=graph_port)
     graph.connect()
@@ -76,36 +94,57 @@ def cli(verbose, solver_results_store_host, analysis_results_store_host, graph_h
     solver_store = SolverResultsStore(host=solver_results_store_host)
     solver_store.connect()
 
-    _LOGGER.info(
-        f"Syncing solver results from {solver_results_store_host} to {graph_hosts}")
-    for document_id, document in solver_store.iterate_results():
-        if force_solver_results_sync or not graph.solver_records_exist(document):
-            _LOGGER.info(
-                f"Syncing solver document with id {document_id!r} to graph")
-            try:
-                graph.sync_solver_result(document)
-            except Exception:
-                _LOGGER.exception(
-                    "Failed to sync solver result with document id %r", document_id)
-        else:
-            _LOGGER.info(
-                f"Sync of solver document with id {document_id!r} skipped - already synced")
+    with _METRIC_SECONDS.time():
+        _LOGGER.info(
+            f"Syncing solver results from {solver_results_store_host} to {graph_hosts}")
+        for document_id, document in solver_store.iterate_results():
+            _METRIC_SOLVER_RESULTS.labels('processed').inc()
 
-    analysis_store = AnalysisResultsStore(host=analysis_results_store_host)
-    analysis_store.connect()
-    _LOGGER.info(f"Syncing image analysis results to {graph_hosts}")
-    for document_id, document in analysis_store.iterate_results():
-        if force_analysis_results_sync or not graph.analysis_records_exist(document):
-            _LOGGER.info(
-                f"Syncing analysis document with id {document_id!r} to graph")
-            try:
-                graph.sync_analysis_result(document)
-            except Exception:
-                _LOGGER.exception(
-                    "Failed to sync analysis result with document id %r", document_id)
-        else:
-            _LOGGER.info(
-                f"Sync of analysis document with id {document_id!r} skipped - already synced")
+            if force_solver_results_sync or not graph.solver_records_exist(document):
+                _LOGGER.info(
+                    f"Syncing solver document with id {document_id!r} to graph")
+                try:
+                    graph.sync_solver_result(document)
+                    _METRIC_SOLVER_RESULTS.labels('synced').inc()
+                except Exception:
+                    _LOGGER.exception(
+                        "Failed to sync solver result with document id %r", document_id)
+                    _METRIC_SOLVER_RESULTS.labels('failed').inc()
+            else:
+                _LOGGER.info(
+                    f"Sync of solver document with id {document_id!r} skipped - already synced")
+                _METRIC_SOLVER_RESULTS.labels('skipped').inc()
+
+        analysis_store = AnalysisResultsStore(host=analysis_results_store_host)
+        analysis_store.connect()
+        _LOGGER.info(f"Syncing image analysis results to {graph_hosts}")
+        for document_id, document in analysis_store.iterate_results():
+            _METRIC_ANALYSIS_RESULTS.labels('processed').inc()
+
+            if force_analysis_results_sync or not graph.analysis_records_exist(document):
+                _LOGGER.info(
+                    f"Syncing analysis document with id {document_id!r} to graph")
+                try:
+                    graph.sync_analysis_result(document)
+                    _METRIC_ANALYSIS_RESULTS.labels('synced').inc()
+                except Exception:
+                    _LOGGER.exception(
+                        "Failed to sync analysis result with document id %r", document_id)
+                    _METRIC_ANALYSIS_RESULTS.labels('failed').inc()
+            else:
+                _LOGGER.info(
+                    f"Sync of analysis document with id {document_id!r} skipped - already synced")
+                _METRIC_ANALYSIS_RESULTS.labels('skipped').inc()
+
+    if _THOTH_METRICS_PUSHGATEWAY_URL:
+        try:
+            _LOGGER.debug(
+                f"Submitting metrics to Prometheus pushgateway {_THOTH_METRICS_PUSHGATEWAY_URL}")
+            push_to_gateway(_THOTH_METRICS_PUSHGATEWAY_URL, job='graph-sync',
+                            registry=prometheus_registry)
+        except Exception as e:
+            _LOGGER.exception(
+                f'An error occurred pushing the metrics: {str(e)}')
 
 
 if __name__ == '__main__':
