@@ -102,7 +102,6 @@ ENV/
 .mypy_cache/
 .pytest_cache/
 
-openshift/conf.sh
 *.retry
 .vscode/
 scratch.txt
