@@ -3,12 +3,16 @@ kind: Template
 metadata:
   name: graph-sync-imagestream
   annotations:
-    description: This is Thoth Graph Sync CronJob ImageStream, this template is meant to be used by Jenkins, but could also be used by humans...
+    description: >
+      This is Thoth Graph Sync CronJob ImageStream, this template is meant to be used by bots,
+      but could also be used by humans...
     openshift.io/display-name: Thoth User API ImageStream
-    version: 0.2.0
+    version: 0.5.0
     tags: poc,thoth,ai-stacks,graph-sync-job
     template.openshift.io/documentation-url: https://github.com/AICoE/Thoth/
-    template.openshift.io/long-description: This is Thoth Graph Sync CronJob ImageStream, this template is meant to be used by Jenkins, but could also be used by humans...
+    template.openshift.io/long-description: >
+      This is Thoth Graph Sync CronJob ImageStream, this template is meant to be used by bots,
+      but could also be used by humans...
     template.openshift.io/provider-display-name: Red Hat, Inc.
   labels:
     template: graph-sync-imagestream
@@ -16,15 +20,14 @@ metadata:
     component: graph-sync
 
 objects:
-- apiVersion: v1
-  kind: ImageStream
-  metadata:
-    labels:
-      app: thoth
-      component: graph-sync
-    name: graph-sync-job
-  spec:
-    name: latest
-    lookupPolicy:
-      local: true
-
+  - apiVersion: v1
+    kind: ImageStream
+    metadata:
+      labels:
+        app: thoth
+        component: graph-sync
+      name: graph-sync-job
+    spec:
+      name: latest
+      lookupPolicy:
+        local: true

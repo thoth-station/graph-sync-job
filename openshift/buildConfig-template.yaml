@@ -3,12 +3,16 @@ kind: Template
 metadata:
   name: graph-sync-buildconfig
   annotations:
-    description: This is Thoth Graph Sync CronJob BuildConfig, this template is meant to be used by Jenkins, but could also be used by humans...
+    description: >
+      This is Thoth Graph Sync CronJob BuildConfig, this template is meant to be used by bots,
+      but could also be used by humans...
     openshift.io/display-name: Thoth User API BuildConfig
-    version: 0.3.0
+    version: 0.5.0
     tags: poc,thoth,ai-stacks,graph-sync-job
     template.openshift.io/documentation-url: https://github.com/AICoE/Thoth/
-    template.openshift.io/long-description: This is Thoth Graph Sync CronJob BuildConfig, this template is meant to be used by Jenkins, but could also be used by humans...
+    template.openshift.io/long-description: >
+      This is Thoth Graph Sync CronJob BuildConfig, this template is meant to be used by bots,
+      but could also be used by humans...
     template.openshift.io/provider-display-name: Red Hat, Inc.
   labels:
     template: graph-sync-buildconfig
@@ -16,61 +20,61 @@ metadata:
     component: graph-sync
 
 objects:
-- apiVersion: v1
-  kind: BuildConfig
-  metadata:
-    labels:
-      app: thoth
-      component: graph-sync
-    name: graph-sync-job
-  spec:
-    resources:
-      limits:
-        cpu: 2000m
-        memory: 768Mi
-      requests:
-        cpu: 2000m
-        memory: 768Mi
-    output:
-      to:
-        kind: ImageStreamTag
-        name: "graph-sync-job:${IMAGE_STREAM_TAG}"
-    runPolicy: Serial
-    source:
-      git:
-        uri: ${GITHUB_URL}
-        ref: ${GITHUB_REF}
-      type: Git
-    strategy:
-      type: Source
-      sourceStrategy:
-        from:
+  - apiVersion: v1
+    kind: BuildConfig
+    metadata:
+      labels:
+        app: thoth
+        component: graph-sync
+      name: graph-sync-job
+    spec:
+      resources:
+        limits:
+          cpu: 2000m
+          memory: 768Mi
+        requests:
+          cpu: 2000m
+          memory: 768Mi
+      output:
+        to:
           kind: ImageStreamTag
-          name: python-36-centos7:latest
-        env:
-        - name: ENABLE_PIPENV
-          value: '1'
-        - name: UPGRADE_PIP_TO_LATEST
-          value: ''
-    triggers:
-    - imageChange: {}
-      type: ImageChange
+          name: "graph-sync-job:${IMAGE_STREAM_TAG}"
+      runPolicy: Serial
+      source:
+        git:
+          uri: ${GITHUB_URL}
+          ref: ${GITHUB_REF}
+        type: Git
+      strategy:
+        type: Source
+        sourceStrategy:
+          from:
+            kind: ImageStreamTag
+            name: python-36-centos7:latest
+          env:
+            - name: ENABLE_PIPENV
+              value: "1"
+            - name: UPGRADE_PIP_TO_LATEST
+              value: ""
+      triggers:
+        - imageChange: {}
+          type: ImageChange
 
 parameters:
-- description: Git repository for Thoth's Graph Sync Job
-  displayName: Thoth graph-sync-job git repository
-  required: true
-  name: GITHUB_URL
-  value: 'https://github.com/thoth-station/graph-sync-job'
+  - description: Git repository for Thoth's Graph Sync Job
+    displayName: Thoth graph-sync-job git repository
+    required: true
+    name: GITHUB_URL
+    value: "https://github.com/thoth-station/graph-sync-job"
 
-- description: Git repository for Thoth's Graph Sync Job
-  displayName: Thoth graph-sync-job git reference
-  required: true
-  name: GITHUB_REF
-  value: 'master'
+  - description: Git repository for Thoth's Graph Sync Job
+    displayName: Thoth graph-sync-job git reference
+    required: true
+    name: GITHUB_REF
+    value: "master"
 
-- description: Tag of the output ImageStream the resulting container image should go to
-  displayName: ImageStream Tag
-  required: true
-  name: IMAGE_STREAM_TAG
-  value: 'latest'
+  - description: Tag of the output ImageStream the resulting container image should go to
+    displayName: ImageStream Tag
+    required: true
+    name: IMAGE_STREAM_TAG
+    value: "latest"
