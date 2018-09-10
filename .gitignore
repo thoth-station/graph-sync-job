@@ -105,3 +105,4 @@ ENV/
 *.retry
 .vscode/
 scratch.txt
+_build
