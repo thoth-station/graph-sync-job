@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Thoth's Graph Synchronization Job for OpenShift documentation build configuration file, created by
+# Thoth's Software Stack Synchronization Job for OpenShift documentation build configuration file, created by
 # sphinx-quickstart on Mon Sep 10 11:46:25 2018.
 #
 # This file is execfile()d with the current directory set to its
@@ -34,7 +34,7 @@ from recommonmark.parser import CommonMarkParser
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['recommonmark']
+extensions = ['recommonmark', 'sphinx.ext.todo']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -57,7 +57,7 @@ source_parsers = {
 master_doc = 'README'
 
 # General information about the project.
-project = 'Thoth\'s Graph Synchronization Job for OpenShift'
+project = 'Thoth\'s Software Stack Synchronization Job for OpenShift'
 copyright = '2018, Red Hat, Inc.'
 author = 'goern, fpokorny'
 
@@ -120,7 +120,7 @@ pygments_style = 'sphinx'
 # keep_warnings = False
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
-todo_include_todos = False
+todo_include_todos = True
 
 
 # -- Options for HTML output ----------------------------------------------
@@ -142,7 +142,7 @@ html_theme = 'sphinx_rtd_theme'
 # The name for this set of Sphinx documents.
 # "<project> v<release> documentation" by default.
 #
-# html_title = 'Thoth\'s Graph Synchronization Job for OpenShift v0.5.0'
+# html_title = 'Thoth\'s Software Stack Synchronization Job for OpenShift v0.5.0'
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 #
@@ -242,7 +242,7 @@ html_static_path = ['_static']
 # html_search_scorer = 'scorer.js'
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'ThothsGraphSynchronizationJobforOpenShiftdoc'
+htmlhelp_basename = 'ThothsSoftwareStackSynchronizationJobforOpenShiftdoc'
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -269,8 +269,8 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc,
-     'ThothsGraphSynchronizationJobforOpenShift.tex',
-     'Thoth\'s Graph Synchronization Job for OpenShift Documentation',
+     'ThothsSoftwareStackSynchronizationJobforOpenShift.tex',
+     'Thoth\'s Software Stack Synchronization Job for OpenShift Documentation',
      'goern, fpokorny',
      'manual'),
 ]
@@ -314,8 +314,8 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     (master_doc,
-     'thothsgraphsynchronizationjobforopenshift',
-     'Thoth\'s Graph Synchronization Job for OpenShift Documentation',
+     'thothssoftwarestacksynchronizationjobforopenshift',
+     'Thoth\'s Software Stack Synchronization Job for OpenShift Documentation',
      [author],
      1)
 ]
@@ -332,11 +332,11 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc,
-     'ThothsGraphSynchronizationJobforOpenShift',
-     'Thoth\'s Graph Synchronization Job for OpenShift Documentation',
+     'ThothsSoftwareStackSynchronizationJobforOpenShift',
+     'Thoth\'s Software Stack Synchronization Job for OpenShift Documentation',
      author,
-     'ThothsGraphSynchronizationJobforOpenShift',
-     'Thoth\'s Graph Synchronization Job for OpenShift Documentation.',
+     'ThothsSoftwareStackSynchronizationJobforOpenShift',
+     'Thoth\'s Software Stack Synchronization Job for OpenShift Documentation.',
      'Miscellaneous'),
 ]
 
