@@ -23,7 +23,7 @@ import logging
 
 import click
 
-from prometheus_client import CollectorRegistry, Gauge, push_to_gateway
+from prometheus_client import CollectorRegistry, Gauge, Counter, push_to_gateway
 
 from thoth.common import init_logging
 from thoth.storages import GraphDatabase
