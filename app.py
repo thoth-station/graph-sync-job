@@ -42,13 +42,31 @@ prometheus_registry = CollectorRegistry()
 _METRIC_SECONDS = Gauge(
     'graph_sync_seconds', 'Runtime of graph sync job in seconds.',
     registry=prometheus_registry)
-_METRIC_SOLVER_RESULTS = Counter(
-    'graph_sync_solver_results', 'Solver results processed',
-    ['processed', 'synced', 'skipped', 'failed'],
+
+_METRIC_SOLVER_RESULTS_PROCESSED = Counter(
+    'graph_sync_solver_results_processed', 'Solver results processed',
     registry=prometheus_registry)
-_METRIC_ANALYSIS_RESULTS = Counter(
-    'graph_sync_analysis_results', 'Analysis results processed',
-    ['processed', 'synced', 'skipped', 'failed'],
+_METRIC_SOLVER_RESULTS_SYNCED = Counter(
+    'graph_sync_solver_results_synced', 'Solver results synced',
+    registry=prometheus_registry)
+_METRIC_SOLVER_RESULTS_SKIPPED = Counter(
+    'graph_sync_solver_results_skipped', 'Solver results skipped processing',
+    registry=prometheus_registry)
+_METRIC_SOLVER_RESULTS_FAILED = Counter(
+    'graph_sync_solver_results_failed', 'Solver results failed processing',
+    registry=prometheus_registry)
+
+_METRIC_ANALYSIS_RESULTS_PROCESSED = Counter(
+    'graph_sync_analysis_results_processed', 'Analysis results processed',
+    registry=prometheus_registry)
+_METRIC_ANALYSIS_RESULTS_SYNCED = Counter(
+    'graph_sync_analysis_results_synced', 'Analysis results synced',
+    registry=prometheus_registry)
+_METRIC_ANALYSIS_RESULTS_SKIPPED = Counter(
+    'graph_sync_analysis_results_skiped', 'Analysis results skipped processing',
+    registry=prometheus_registry)
+_METRIC_ANALYSIS_RESULTS_FAILED = Counter(
+    'graph_sync_analysis_results_failed', 'Analysis results failed processing',
     registry=prometheus_registry)
 
 
@@ -103,43 +121,43 @@ def cli(verbose, solver_results_store_host, analysis_results_store_host, graph_h
         _LOGGER.info(
             f"Syncing solver results from {solver_results_store_host} to {graph_hosts}")
         for document_id, document in solver_store.iterate_results():
-            _METRIC_SOLVER_RESULTS.labels('processed').inc()
+            _METRIC_SOLVER_RESULTS_PROCESSED.inc()
 
             if force_solver_results_sync or not graph.solver_records_exist(document):
                 _LOGGER.info(
                     f"Syncing solver document with id {document_id!r} to graph")
                 try:
                     graph.sync_solver_result(document)
-                    _METRIC_SOLVER_RESULTS.labels('synced').inc()
+                    _METRIC_SOLVER_RESULTS_SYNCED.inc()
                 except Exception:
                     _LOGGER.exception(
                         "Failed to sync solver result with document id %r", document_id)
-                    _METRIC_SOLVER_RESULTS.labels('failed').inc()
+                    _METRIC_SOLVER_RESULTS_FAILED.inc()
             else:
                 _LOGGER.info(
                     f"Sync of solver document with id {document_id!r} skipped - already synced")
-                _METRIC_SOLVER_RESULTS.labels('skipped').inc()
+                _METRIC_SOLVER_RESULTS_SKIPPED.inc()
 
         analysis_store = AnalysisResultsStore(host=analysis_results_store_host)
         analysis_store.connect()
         _LOGGER.info(f"Syncing image analysis results to {graph_hosts}")
         for document_id, document in analysis_store.iterate_results():
-            _METRIC_ANALYSIS_RESULTS.labels('processed').inc()
+            _METRIC_ANALYSIS_RESULTS_PROCESSED.inc()
 
             if force_analysis_results_sync or not graph.analysis_records_exist(document):
                 _LOGGER.info(
                     f"Syncing analysis document with id {document_id!r} to graph")
                 try:
                     graph.sync_analysis_result(document)
-                    _METRIC_ANALYSIS_RESULTS.labels('synced').inc()
+                    _METRIC_ANALYSIS_RESULTS_SYNCED.inc()
                 except Exception:
                     _LOGGER.exception(
                         "Failed to sync analysis result with document id %r", document_id)
-                    _METRIC_ANALYSIS_RESULTS.labels('failed').inc()
+                    _METRIC_ANALYSIS_RESULTS_FAILED.inc()
             else:
                 _LOGGER.info(
                     f"Sync of analysis document with id {document_id!r} skipped - already synced")
-                _METRIC_ANALYSIS_RESULTS.labels('skipped').inc()
+                _METRIC_ANALYSIS_RESULTS_SKIPPED.inc()
 
     if _THOTH_METRICS_PUSHGATEWAY_URL:
         try:
