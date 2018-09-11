@@ -98,6 +98,11 @@ objects:
                         configMapKeyRef:
                           name: thoth
                           key: metrics-pushgateway-url
+                    - name: THOTH_FRONTEND_NAMESPACE
+                      valueFrom:
+                        configMapKeyRef:
+                          name: thoth
+                          key: frontend-namespace
                   resources:
                     requests:
                       memory: "128Mi"
