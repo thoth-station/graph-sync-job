@@ -40,11 +40,16 @@ _LOGGER = logging.getLogger('thoth.graph_sync_job')
 
 prometheus_registry = CollectorRegistry()
 _METRIC_SECONDS = Gauge(
-    'graph_sync_seconds', 'Runtime of graph sync job in seconds.', registry=prometheus_registry)
+    'graph_sync_seconds', 'Runtime of graph sync job in seconds.',
+    registry=prometheus_registry)
 _METRIC_SOLVER_RESULTS = Counter(
-    'graph_sync_solver_results', 'Solver results processed', ['processed', 'synced', 'skipped', 'failed'], registry=prometheus_registry)
+    'graph_sync_solver_results', 'Solver results processed',
+    ['processed', 'synced', 'skipped', 'failed'],
+    registry=prometheus_registry)
 _METRIC_ANALYSIS_RESULTS = Counter(
-    'graph_sync_analysis_results', 'Analysis results processed', ['processed', 'synced', 'skipped', 'failed'], registry=prometheus_registry)
+    'graph_sync_analysis_results', 'Analysis results processed',
+    ['processed', 'synced', 'skipped', 'failed'],
+    registry=prometheus_registry)
 
 
 def _print_version(ctx, _, value):
