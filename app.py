@@ -32,7 +32,7 @@ from thoth.storages import AnalysisResultsStore
 from thoth.storages import __version__ as thoth_storages_version
 
 
-__version__ = '0.5.0' + '+thoth_storage.' + thoth_storages_version
+__version__ = '0.5.1' + '+thoth_storage.' + thoth_storages_version
 
 
 init_logging()
@@ -40,33 +40,33 @@ _LOGGER = logging.getLogger('thoth.graph_sync_job')
 
 prometheus_registry = CollectorRegistry()
 _METRIC_SECONDS = Gauge(
-    'job_runtime_seconds', 'Runtime of graph sync job in seconds.',
+    'graph_sync_job_runtime_seconds', 'Runtime of graph sync job in seconds.',
     registry=prometheus_registry)
 
 _METRIC_SOLVER_RESULTS_PROCESSED = Counter(
-    'solver_results_processed', 'Solver results processed',
+    'graph_sync_solver_results_processed', 'Solver results processed',
     registry=prometheus_registry)
 _METRIC_SOLVER_RESULTS_SYNCED = Counter(
-    'solver_results_synced', 'Solver results synced',
+    'graph_sync_solver_results_synced', 'Solver results synced',
     registry=prometheus_registry)
 _METRIC_SOLVER_RESULTS_SKIPPED = Counter(
-    'solver_results_skipped', 'Solver results skipped processing',
+    'graph_sync_solver_results_skipped', 'Solver results skipped processing',
     registry=prometheus_registry)
 _METRIC_SOLVER_RESULTS_FAILED = Counter(
-    'solver_results_failed', 'Solver results failed processing',
+    'graph_sync_solver_results_failed', 'Solver results failed processing',
     registry=prometheus_registry)
 
 _METRIC_ANALYSIS_RESULTS_PROCESSED = Counter(
-    'analysis_results_processed', 'Analysis results processed',
+    'graph_sync_analysis_results_processed', 'Analysis results processed',
     registry=prometheus_registry)
 _METRIC_ANALYSIS_RESULTS_SYNCED = Counter(
-    'analysis_results_synced', 'Analysis results synced',
+    'graph_sync_analysis_results_synced', 'Analysis results synced',
     registry=prometheus_registry)
 _METRIC_ANALYSIS_RESULTS_SKIPPED = Counter(
-    'analysis_results_skipped', 'Analysis results skipped processing',
+    'graph_sync_analysis_results_skipped', 'Analysis results skipped processing',
     registry=prometheus_registry)
 _METRIC_ANALYSIS_RESULTS_FAILED = Counter(
-    'analysis_results_failed', 'Analysis results failed processing',
+    'graph_sync_analysis_results_failed', 'Analysis results failed processing',
     registry=prometheus_registry)
 
 
