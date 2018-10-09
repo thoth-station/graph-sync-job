@@ -211,10 +211,10 @@
         },
         "prometheus-client": {
             "hashes": [
-                "sha256:3e45bc729444144071d237b2fa7af8ef1a78a73ac60f9cdc1dfa92b451f224f4"
+                "sha256:2c0ddba8b9dc5e06de7578a7b25e4becafd6880e6d727bc0a73f8d826c1b0112"
             ],
             "index": "pypi",
-            "version": "==0.4.0"
+            "version": "==0.4.1"
         },
         "python-dateutil": {
             "hashes": [
