@@ -13,7 +13,7 @@ The following table shows all the metrics exported by the graph sync job.
 .. csv-table:: Graph Sync Job Metrics
    :header: "Metric", "Job Name", "Description"
 
-    graph_sync_seconds,  graph-sync,  Runtime of graph sync job in seconds.
+    graph_sync_job_runtime_seconds,  graph-sync,  Runtime of graph sync job in seconds.
     graph_sync_solver_results_processed,  graph-sync,  Solver results processed.
     graph_sync_solver_results_synced,  graph-sync,  Solver results synced.
     graph_sync_solver_results_skipped,  graph-sync,  Solver results skipped processing.
