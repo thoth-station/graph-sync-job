@@ -3,19 +3,25 @@ kind: Template
 metadata:
   name: graph-sync-cronjob
   annotations:
-    description: This is Thoth Core - Graph Sync Job
+    description: "Thoth: Graph Sync Job"
     openshift.io/display-name: "Thoth: Graph Sync Job"
-    version: 0.5.0
-    tags: poc,thoth,ai-stacks,graph-sync-job
+    version: 0.6.0
+    tags: thoth,ai-stacks,aistacks,graph-sync-job
     template.openshift.io/documentation-url: https://github.com/Thoth-Station/
     template.openshift.io/long-description: >
-      This template defines resources needed to deploy Thoth Graph Sync Job
-      as a Proof-of-Concept to OpenShift.
+      This template defines resources needed to deploy Thoth's Graph Sync Job on OpenShift.
     template.openshift.io/provider-display-name: Red Hat, Inc.
   labels:
     template: graph-sync-cronjob
     app: thoth
     component: graph-sync
+
+parameters:
+  - displayName: Suspend CronJob run
+    description: Suspend CronJob run
+    required: true
+    name: THOTH_SUSPEND_JOB
+    value: "true"
 
 objects:
   - apiVersion: batch/v2alpha1
@@ -49,10 +55,6 @@ objects:
                         configMapKeyRef:
                           key: storage-bucket-name
                           name: thoth
-                    - name: THOTH_JANUSGRAPH_HOST
-                      value: janusgraph
-                    - name: THOTH_JANUSGRAPH_PORT
-                      value: "80"
                     - name: THOTH_SYNC_OBSERVATIONS
                       valueFrom:
                         configMapKeyRef:
@@ -103,6 +105,11 @@ objects:
                         configMapKeyRef:
                           name: thoth
                           key: frontend-namespace
+                    - name: SENTRY_DSN
+                      valueFrom:
+                        secretKeyRef:
+                          name: thoth
+                          key: sentry-dsn
                   resources:
                     requests:
                       memory: "128Mi"
@@ -111,10 +118,3 @@ objects:
                       memory: "256Mi"
                       cpu: "500m"
               restartPolicy: Never
-
-parameters:
-  - displayName: Suspend CronJob run
-    description: Suspend CronJob run
-    required: true
-    name: THOTH_SUSPEND_JOB
-    value: "true"
