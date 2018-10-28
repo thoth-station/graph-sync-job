@@ -32,7 +32,7 @@ from thoth.storages import AnalysisResultsStore
 from thoth.storages import __version__ as thoth_storages_version
 
 
-__version__ = '0.5.1' + '+thoth_storage.' + thoth_storages_version
+__version__ = '0.5.2' + '+thoth_storage.' + thoth_storages_version
 
 
 init_logging()
