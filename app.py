@@ -118,8 +118,7 @@ def cli(verbose, solver_results_store_host, analysis_results_store_host, graph_h
     solver_store.connect()
 
     with _METRIC_SECONDS.time():
-        _LOGGER.info(
-            f"Syncing solver results from {solver_results_store_host} to {graph_hosts}")
+        _LOGGER.info(f"Syncing solver results from {solver_store.ceph.host} to {graph.hosts}")
         for document_id, document in solver_store.iterate_results():
             _METRIC_SOLVER_RESULTS_PROCESSED.inc()
 
@@ -140,7 +139,7 @@ def cli(verbose, solver_results_store_host, analysis_results_store_host, graph_h
 
         analysis_store = AnalysisResultsStore(host=analysis_results_store_host)
         analysis_store.connect()
-        _LOGGER.info(f"Syncing image analysis results to {graph_hosts}")
+        _LOGGER.info(f"Syncing image analysis from {analysis_store.ceph.host} to {graph.hosts}")
         for document_id, document in analysis_store.iterate_results():
             _METRIC_ANALYSIS_RESULTS_PROCESSED.inc()
 
