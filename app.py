@@ -26,19 +26,26 @@ import click
 from prometheus_client import CollectorRegistry, Gauge, Counter, push_to_gateway
 
 from thoth.common import init_logging
+from thoth.common import __version__ as __common__version__
 from thoth.storages import GraphDatabase
 from thoth.storages import SolverResultsStore
 from thoth.storages import AnalysisResultsStore
-from thoth.storages import __version__ as thoth_storages_version
+from thoth.storages import __version__ as __storages__version__
 
 
-__version__ = '0.5.1' + '+thoth_storage.' + thoth_storages_version
-
+__version__ = f"0.5.1+storage.{__storages__version__}.common.{__common__version__}"
+__author__ = "Christoph Görn <goern@redhat.com>"
 
 init_logging()
 _LOGGER = logging.getLogger('thoth.graph_sync_job')
 
 prometheus_registry = CollectorRegistry()
+
+thoth_metrics_exporter_info = Gauge('graph_sync_job_info',
+                                    'Thoth Graph Sync Job information', ['version'],
+                                    registry=prometheus_registry)
+thoth_metrics_exporter_info.labels(__version__).inc()
+
 _METRIC_SECONDS = Gauge(
     'graph_sync_job_runtime_seconds', 'Runtime of graph sync job in seconds.',
     registry=prometheus_registry)
