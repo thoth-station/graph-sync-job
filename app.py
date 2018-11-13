@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # graph-sync-job
 # Copyright(C) 2018 Fridolin Pokorny
 #
@@ -20,6 +19,7 @@
 
 import os
 import logging
+from multiprocessing import Process, Queue
 
 import click
 
@@ -45,6 +45,32 @@ thoth_metrics_exporter_info = Gauge('graph_sync_job_info',
                                     'Thoth Graph Sync Job information', ['version'],
                                     registry=prometheus_registry)
 thoth_metrics_exporter_info.labels(__version__).inc()
+
+_DOCUMENT_QUEUE = Queue()
+_FINISHED_QUEUE = Queue()
+_NUMBER_OF_PROCESSES = 4
+
+
+def worker(document_queue, finished_queue):
+    """Sync analysis result into the graph database database."""
+    graph = GraphDatabase()
+    graph.connect()
+    while True:
+        entry = document_queue.get()
+        if entry is None:
+            return
+
+        document, is_solver = entry
+        document_id = AnalysisResultsStore.get_document_id(document)
+        _LOGGER.info("Syncing %r document of type %s", document_id, "solver" if is_solver else "image analysis")
+        if is_solver:
+            graph.sync_solver_result(document)
+        else:
+            graph.sync_analysis_result(document)
+
+        _LOGGER.info("Synced %r document of type %s", document_id, "solver" if is_solver else "image analysis")
+        finished_queue.put(document_id)
+
 
 _METRIC_SECONDS = Gauge(
     'graph_sync_job_runtime_seconds', 'Runtime of graph sync job in seconds.',
@@ -112,8 +138,7 @@ def _print_version(ctx, _, value):
 def cli(verbose, solver_results_store_host, analysis_results_store_host, graph_hosts, graph_port,
         force_solver_results_sync, force_analysis_results_sync, metrics_pushgateway_url):
     """Sync analyses and solver results to the graph database."""
-    logging.getLogger('thoth').setLevel(
-        logging.DEBUG if verbose else logging.INFO)
+    logging.getLogger('thoth').setLevel(logging.DEBUG if verbose else logging.INFO)
     _LOGGER.debug('Debug mode is on')
 
     _THOTH_METRICS_PUSHGATEWAY_URL = os.getenv('THOTH_METRICS_PUSHGATEWAY_URL')
@@ -124,25 +149,24 @@ def cli(verbose, solver_results_store_host, analysis_results_store_host, graph_h
     solver_store = SolverResultsStore(host=solver_results_store_host)
     solver_store.connect()
 
+    processes = []
+    for i in range(_NUMBER_OF_PROCESSES):
+        process = Process(target=worker, args=(_DOCUMENT_QUEUE, _FINISHED_QUEUE))
+        process.start()
+        processes.append(process)
+
     with _METRIC_SECONDS.time():
-        _LOGGER.info(
-            f"Syncing solver results from {solver_results_store_host} to {graph_hosts}")
+        _LOGGER.info(f"Syncing solver results from {solver_results_store_host} to {graph_hosts}")
         for document_id, document in solver_store.iterate_results():
             _METRIC_SOLVER_RESULTS_PROCESSED.inc()
 
             if force_solver_results_sync or not graph.solver_records_exist(document):
-                _LOGGER.info(
-                    f"Syncing solver document with id {document_id!r} to graph")
                 try:
-                    graph.sync_solver_result(document)
-                    _METRIC_SOLVER_RESULTS_SYNCED.inc()
+                    _DOCUMENT_QUEUE.put((document, True))
                 except Exception:
-                    _LOGGER.exception(
-                        "Failed to sync solver result with document id %r", document_id)
-                    _METRIC_SOLVER_RESULTS_FAILED.inc()
+                    _LOGGER.exception("Failed to sync solver result with document id %r", document_id)
             else:
-                _LOGGER.info(
-                    f"Sync of solver document with id {document_id!r} skipped - already synced")
+                _LOGGER.info(f"Sync of solver document with id {document_id!r} skipped - already synced")
                 _METRIC_SOLVER_RESULTS_SKIPPED.inc()
 
         analysis_store = AnalysisResultsStore(host=analysis_results_store_host)
@@ -152,29 +176,29 @@ def cli(verbose, solver_results_store_host, analysis_results_store_host, graph_h
             _METRIC_ANALYSIS_RESULTS_PROCESSED.inc()
 
             if force_analysis_results_sync or not graph.analysis_records_exist(document):
-                _LOGGER.info(
-                    f"Syncing analysis document with id {document_id!r} to graph")
+                _LOGGER.info(f"Syncing analysis document with id {document_id!r} to graph")
                 try:
-                    graph.sync_analysis_result(document)
-                    _METRIC_ANALYSIS_RESULTS_SYNCED.inc()
+                    _DOCUMENT_QUEUE.put((document, False))
                 except Exception:
-                    _LOGGER.exception(
-                        "Failed to sync analysis result with document id %r", document_id)
-                    _METRIC_ANALYSIS_RESULTS_FAILED.inc()
+                    _LOGGER.exception("Failed to sync analysis result with document id %r", document_id)
             else:
-                _LOGGER.info(
-                    f"Sync of analysis document with id {document_id!r} skipped - already synced")
+                _LOGGER.info(f"Sync of analysis document with id {document_id!r} skipped - already synced")
                 _METRIC_ANALYSIS_RESULTS_SKIPPED.inc()
+
+    for process in processes:
+        process.join()
+
+    while not _FINISHED_QUEUE.empty():
+        document_id = _FINISHED_QUEUE.pop()
+        _LOGGER.info("Processed: %r", document_id)
 
     if _THOTH_METRICS_PUSHGATEWAY_URL:
         try:
-            _LOGGER.debug(
-                f"Submitting metrics to Prometheus pushgateway {_THOTH_METRICS_PUSHGATEWAY_URL}")
+            _LOGGER.debug(f"Submitting metrics to Prometheus pushgateway {_THOTH_METRICS_PUSHGATEWAY_URL}")
             push_to_gateway(_THOTH_METRICS_PUSHGATEWAY_URL, job='graph-sync',
                             registry=prometheus_registry)
         except Exception as e:
-            _LOGGER.exception(
-                f'An error occurred pushing the metrics: {str(e)}')
+            _LOGGER.exception(f'An error occurred pushing the metrics: {str(e)}')
 
 
 if __name__ == '__main__':
