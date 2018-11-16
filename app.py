@@ -125,14 +125,14 @@ def cli(verbose, solver_results_store_host, analysis_results_store_host, graph_h
     solver_store.connect()
 
     with _METRIC_SECONDS.time():
-        _LOGGER.info(
-            f"Syncing solver results from {solver_results_store_host} to {graph_hosts}")
         for document_id, document in solver_store.iterate_results():
             _METRIC_SOLVER_RESULTS_PROCESSED.inc()
 
             if force_solver_results_sync or not graph.solver_records_exist(document):
                 _LOGGER.info(
-                    f"Syncing solver document with id {document_id!r} to graph")
+                    f"Syncing solver document from {solver_store.ceph.host} "
+                    f"with id {document_id!r} to graph {graph.hosts}"
+                )
                 try:
                     graph.sync_solver_result(document)
                     _METRIC_SOLVER_RESULTS_SYNCED.inc()
@@ -147,13 +147,14 @@ def cli(verbose, solver_results_store_host, analysis_results_store_host, graph_h
 
         analysis_store = AnalysisResultsStore(host=analysis_results_store_host)
         analysis_store.connect()
-        _LOGGER.info(f"Syncing image analysis results to {graph_hosts}")
         for document_id, document in analysis_store.iterate_results():
             _METRIC_ANALYSIS_RESULTS_PROCESSED.inc()
 
             if force_analysis_results_sync or not graph.analysis_records_exist(document):
                 _LOGGER.info(
-                    f"Syncing analysis document with id {document_id!r} to graph")
+                    f"Syncing analysis document from {analysis_store.ceph.host} "
+                    f"with id {document_id!r} to graph {graph.hosts}"
+                )
                 try:
                     graph.sync_analysis_result(document)
                     _METRIC_ANALYSIS_RESULTS_SYNCED.inc()
