@@ -26,19 +26,26 @@ import click
 from prometheus_client import CollectorRegistry, Gauge, Counter, push_to_gateway
 
 from thoth.common import init_logging
+from thoth.common import __version__ as __common__version__
 from thoth.storages import GraphDatabase
 from thoth.storages import SolverResultsStore
 from thoth.storages import AnalysisResultsStore
-from thoth.storages import __version__ as thoth_storages_version
+from thoth.storages import __version__ as __storages__version__
 
 
-__version__ = '0.5.2' + '+thoth_storage.' + thoth_storages_version
+__version__ = f"0.5.3+storage.{__storages__version__}.common.{__common__version__}"
 
 
 init_logging()
 _LOGGER = logging.getLogger('thoth.graph_sync_job')
 
 prometheus_registry = CollectorRegistry()
+
+thoth_metrics_exporter_info = Gauge('graph_sync_job_info',
+                                    'Thoth Graph Sync Job information', ['version'],
+                                    registry=prometheus_registry)
+thoth_metrics_exporter_info.labels(__version__).inc()
+
 _METRIC_SECONDS = Gauge(
     'graph_sync_job_runtime_seconds', 'Runtime of graph sync job in seconds.',
     registry=prometheus_registry)
@@ -120,14 +127,14 @@ def cli(verbose, solver_results_store_host, analysis_results_store_host, graph_h
     solver_store.connect()
 
     with _METRIC_SECONDS.time():
-        _LOGGER.info(
-            f"Syncing solver results from {solver_results_store_host} to {graph_hosts}")
         for document_id, document in solver_store.iterate_results():
             _METRIC_SOLVER_RESULTS_PROCESSED.inc()
 
             if force_solver_results_sync or not graph.solver_records_exist(document):
                 _LOGGER.info(
-                    f"Syncing solver document with id {document_id!r} to graph")
+                    f"Syncing solver document from {solver_store.ceph.host} "
+                    f"with id {document_id!r} to graph {graph.hosts}"
+                )
                 try:
                     graph.sync_solver_result(document)
                     _METRIC_SOLVER_RESULTS_SYNCED.inc()
@@ -142,13 +149,17 @@ def cli(verbose, solver_results_store_host, analysis_results_store_host, graph_h
 
         analysis_store = AnalysisResultsStore(host=analysis_results_store_host)
         analysis_store.connect()
+
         _LOGGER.info(f"Syncing image analysis results from {analysis_results_store_host} to {graph_hosts}")
+
         for document_id, document in analysis_store.iterate_results():
             _METRIC_ANALYSIS_RESULTS_PROCESSED.inc()
 
             if force_analysis_results_sync or not graph.analysis_records_exist(document):
                 _LOGGER.info(
-                    f"Syncing analysis document with id {document_id!r} to graph")
+                    f"Syncing analysis document from {analysis_store.ceph.host} "
+                    f"with id {document_id!r} to graph {graph.hosts}"
+                )
                 try:
                     graph.sync_analysis_result(document)
                     _METRIC_ANALYSIS_RESULTS_SYNCED.inc()
