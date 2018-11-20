@@ -182,20 +182,26 @@ def cli(document_ids, verbose, force_sync, amun_api_url,
 
     with _METRIC_SECONDS.time():
         if not only_one_kind or only_solver_documents:
+            _LOGGER.info("Syncing solver results")
             _METRIC_SOLVER_RESULTS_PROCESSED, \
             _METRIC_SOLVER_RESULTS_SYNCED, \
             _METRIC_SOLVER_RESULTS_SKIPPED, \
             _METRIC_SOLVER_RESULTS_FAILED = sync_solver_documents(document_ids, force_sync)
 
         if not only_one_kind or only_analysis_documents:
+            _LOGGER.info("Syncing image analysis results")
             _METRIC_ANALYSIS_RESULTS_PROCESSED, \
             _METRIC_ANALYSIS_RESULTS_SYNCED, \
             _METRIC_ANALYSIS_RESULTS_SKIPPED, \
             _METRIC_ANALYSIS_RESULTS_FAILED = sync_analysis_documents(document_ids, force_sync)
 
-        if not only_one_kind or only_inspection_documents:
-            # TODO: add metrics
-            sync_inspection_documents(amun_api_url, document_ids, force_sync)
+        if amun_api_url:
+            _LOGGER.info("Syncing data from Amun API")
+            if not only_one_kind or only_inspection_documents:
+                # TODO: add metrics
+                sync_inspection_documents(amun_api_url, document_ids, force_sync)
+        else:
+            _LOGGER.info("Amun results skipped as Amun API URL was not provided")
 
     if metrics_pushgateway_url:
         try:
