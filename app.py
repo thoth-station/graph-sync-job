@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # graph-sync-job
 # Copyright(C) 2018 Fridolin Pokorny
 #
@@ -25,11 +24,20 @@ import click
 
 from prometheus_client import CollectorRegistry, Gauge, Counter, push_to_gateway
 
+from amun import get_inspection_build_log
+from amun import get_inspection_job_log
+from amun import get_inspection_specification
+from amun import get_inspection_status
+from amun import is_inspection_finished
+from amun import has_inspection_job
+
 from thoth.common import init_logging
 from thoth.common import __version__ as __common__version__
 from thoth.storages import __version__ as __storages__version__
 from thoth.storages import sync_analysis_documents
 from thoth.storages import sync_solver_documents
+from thoth.storages import DependencyMonkeyReportsStore
+from thoth.storages import InspectionResultsStore
 
 
 __version__ = f"0.5.1+storage.{__storages__version__}.common.{__common__version__}"
@@ -85,20 +93,62 @@ def _print_version(ctx, _, value):
     ctx.exit()
 
 
+def iterate_inspection_ids():
+    """Iterate over inspection ids that were run."""
+    reports_store = DependencyMonkeyReportsStore()
+    reports_store.connect()
+
+    for _, report in reports_store.iterate_results():
+        # Yield inspections.
+        yield from report['result']['output']
+
+
+def sync_inspection_documents(amun_api_url: str, document_ids: list = None, force_sync: bool = False) -> None:
+    """Sync observations made on Amun into graph databaes."""
+    inspection_store = InspectionResultsStore()
+
+    processed, synced, skipped, failed = 0, 0, 0, 0
+    for document_id in document_ids or iterate_inspection_ids():
+        processed += 1
+        if force_sync or not graph.inspection_document_id_exist(document_id):
+            if is_inspection_finished(amun_api_url, inspection_id):
+                _LOGGER.info(f"Syncing inspection {inspection_id!r} to {inspection_store.ceph.host}")
+
+                try:
+                    specification = get_inspection_specification(amun_api_url, inspection_id)
+                    build_log = get_inspection_build_log(amun_api_url, inspection_id)
+                    status = get_inspection_status(amun_api_url, inspection_id)
+                    job_log = None
+
+                    if has_inspection_job(amun_api_url, inspection_id):
+                        job_log = get_inspection_job_log(amun_api_url, inspection_id)
+
+                    document = {
+                        'specification': specification,
+                        'build_log': build_log,
+                        'job_log': job_log,
+                        'inspection_id': inspection_id,
+                        'status': status
+                    }
+
+                    # TODO: sync to GraphDatabase and mirror on ceph
+                    inspection_store.store_document(document)
+                    synced += 1
+                except Exception as exc:
+                    _LOGGER.exception(f"Failed to sync inspection %r: %s", inspection_id, str(exc))
+                    failed += 1
+            else:
+                _LOGGER.info(f"Skipping inspection {inspection_id!r} - not finised yet")
+                skipped += 1
+        else:
+            _LOGGER.info(f"Skipping inspection {inspection_id!r} - the given inspection is already synced")
+            skipped += 1
+
+    return processed, synced, skipped, failed
+
 @click.command()
 @click.option('--version', is_flag=True, is_eager=True, callback=_print_version, expose_value=False,
               help="Print version and exit.")
-@click.option('--graph-hosts', type=str, default=[GraphDatabase.DEFAULT_HOST],
-              show_default=True, metavar=GraphDatabase.ENVVAR_HOST_NAME,
-              envvar=GraphDatabase.ENVVAR_HOST_NAME, multiple=True,
-              help="Hostname to the graph instance to perform sync to.")
-@click.option('--graph-port', type=int, default=GraphDatabase.DEFAULT_PORT, show_default=True, metavar='HOST',
-              envvar=GraphDatabase.ENVVAR_HOST_PORT,
-              help="Port number to the graph instance to perform sync to.")
-@click.option('--solver-results-store-host', type=str, show_default=True, metavar='HOST', default=None,
-              help="Hostname to solver results store from which the sync should be performed.")
-@click.option('--analysis-results-store-host', type=str, show_default=True, metavar='HOST', default=None,
-              help="Hostname to analysis results store from which the sync should be performed.")
 @click.option('-v', '--verbose', is_flag=True, envvar='THOTH_GRAPH_SYNC_DEBUG',
               help="Be more verbose about what's going on.")
 @click.option('--force-solver-results-sync', is_flag=True, envvar='THOTH_GRAPH_SYNC_FORCE_SOLVER_RESULTS_SYNC',
@@ -108,14 +158,21 @@ def _print_version(ctx, _, value):
 @click.option('--metrics-pushgateway-url', type=str, default='pushgateway:80', show_default=True,
               envvar='THOTH_METRICS_PUSHGATEWAY_URL',
               help="Send job metrics to a Prometheus pushgateway URL.")
-def cli(verbose, solver_results_store_host, analysis_results_store_host, graph_hosts, graph_port,
-        force_solver_results_sync, force_analysis_results_sync, metrics_pushgateway_url):
-    """Sync analyses and solver results to the graph database."""
-    logging.getLogger('thoth').setLevel(
-        logging.DEBUG if verbose else logging.INFO)
+@click.option('--only-solver-documents', is_flag=True, envvar='THOTH_ONLY_SOLVER_DOCUMENTS', default=False,
+              help="Sync only solver documents.")
+@click.option('--only-analysis-documents', is_flag=True, envvar='THOTH_ONLY_ANALYSIS_DOCUMENTS', default=False,
+              help="Sync only analysis documents.")
+@click.option('--only-inspection-documents', is_flag=True, envvar='THOTH_ONLY_INSPECTION_DOCUMENTS', default=False,
+              help="Sync only inspection documents.")
+@click.option('--amun-api-url', is_flag=True, envvar='AMUN_API_URL', default=False,
+              help="Amun API url to retrieve inspections from.")
+@click.argument('document-ids', envvar='THOTH_SYNC_DOCUMENT_ID', type=str, nargs=-1)
+def cli(document_ids, verbose, force_sync, amun_api_url,
+        only_solver_documents, only_analysis_documents, metrics_pushgateway_url):
+    """Sync analyses, inspection and solver results to the graph database."""
+    if verbose:
+        _LOGGER.setLevel(logging.DEBUG)
     _LOGGER.debug('Debug mode is on')
-
-    _THOTH_METRICS_PUSHGATEWAY_URL = os.getenv('THOTH_METRICS_PUSHGATEWAY_URL')
 
     if not only_one_kind and document_ids:
         _LOGGER.error(
@@ -136,15 +193,16 @@ def cli(verbose, solver_results_store_host, analysis_results_store_host, graph_h
             _METRIC_ANALYSIS_RESULTS_SKIPPED, \
             _METRIC_ANALYSIS_RESULTS_FAILED = sync_analysis_documents(document_ids, force_sync)
 
-    if _THOTH_METRICS_PUSHGATEWAY_URL:
+        if not only_one_kind or only_inspection_documents:
+            # TODO: add metrics
+            sync_inspection_documents(amun_api_url, document_ids, force_sync)
+
+    if metrics_pushgateway_url:
         try:
-            _LOGGER.debug(
-                f"Submitting metrics to Prometheus pushgateway {_THOTH_METRICS_PUSHGATEWAY_URL}")
-            push_to_gateway(_THOTH_METRICS_PUSHGATEWAY_URL, job='graph-sync',
-                            registry=prometheus_registry)
+            _LOGGER.debug("Submitting metrics to Prometheus pushgateway %r", metrics_pushgateway_url)
+            push_to_gateway(metrics_pushgateway_url, job='graph-sync', registry=prometheus_registry)
         except Exception as e:
-            _LOGGER.exception(
-                f'An error occurred pushing the metrics: {str(e)}')
+            _LOGGER.exception('An error occurred pushing the metrics: %s', str(exc))
 
 
 if __name__ == '__main__':
