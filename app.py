@@ -27,10 +27,9 @@ from prometheus_client import CollectorRegistry, Gauge, Counter, push_to_gateway
 
 from thoth.common import init_logging
 from thoth.common import __version__ as __common__version__
-from thoth.storages import GraphDatabase
-from thoth.storages import SolverResultsStore
-from thoth.storages import AnalysisResultsStore
 from thoth.storages import __version__ as __storages__version__
+from thoth.storages import sync_analysis_documents
+from thoth.storages import sync_solver_documents
 
 
 __version__ = f"0.5.1+storage.{__storages__version__}.common.{__common__version__}"
@@ -118,54 +117,24 @@ def cli(verbose, solver_results_store_host, analysis_results_store_host, graph_h
 
     _THOTH_METRICS_PUSHGATEWAY_URL = os.getenv('THOTH_METRICS_PUSHGATEWAY_URL')
 
-    graph = GraphDatabase(hosts=graph_hosts, port=graph_port)
-    graph.connect()
-
-    solver_store = SolverResultsStore(host=solver_results_store_host)
-    solver_store.connect()
+    if not only_one_kind and document_ids:
+        _LOGGER.error(
+            "Explicitly specified documents to be synced can be specified only with one of the --only-* options"
+        )
+        return 2
 
     with _METRIC_SECONDS.time():
-        for document_id, document in solver_store.iterate_results():
-            _METRIC_SOLVER_RESULTS_PROCESSED.inc()
+        if not only_one_kind or only_solver_documents:
+            _METRIC_SOLVER_RESULTS_PROCESSED, \
+            _METRIC_SOLVER_RESULTS_SYNCED, \
+            _METRIC_SOLVER_RESULTS_SKIPPED, \
+            _METRIC_SOLVER_RESULTS_FAILED = sync_solver_documents(document_ids, force_sync)
 
-            if force_solver_results_sync or not graph.solver_records_exist(document):
-                _LOGGER.info(
-                    f"Syncing solver document from {solver_store.ceph.host} "
-                    f"with id {document_id!r} to graph {graph.hosts}"
-                )
-                try:
-                    graph.sync_solver_result(document)
-                    _METRIC_SOLVER_RESULTS_SYNCED.inc()
-                except Exception:
-                    _LOGGER.exception(
-                        "Failed to sync solver result with document id %r", document_id)
-                    _METRIC_SOLVER_RESULTS_FAILED.inc()
-            else:
-                _LOGGER.info(
-                    f"Sync of solver document with id {document_id!r} skipped - already synced")
-                _METRIC_SOLVER_RESULTS_SKIPPED.inc()
-
-        analysis_store = AnalysisResultsStore(host=analysis_results_store_host)
-        analysis_store.connect()
-        for document_id, document in analysis_store.iterate_results():
-            _METRIC_ANALYSIS_RESULTS_PROCESSED.inc()
-
-            if force_analysis_results_sync or not graph.analysis_records_exist(document):
-                _LOGGER.info(
-                    f"Syncing analysis document from {analysis_store.ceph.host} "
-                    f"with id {document_id!r} to graph {graph.hosts}"
-                )
-                try:
-                    graph.sync_analysis_result(document)
-                    _METRIC_ANALYSIS_RESULTS_SYNCED.inc()
-                except Exception:
-                    _LOGGER.exception(
-                        "Failed to sync analysis result with document id %r", document_id)
-                    _METRIC_ANALYSIS_RESULTS_FAILED.inc()
-            else:
-                _LOGGER.info(
-                    f"Sync of analysis document with id {document_id!r} skipped - already synced")
-                _METRIC_ANALYSIS_RESULTS_SKIPPED.inc()
+        if not only_one_kind or only_analysis_documents:
+            _METRIC_ANALYSIS_RESULTS_PROCESSED, \
+            _METRIC_ANALYSIS_RESULTS_SYNCED, \
+            _METRIC_ANALYSIS_RESULTS_SKIPPED, \
+            _METRIC_ANALYSIS_RESULTS_FAILED = sync_analysis_documents(document_ids, force_sync)
 
     if _THOTH_METRICS_PUSHGATEWAY_URL:
         try:
