@@ -24,21 +24,12 @@ import click
 
 from prometheus_client import CollectorRegistry, Gauge, Counter, push_to_gateway
 
-from amun import get_inspection_build_log
-from amun import get_inspection_job_log
-from amun import get_inspection_specification
-from amun import get_inspection_status
-from amun import is_inspection_finished
-from amun import has_inspection_job
-
 from thoth.common import init_logging
 from thoth.common import __version__ as __common__version__
 from thoth.storages import __version__ as __storages__version__
 from thoth.storages import sync_analysis_documents
 from thoth.storages import sync_solver_documents
-from thoth.storages import DependencyMonkeyReportsStore
-from thoth.storages import InspectionResultsStore
-from thoth.storages import GraphDatabase
+from thoth.storages import sync_inspection_documents
 
 
 __version__ = f"0.5.1+storage.{__storages__version__}.common.{__common__version__}"
@@ -93,74 +84,6 @@ def _print_version(ctx, _, value):
     click.echo(__version__)
     ctx.exit()
 
-
-def iterate_inspection_ids():
-    """Iterate over inspection ids that were run."""
-    reports_store = DependencyMonkeyReportsStore()
-    reports_store.connect()
-
-    for _, report in reports_store.iterate_results():
-        # Yield inspections.
-        yield from report['result']['output']
-
-
-def sync_inspection_documents(amun_api_url: str, document_ids: list = None, force_sync: bool = False) -> tuple:
-    """Sync observations made on Amun into graph databaes."""
-    inspection_store = InspectionResultsStore()
-    inspection_store.connect()
-
-    graph = GraphDatabase()
-    graph.connect()
-
-    processed, synced, skipped, failed = 0, 0, 0, 0
-    for inspection_id in document_ids or iterate_inspection_ids():
-        processed += 1
-        if force_sync or not inspection_store.document_exists(inspection_id):
-            try:
-                finished = is_inspection_finished(amun_api_url, inspection_id)
-            except Exception as exc:
-                _LOGGER.error("Failed to obtain inspection status from Amun: %s", str(exc))
-                continue
-
-            if finished:
-
-                try:
-                    specification = get_inspection_specification(amun_api_url, inspection_id)
-                    build_log = get_inspection_build_log(amun_api_url, inspection_id)
-                    status = get_inspection_status(amun_api_url, inspection_id)
-                    job_log = None
-
-                    if has_inspection_job(amun_api_url, inspection_id):
-                        job_log = get_inspection_job_log(amun_api_url, inspection_id)
-
-                    document = {
-                        'specification': specification,
-                        'build_log': build_log,
-                        'job_log': job_log,
-                        'inspection_id': inspection_id,
-                        'status': status
-                    }
-
-                    # First we store results into graph database and then onto
-                    # Ceph. This way in the next run we can sync documents that
-                    # failed to sync to graph - see if statement that is asking
-                    # for Ceph document presents first.
-                    _LOGGER.info(f"Syncing inspection {inspection_id!r} to {graph.hosts}")
-                    graph.sync_inspection_result(document)
-                    _LOGGER.info(f"Syncing inspection {inspection_id!r} to {inspection_store.ceph.host}")
-                    inspection_store.store_document(document)
-                    synced += 1
-                except Exception as exc:
-                    _LOGGER.exception(f"Failed to sync inspection %r: %s", inspection_id, str(exc))
-                    failed += 1
-            else:
-                _LOGGER.info(f"Skipping inspection {inspection_id!r} - not finised yet")
-                skipped += 1
-        else:
-            _LOGGER.info(f"Skipping inspection {inspection_id!r} - the given inspection is already synced")
-            skipped += 1
-
-    return processed, synced, skipped, failed
 
 @click.command()
 @click.option('--version', is_flag=True, is_eager=True, callback=_print_version, expose_value=False,
