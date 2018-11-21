@@ -38,6 +38,7 @@ from thoth.storages import sync_analysis_documents
 from thoth.storages import sync_solver_documents
 from thoth.storages import DependencyMonkeyReportsStore
 from thoth.storages import InspectionResultsStore
+from thoth.storages import GraphDatabase
 
 
 __version__ = f"0.5.1+storage.{__storages__version__}.common.{__common__version__}"
@@ -103,16 +104,25 @@ def iterate_inspection_ids():
         yield from report['result']['output']
 
 
-def sync_inspection_documents(amun_api_url: str, document_ids: list = None, force_sync: bool = False) -> None:
+def sync_inspection_documents(amun_api_url: str, document_ids: list = None, force_sync: bool = False) -> tuple:
     """Sync observations made on Amun into graph databaes."""
     inspection_store = InspectionResultsStore()
+    inspection_store.connect()
+
+    graph = GraphDatabase()
+    graph.connect()
 
     processed, synced, skipped, failed = 0, 0, 0, 0
-    for document_id in document_ids or iterate_inspection_ids():
+    for inspection_id in document_ids or iterate_inspection_ids():
         processed += 1
-        if force_sync or not graph.inspection_document_id_exist(document_id):
-            if is_inspection_finished(amun_api_url, inspection_id):
-                _LOGGER.info(f"Syncing inspection {inspection_id!r} to {inspection_store.ceph.host}")
+        if force_sync or not inspection_store.document_exists(inspection_id):
+            try:
+                finished = is_inspection_finished(amun_api_url, inspection_id)
+            except Exception as exc:
+                _LOGGER.error("Failed to obtain inspection status from Amun: %s", str(exc))
+                continue
+
+            if finished:
 
                 try:
                     specification = get_inspection_specification(amun_api_url, inspection_id)
@@ -131,7 +141,13 @@ def sync_inspection_documents(amun_api_url: str, document_ids: list = None, forc
                         'status': status
                     }
 
-                    # TODO: sync to GraphDatabase and mirror on ceph
+                    # First we store results into graph database and then onto
+                    # Ceph. This way in the next run we can sync documents that
+                    # failed to sync to graph - see if statement that is asking
+                    # for Ceph document presents first.
+                    _LOGGER.info(f"Syncing inspection {inspection_id!r} to {graph.hosts}")
+                    graph.sync_inspection_result(document)
+                    _LOGGER.info(f"Syncing inspection {inspection_id!r} to {inspection_store.ceph.host}")
                     inspection_store.store_document(document)
                     synced += 1
                 except Exception as exc:
@@ -151,11 +167,7 @@ def sync_inspection_documents(amun_api_url: str, document_ids: list = None, forc
               help="Print version and exit.")
 @click.option('-v', '--verbose', is_flag=True, envvar='THOTH_GRAPH_SYNC_DEBUG',
               help="Be more verbose about what's going on.")
-@click.option('--force-solver-results-sync', is_flag=True, envvar='THOTH_GRAPH_SYNC_FORCE_SOLVER_RESULTS_SYNC',
-              help="Force sync of solver results regardless if they exist (duplicate entries will not be created).")
-@click.option('--force-analysis-results-sync', is_flag=True, envvar='THOTH_GRAPH_SYNC_FORCE_ANALYSIS_RESULTS_SYNC',
-              help="Force sync of solver results regardless if they exist (duplicate entries will not be created).")
-@click.option('--metrics-pushgateway-url', type=str, default='pushgateway:80', show_default=True,
+@click.option('--metrics-pushgateway-url', type=str, default=None, required=False,
               envvar='THOTH_METRICS_PUSHGATEWAY_URL',
               help="Send job metrics to a Prometheus pushgateway URL.")
 @click.option('--only-solver-documents', is_flag=True, envvar='THOTH_ONLY_SOLVER_DOCUMENTS', default=False,
@@ -164,15 +176,25 @@ def sync_inspection_documents(amun_api_url: str, document_ids: list = None, forc
               help="Sync only analysis documents.")
 @click.option('--only-inspection-documents', is_flag=True, envvar='THOTH_ONLY_INSPECTION_DOCUMENTS', default=False,
               help="Sync only inspection documents.")
-@click.option('--amun-api-url', is_flag=True, envvar='AMUN_API_URL', default=False,
+@click.option('--amun-api-url', type=str, envvar='AMUN_API_URL', default=None,
               help="Amun API url to retrieve inspections from.")
+@click.option('--force-sync', is_flag=True, envvar='THOTH_FORCE_SYNC', default=False,
+              help="Force sync of analysis documents.")
 @click.argument('document-ids', envvar='THOTH_SYNC_DOCUMENT_ID', type=str, nargs=-1)
 def cli(document_ids, verbose, force_sync, amun_api_url,
-        only_solver_documents, only_analysis_documents, metrics_pushgateway_url):
+        only_solver_documents, only_analysis_documents, only_inspection_documents, metrics_pushgateway_url):
     """Sync analyses, inspection and solver results to the graph database."""
     if verbose:
         _LOGGER.setLevel(logging.DEBUG)
     _LOGGER.debug('Debug mode is on')
+
+    only_one_kind = sum((int(only_solver_documents), int(only_analysis_documents), int(only_inspection_documents)))
+
+    if only_one_kind > 1:
+        _LOGGER.error("There can be only one --only-* option specified")
+        return 1
+
+    only_one_kind = bool(only_one_kind)
 
     if not only_one_kind and document_ids:
         _LOGGER.error(
@@ -201,6 +223,10 @@ def cli(document_ids, verbose, force_sync, amun_api_url,
                 # TODO: add metrics
                 sync_inspection_documents(amun_api_url, document_ids, force_sync)
         else:
+            if not amun_api_url:
+                _LOGGER.error("Cannot perform sync of Amun documents, no Amun API URL provided")
+                return 3
+
             _LOGGER.info("Amun results skipped as Amun API URL was not provided")
 
     if metrics_pushgateway_url:
