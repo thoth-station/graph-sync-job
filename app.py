@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # graph-sync-job
 # Copyright(C) 2018 Fridolin Pokorny
 #
@@ -27,10 +26,10 @@ from prometheus_client import CollectorRegistry, Gauge, Counter, push_to_gateway
 
 from thoth.common import init_logging
 from thoth.common import __version__ as __common__version__
-from thoth.storages import GraphDatabase
-from thoth.storages import SolverResultsStore
-from thoth.storages import AnalysisResultsStore
 from thoth.storages import __version__ as __storages__version__
+from thoth.storages import sync_analysis_documents
+from thoth.storages import sync_solver_documents
+from thoth.storages import sync_inspection_documents
 
 
 __version__ = f"0.5.1+storage.{__storages__version__}.common.{__common__version__}"
@@ -89,93 +88,76 @@ def _print_version(ctx, _, value):
 @click.command()
 @click.option('--version', is_flag=True, is_eager=True, callback=_print_version, expose_value=False,
               help="Print version and exit.")
-@click.option('--graph-hosts', type=str, default=[GraphDatabase.DEFAULT_HOST],
-              show_default=True, metavar=GraphDatabase.ENVVAR_HOST_NAME,
-              envvar=GraphDatabase.ENVVAR_HOST_NAME, multiple=True,
-              help="Hostname to the graph instance to perform sync to.")
-@click.option('--graph-port', type=int, default=GraphDatabase.DEFAULT_PORT, show_default=True, metavar='HOST',
-              envvar=GraphDatabase.ENVVAR_HOST_PORT,
-              help="Port number to the graph instance to perform sync to.")
-@click.option('--solver-results-store-host', type=str, show_default=True, metavar='HOST', default=None,
-              help="Hostname to solver results store from which the sync should be performed.")
-@click.option('--analysis-results-store-host', type=str, show_default=True, metavar='HOST', default=None,
-              help="Hostname to analysis results store from which the sync should be performed.")
 @click.option('-v', '--verbose', is_flag=True, envvar='THOTH_GRAPH_SYNC_DEBUG',
               help="Be more verbose about what's going on.")
-@click.option('--force-solver-results-sync', is_flag=True, envvar='THOTH_GRAPH_SYNC_FORCE_SOLVER_RESULTS_SYNC',
-              help="Force sync of solver results regardless if they exist (duplicate entries will not be created).")
-@click.option('--force-analysis-results-sync', is_flag=True, envvar='THOTH_GRAPH_SYNC_FORCE_ANALYSIS_RESULTS_SYNC',
-              help="Force sync of solver results regardless if they exist (duplicate entries will not be created).")
-@click.option('--metrics-pushgateway-url', type=str, default='pushgateway:80', show_default=True,
+@click.option('--metrics-pushgateway-url', type=str, default=None, required=False,
               envvar='THOTH_METRICS_PUSHGATEWAY_URL',
               help="Send job metrics to a Prometheus pushgateway URL.")
-def cli(verbose, solver_results_store_host, analysis_results_store_host, graph_hosts, graph_port,
-        force_solver_results_sync, force_analysis_results_sync, metrics_pushgateway_url):
-    """Sync analyses and solver results to the graph database."""
-    logging.getLogger('thoth').setLevel(
-        logging.DEBUG if verbose else logging.INFO)
+@click.option('--only-solver-documents', is_flag=True, envvar='THOTH_ONLY_SOLVER_DOCUMENTS', default=False,
+              help="Sync only solver documents.")
+@click.option('--only-analysis-documents', is_flag=True, envvar='THOTH_ONLY_ANALYSIS_DOCUMENTS', default=False,
+              help="Sync only analysis documents.")
+@click.option('--only-inspection-documents', is_flag=True, envvar='THOTH_ONLY_INSPECTION_DOCUMENTS', default=False,
+              help="Sync only inspection documents.")
+@click.option('--amun-api-url', type=str, envvar='AMUN_API_URL', default=None,
+              help="Amun API url to retrieve inspections from.")
+@click.option('--force-sync', is_flag=True, envvar='THOTH_FORCE_SYNC', default=False,
+              help="Force sync of analysis documents.")
+@click.argument('document-ids', envvar='THOTH_SYNC_DOCUMENT_ID', type=str, nargs=-1)
+def cli(document_ids, verbose, force_sync, amun_api_url,
+        only_solver_documents, only_analysis_documents, only_inspection_documents, metrics_pushgateway_url):
+    """Sync analyses, inspection and solver results to the graph database."""
+    if verbose:
+        _LOGGER.setLevel(logging.DEBUG)
     _LOGGER.debug('Debug mode is on')
 
-    _THOTH_METRICS_PUSHGATEWAY_URL = os.getenv('THOTH_METRICS_PUSHGATEWAY_URL')
+    only_one_kind = sum((int(only_solver_documents), int(only_analysis_documents), int(only_inspection_documents)))
 
-    graph = GraphDatabase(hosts=graph_hosts, port=graph_port)
-    graph.connect()
+    if only_one_kind > 1:
+        _LOGGER.error("There can be only one --only-* option specified")
+        return 1
 
-    solver_store = SolverResultsStore(host=solver_results_store_host)
-    solver_store.connect()
+    only_one_kind = bool(only_one_kind)
+
+    if not only_one_kind and document_ids:
+        _LOGGER.error(
+            "Explicitly specified documents to be synced can be specified only with one of the --only-* options"
+        )
+        return 2
 
     with _METRIC_SECONDS.time():
-        for document_id, document in solver_store.iterate_results():
-            _METRIC_SOLVER_RESULTS_PROCESSED.inc()
+        if not only_one_kind or only_solver_documents:
+            _LOGGER.info("Syncing solver results")
+            _METRIC_SOLVER_RESULTS_PROCESSED, \
+                _METRIC_SOLVER_RESULTS_SYNCED, \
+                _METRIC_SOLVER_RESULTS_SKIPPED, \
+                _METRIC_SOLVER_RESULTS_FAILED = sync_solver_documents(document_ids, force_sync, graceful=True)
 
-            if force_solver_results_sync or not graph.solver_records_exist(document):
-                _LOGGER.info(
-                    f"Syncing solver document from {solver_store.ceph.host} "
-                    f"with id {document_id!r} to graph {graph.hosts}"
-                )
-                try:
-                    graph.sync_solver_result(document)
-                    _METRIC_SOLVER_RESULTS_SYNCED.inc()
-                except Exception:
-                    _LOGGER.exception(
-                        "Failed to sync solver result with document id %r", document_id)
-                    _METRIC_SOLVER_RESULTS_FAILED.inc()
-            else:
-                _LOGGER.info(
-                    f"Sync of solver document with id {document_id!r} skipped - already synced")
-                _METRIC_SOLVER_RESULTS_SKIPPED.inc()
+        if not only_one_kind or only_analysis_documents:
+            _LOGGER.info("Syncing image analysis results")
+            _METRIC_ANALYSIS_RESULTS_PROCESSED, \
+                _METRIC_ANALYSIS_RESULTS_SYNCED, \
+                _METRIC_ANALYSIS_RESULTS_SKIPPED, \
+                _METRIC_ANALYSIS_RESULTS_FAILED = sync_analysis_documents(document_ids, force_sync, graceful=True)
 
-        analysis_store = AnalysisResultsStore(host=analysis_results_store_host)
-        analysis_store.connect()
-        for document_id, document in analysis_store.iterate_results():
-            _METRIC_ANALYSIS_RESULTS_PROCESSED.inc()
+        if amun_api_url:
+            _LOGGER.info("Syncing data from Amun API")
+            if not only_one_kind or only_inspection_documents:
+                # TODO: add metrics
+                sync_inspection_documents(amun_api_url, document_ids, force_sync)
+        else:
+            if not amun_api_url:
+                _LOGGER.error("Cannot perform sync of Amun documents, no Amun API URL provided")
+                return 3
 
-            if force_analysis_results_sync or not graph.analysis_records_exist(document):
-                _LOGGER.info(
-                    f"Syncing analysis document from {analysis_store.ceph.host} "
-                    f"with id {document_id!r} to graph {graph.hosts}"
-                )
-                try:
-                    graph.sync_analysis_result(document)
-                    _METRIC_ANALYSIS_RESULTS_SYNCED.inc()
-                except Exception:
-                    _LOGGER.exception(
-                        "Failed to sync analysis result with document id %r", document_id)
-                    _METRIC_ANALYSIS_RESULTS_FAILED.inc()
-            else:
-                _LOGGER.info(
-                    f"Sync of analysis document with id {document_id!r} skipped - already synced")
-                _METRIC_ANALYSIS_RESULTS_SKIPPED.inc()
+            _LOGGER.info("Amun results skipped as Amun API URL was not provided")
 
-    if _THOTH_METRICS_PUSHGATEWAY_URL:
+    if metrics_pushgateway_url:
         try:
-            _LOGGER.debug(
-                f"Submitting metrics to Prometheus pushgateway {_THOTH_METRICS_PUSHGATEWAY_URL}")
-            push_to_gateway(_THOTH_METRICS_PUSHGATEWAY_URL, job='graph-sync',
-                            registry=prometheus_registry)
+            _LOGGER.debug("Submitting metrics to Prometheus pushgateway %r", metrics_pushgateway_url)
+            push_to_gateway(metrics_pushgateway_url, job='graph-sync', registry=prometheus_registry)
         except Exception as e:
-            _LOGGER.exception(
-                f'An error occurred pushing the metrics: {str(e)}')
+            _LOGGER.exception('An error occurred pushing the metrics: %s', str(exc))
 
 
 if __name__ == '__main__':
