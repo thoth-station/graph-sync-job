@@ -32,8 +32,8 @@ from thoth.storages import sync_solver_documents
 from thoth.storages import sync_inspection_documents
 
 
-__version__ = f"0.5.1+storage.{__storages__version__}.common.{__common__version__}"
-__author__ = "Christoph Görn <goern@redhat.com>"
+__version__ = f"0.5.3+storage.{__storages__version__}.common.{__common__version__}"
+
 
 init_logging()
 _LOGGER = logging.getLogger('thoth.graph_sync_job')
