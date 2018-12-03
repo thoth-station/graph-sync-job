@@ -36,44 +36,65 @@ __version__ = f"0.5.3+storage.{__storages__version__}.common.{__common__version_
 
 
 init_logging()
-_LOGGER = logging.getLogger('thoth.graph_sync_job')
+_LOGGER = logging.getLogger("thoth.graph_sync_job")
 
 prometheus_registry = CollectorRegistry()
 
-thoth_metrics_exporter_info = Gauge('graph_sync_job_info',
-                                    'Thoth Graph Sync Job information', ['version'],
-                                    registry=prometheus_registry)
+thoth_metrics_exporter_info = Gauge(
+    "graph_sync_job_info",
+    "Thoth Graph Sync Job information",
+    ["version"],
+    registry=prometheus_registry,
+)
 thoth_metrics_exporter_info.labels(__version__).inc()
 
 _METRIC_SECONDS = Gauge(
-    'graph_sync_job_runtime_seconds', 'Runtime of graph sync job in seconds.',
-    registry=prometheus_registry)
+    "graph_sync_job_runtime_seconds",
+    "Runtime of graph sync job in seconds.",
+    registry=prometheus_registry,
+)
 
 _METRIC_SOLVER_RESULTS_PROCESSED = Counter(
-    'graph_sync_solver_results_processed', 'Solver results processed',
-    registry=prometheus_registry)
+    "graph_sync_solver_results_processed",
+    "Solver results processed",
+    registry=prometheus_registry,
+)
 _METRIC_SOLVER_RESULTS_SYNCED = Counter(
-    'graph_sync_solver_results_synced', 'Solver results synced',
-    registry=prometheus_registry)
+    "graph_sync_solver_results_synced",
+    "Solver results synced",
+    registry=prometheus_registry,
+)
 _METRIC_SOLVER_RESULTS_SKIPPED = Counter(
-    'graph_sync_solver_results_skipped', 'Solver results skipped processing',
-    registry=prometheus_registry)
+    "graph_sync_solver_results_skipped",
+    "Solver results skipped processing",
+    registry=prometheus_registry,
+)
 _METRIC_SOLVER_RESULTS_FAILED = Counter(
-    'graph_sync_solver_results_failed', 'Solver results failed processing',
-    registry=prometheus_registry)
+    "graph_sync_solver_results_failed",
+    "Solver results failed processing",
+    registry=prometheus_registry,
+)
 
 _METRIC_ANALYSIS_RESULTS_PROCESSED = Counter(
-    'graph_sync_analysis_results_processed', 'Analysis results processed',
-    registry=prometheus_registry)
+    "graph_sync_analysis_results_processed",
+    "Analysis results processed",
+    registry=prometheus_registry,
+)
 _METRIC_ANALYSIS_RESULTS_SYNCED = Counter(
-    'graph_sync_analysis_results_synced', 'Analysis results synced',
-    registry=prometheus_registry)
+    "graph_sync_analysis_results_synced",
+    "Analysis results synced",
+    registry=prometheus_registry,
+)
 _METRIC_ANALYSIS_RESULTS_SKIPPED = Counter(
-    'graph_sync_analysis_results_skipped', 'Analysis results skipped processing',
-    registry=prometheus_registry)
+    "graph_sync_analysis_results_skipped",
+    "Analysis results skipped processing",
+    registry=prometheus_registry,
+)
 _METRIC_ANALYSIS_RESULTS_FAILED = Counter(
-    'graph_sync_analysis_results_failed', 'Analysis results failed processing',
-    registry=prometheus_registry)
+    "graph_sync_analysis_results_failed",
+    "Analysis results failed processing",
+    registry=prometheus_registry,
+)
 
 
 def _print_version(ctx, _, value):
@@ -86,32 +107,87 @@ def _print_version(ctx, _, value):
 
 
 @click.command()
-@click.option('--version', is_flag=True, is_eager=True, callback=_print_version, expose_value=False,
-              help="Print version and exit.")
-@click.option('-v', '--verbose', is_flag=True, envvar='THOTH_GRAPH_SYNC_DEBUG',
-              help="Be more verbose about what's going on.")
-@click.option('--metrics-pushgateway-url', type=str, default=None, required=False,
-              envvar='THOTH_METRICS_PUSHGATEWAY_URL',
-              help="Send job metrics to a Prometheus pushgateway URL.")
-@click.option('--only-solver-documents', is_flag=True, envvar='THOTH_ONLY_SOLVER_DOCUMENTS', default=False,
-              help="Sync only solver documents.")
-@click.option('--only-analysis-documents', is_flag=True, envvar='THOTH_ONLY_ANALYSIS_DOCUMENTS', default=False,
-              help="Sync only analysis documents.")
-@click.option('--only-inspection-documents', is_flag=True, envvar='THOTH_ONLY_INSPECTION_DOCUMENTS', default=False,
-              help="Sync only inspection documents.")
-@click.option('--amun-api-url', type=str, envvar='AMUN_API_URL', default=None,
-              help="Amun API url to retrieve inspections from.")
-@click.option('--force-sync', is_flag=True, envvar='THOTH_FORCE_SYNC', default=False,
-              help="Force sync of analysis documents.")
-@click.argument('document-ids', envvar='THOTH_SYNC_DOCUMENT_ID', type=str, nargs=-1)
-def cli(document_ids, verbose, force_sync, amun_api_url,
-        only_solver_documents, only_analysis_documents, only_inspection_documents, metrics_pushgateway_url):
+@click.option(
+    "--version",
+    is_flag=True,
+    is_eager=True,
+    callback=_print_version,
+    expose_value=False,
+    help="Print version and exit.",
+)
+@click.option(
+    "-v",
+    "--verbose",
+    is_flag=True,
+    envvar="THOTH_GRAPH_SYNC_DEBUG",
+    help="Be more verbose about what's going on.",
+)
+@click.option(
+    "--metrics-pushgateway-url",
+    type=str,
+    default=None,
+    required=False,
+    envvar="THOTH_METRICS_PUSHGATEWAY_URL",
+    help="Send job metrics to a Prometheus pushgateway URL.",
+)
+@click.option(
+    "--only-solver-documents",
+    is_flag=True,
+    envvar="THOTH_ONLY_SOLVER_DOCUMENTS",
+    default=False,
+    help="Sync only solver documents.",
+)
+@click.option(
+    "--only-analysis-documents",
+    is_flag=True,
+    envvar="THOTH_ONLY_ANALYSIS_DOCUMENTS",
+    default=False,
+    help="Sync only analysis documents.",
+)
+@click.option(
+    "--only-inspection-documents",
+    is_flag=True,
+    envvar="THOTH_ONLY_INSPECTION_DOCUMENTS",
+    default=False,
+    help="Sync only inspection documents.",
+)
+@click.option(
+    "--amun-api-url",
+    type=str,
+    envvar="AMUN_API_URL",
+    default=None,
+    help="Amun API url to retrieve inspections from.",
+)
+@click.option(
+    "--force-sync",
+    is_flag=True,
+    envvar="THOTH_FORCE_SYNC",
+    default=False,
+    help="Force sync of analysis documents.",
+)
+@click.argument("document-ids", envvar="THOTH_SYNC_DOCUMENT_ID", type=str, nargs=-1)
+def cli(
+    document_ids,
+    verbose,
+    force_sync,
+    amun_api_url,
+    only_solver_documents,
+    only_analysis_documents,
+    only_inspection_documents,
+    metrics_pushgateway_url,
+):
     """Sync analyses, inspection and solver results to the graph database."""
     if verbose:
         _LOGGER.setLevel(logging.DEBUG)
-    _LOGGER.debug('Debug mode is on')
+    _LOGGER.debug("Debug mode is on")
 
-    only_one_kind = sum((int(only_solver_documents), int(only_analysis_documents), int(only_inspection_documents)))
+    only_one_kind = sum(
+        (
+            int(only_solver_documents),
+            int(only_analysis_documents),
+            int(only_inspection_documents),
+        )
+    )
 
     if only_one_kind > 1:
         _LOGGER.error("There can be only one --only-* option specified")
@@ -128,17 +204,15 @@ def cli(document_ids, verbose, force_sync, amun_api_url,
     with _METRIC_SECONDS.time():
         if not only_one_kind or only_solver_documents:
             _LOGGER.info("Syncing solver results")
-            _METRIC_SOLVER_RESULTS_PROCESSED, \
-                _METRIC_SOLVER_RESULTS_SYNCED, \
-                _METRIC_SOLVER_RESULTS_SKIPPED, \
-                _METRIC_SOLVER_RESULTS_FAILED = sync_solver_documents(document_ids, force_sync, graceful=True)
+            _METRIC_SOLVER_RESULTS_PROCESSED, _METRIC_SOLVER_RESULTS_SYNCED, _METRIC_SOLVER_RESULTS_SKIPPED, _METRIC_SOLVER_RESULTS_FAILED = sync_solver_documents(
+                document_ids, force_sync, graceful=True
+            )
 
         if not only_one_kind or only_analysis_documents:
             _LOGGER.info("Syncing image analysis results")
-            _METRIC_ANALYSIS_RESULTS_PROCESSED, \
-                _METRIC_ANALYSIS_RESULTS_SYNCED, \
-                _METRIC_ANALYSIS_RESULTS_SKIPPED, \
-                _METRIC_ANALYSIS_RESULTS_FAILED = sync_analysis_documents(document_ids, force_sync, graceful=True)
+            _METRIC_ANALYSIS_RESULTS_PROCESSED, _METRIC_ANALYSIS_RESULTS_SYNCED, _METRIC_ANALYSIS_RESULTS_SKIPPED, _METRIC_ANALYSIS_RESULTS_FAILED = sync_analysis_documents(
+                document_ids, force_sync, graceful=True
+            )
 
         if amun_api_url:
             _LOGGER.info("Syncing data from Amun API")
@@ -147,20 +221,27 @@ def cli(document_ids, verbose, force_sync, amun_api_url,
                 sync_inspection_documents(amun_api_url, document_ids, force_sync)
         else:
             if not amun_api_url:
-                _LOGGER.error("Cannot perform sync of Amun documents, no Amun API URL provided")
+                _LOGGER.error(
+                    "Cannot perform sync of Amun documents, no Amun API URL provided"
+                )
                 return 3
 
             _LOGGER.info("Amun results skipped as Amun API URL was not provided")
 
     if metrics_pushgateway_url:
         try:
-            _LOGGER.debug("Submitting metrics to Prometheus pushgateway %r", metrics_pushgateway_url)
-            push_to_gateway(metrics_pushgateway_url, job='graph-sync', registry=prometheus_registry)
+            _LOGGER.debug(
+                "Submitting metrics to Prometheus pushgateway %r",
+                metrics_pushgateway_url,
+            )
+            push_to_gateway(
+                metrics_pushgateway_url, job="graph-sync", registry=prometheus_registry
+            )
         except Exception as e:
-            _LOGGER.exception('An error occurred pushing the metrics: %s', str(exc))
+            _LOGGER.exception("An error occurred pushing the metrics: %s", str(exc))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     _LOGGER.info(f"graph-sync-job v{__version__} starting...")
 
     cli()
