@@ -44,6 +44,12 @@ objects:
                     configMapKeyRef:
                       key: storage-bucket-name
                       name: thoth
+                - name: AMUN_API_URL
+                  valueFrom:
+                    configMapKeyRef:
+                      key: amun-api-url
+                      name: thoth
+
                 - name: THOTH_SYNC_OBSERVATIONS
                   valueFrom:
                     configMapKeyRef:
