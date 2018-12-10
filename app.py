@@ -165,7 +165,14 @@ def _print_version(ctx, _, value):
     default=False,
     help="Force sync of analysis documents.",
 )
-@click.argument("document-ids", envvar="THOTH_SYNC_DOCUMENT_ID", type=str, nargs=-1)
+@click.option(
+    "--document-id",
+    "document_ids",
+    type=str,
+    envvar="THOTH_SYNC_DOCUMENT_ID",
+    multiple=True,
+    help="Explicitly sync only the given document or documents.",
+)
 def cli(
     document_ids,
     verbose,
