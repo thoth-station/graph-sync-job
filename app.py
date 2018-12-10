@@ -214,19 +214,14 @@ def cli(
                 document_ids, force_sync, graceful=True
             )
 
-        if amun_api_url:
+        if not only_one_kind or only_inspection_documents:
             _LOGGER.info("Syncing data from Amun API")
-            if not only_one_kind or only_inspection_documents:
-                # TODO: add metrics
-                sync_inspection_documents(amun_api_url, document_ids, force_sync)
-        else:
             if not amun_api_url:
                 _LOGGER.error(
                     "Cannot perform sync of Amun documents, no Amun API URL provided"
                 )
                 return 3
-
-            _LOGGER.info("Amun results skipped as Amun API URL was not provided")
+            sync_inspection_documents(amun_api_url, document_ids, force_sync)
 
     if metrics_pushgateway_url:
         try:
