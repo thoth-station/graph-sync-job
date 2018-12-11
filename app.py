@@ -165,7 +165,14 @@ def _print_version(ctx, _, value):
     default=False,
     help="Force sync of analysis documents.",
 )
-@click.argument("document-ids", envvar="THOTH_SYNC_DOCUMENT_ID", type=str, nargs=-1)
+@click.option(
+    "--document-id",
+    "document_ids",
+    type=str,
+    envvar="THOTH_SYNC_DOCUMENT_ID",
+    multiple=True,
+    help="Explicitly sync only the given document or documents.",
+)
 def cli(
     document_ids,
     verbose,
@@ -204,15 +211,21 @@ def cli(
     with _METRIC_SECONDS.time():
         if not only_one_kind or only_solver_documents:
             _LOGGER.info("Syncing solver results")
-            _METRIC_SOLVER_RESULTS_PROCESSED, _METRIC_SOLVER_RESULTS_SYNCED, _METRIC_SOLVER_RESULTS_SKIPPED, _METRIC_SOLVER_RESULTS_FAILED = sync_solver_documents(
-                document_ids, force_sync, graceful=True
-            )
+            _METRIC_SOLVER_RESULTS_PROCESSED, \
+                _METRIC_SOLVER_RESULTS_SYNCED, \
+                _METRIC_SOLVER_RESULTS_SKIPPED, \
+                _METRIC_SOLVER_RESULTS_FAILED = sync_solver_documents(
+                    document_ids, force_sync, graceful=True
+                )
 
         if not only_one_kind or only_analysis_documents:
             _LOGGER.info("Syncing image analysis results")
-            _METRIC_ANALYSIS_RESULTS_PROCESSED, _METRIC_ANALYSIS_RESULTS_SYNCED, _METRIC_ANALYSIS_RESULTS_SKIPPED, _METRIC_ANALYSIS_RESULTS_FAILED = sync_analysis_documents(
-                document_ids, force_sync, graceful=True
-            )
+            _METRIC_ANALYSIS_RESULTS_PROCESSED, \
+                _METRIC_ANALYSIS_RESULTS_SYNCED, \
+                _METRIC_ANALYSIS_RESULTS_SKIPPED, \
+                _METRIC_ANALYSIS_RESULTS_FAILED = sync_analysis_documents(
+                    document_ids, force_sync, graceful=True
+                )
 
         if not only_one_kind or only_inspection_documents:
             _LOGGER.info("Syncing data from Amun API")
