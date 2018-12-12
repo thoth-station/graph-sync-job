@@ -228,7 +228,7 @@ def cli(
                 )
 
         if not only_one_kind or only_inspection_documents:
-            _LOGGER.info("Syncing data from Amun API")
+            _LOGGER.info("Syncing data from Amun API %r", amun_api_url)
             if not amun_api_url:
                 _LOGGER.error(
                     "Cannot perform sync of Amun documents, no Amun API URL provided"
