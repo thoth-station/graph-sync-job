@@ -234,7 +234,7 @@ def cli(
                     "Cannot perform sync of Amun documents, no Amun API URL provided"
                 )
                 return 3
-            sync_inspection_documents(amun_api_url, document_ids, force_sync)
+            sync_inspection_documents(amun_api_url, document_ids, force_sync, graceful=True)
 
     if metrics_pushgateway_url:
         try:
