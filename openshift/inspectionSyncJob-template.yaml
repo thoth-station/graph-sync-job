@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: graph-sync-inspection-cronjob
+  name: graph-sync-job-inspection
   annotations:
     description: "Thoth: Graph Sync Job for inspection documents"
     openshift.io/display-name: "Thoth: Graph Sync Job Solver"
@@ -12,7 +12,7 @@ metadata:
       This template defines resources needed to deploy Thoth's Graph Sync Job for Solvers on OpenShift.
     template.openshift.io/provider-display-name: Red Hat, Inc.
   labels:
-    template: graph-sync-inspection-cronjob
+    template: graph-sync-job-inspection
     app: thoth
     component: graph-sync
 
