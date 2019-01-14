@@ -20,14 +20,13 @@ objects:
   - apiVersion: batch/v1
     kind: Job
     metadata:
-      name: graph-sync
+      generateName: graph-sync-package-extract-
       labels:
         app: thoth
         component: graph-sync
     spec:
       template:
         metadata:
-          generateName: graph-sync-package-extract-
           labels:
             app: thoth
             component: graph-sync
