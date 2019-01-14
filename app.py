@@ -17,7 +17,6 @@
 
 """Graph syncing logic for the Thoth project."""
 
-import os
 import logging
 
 import click
