@@ -214,7 +214,7 @@ def cli(
                 _METRIC_SOLVER_RESULTS_SYNCED, \
                 _METRIC_SOLVER_RESULTS_SKIPPED, \
                 _METRIC_SOLVER_RESULTS_FAILED = sync_solver_documents(
-                    document_ids, force_sync, graceful=True
+                    document_ids, force_sync, graceful=False
                 )
 
         if not only_one_kind or only_analysis_documents:
@@ -223,7 +223,7 @@ def cli(
                 _METRIC_ANALYSIS_RESULTS_SYNCED, \
                 _METRIC_ANALYSIS_RESULTS_SKIPPED, \
                 _METRIC_ANALYSIS_RESULTS_FAILED = sync_analysis_documents(
-                    document_ids, force_sync, graceful=True
+                    document_ids, force_sync, graceful=False
                 )
 
         if not only_one_kind or only_inspection_documents:
@@ -233,7 +233,7 @@ def cli(
                     "Cannot perform sync of Amun documents, no Amun API URL provided"
                 )
                 return 3
-            sync_inspection_documents(amun_api_url, document_ids, force_sync, graceful=True)
+            sync_inspection_documents(amun_api_url, document_ids, force_sync, graceful=False)
 
     if metrics_pushgateway_url:
         try:
@@ -244,7 +244,7 @@ def cli(
             push_to_gateway(
                 metrics_pushgateway_url, job="graph-sync", registry=prometheus_registry
             )
-        except Exception as e:
+        except Exception as exc:
             _LOGGER.exception("An error occurred pushing the metrics: %s", str(exc))
 
 
