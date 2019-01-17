@@ -20,7 +20,7 @@ objects:
   - apiVersion: batch/v1
     kind: Job
     metadata:
-      generateName: graph-sync-solver-
+      name: "${THOTH_JOB_ID}"
       labels:
         app: thoth
         component: graph-sync
@@ -97,4 +97,8 @@ objects:
 parameters:
   - name: THOTH_SYNC_DOCUMENT_ID
     required: true
-    description: Document id to be synced
+    description: Document id to be synced.
+
+  - name: THOTH_JOB_ID
+    required: true
+    description: Graph sync job identifier.
