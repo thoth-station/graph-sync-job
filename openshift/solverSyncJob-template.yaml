@@ -31,6 +31,7 @@ objects:
           labels:
             app: thoth
             component: graph-sync
+            graph-sync-document-id: "${THOTH_SYNC_DOCUMENT_ID}"
         spec:
           containers:
             - image: graph-sync-job
