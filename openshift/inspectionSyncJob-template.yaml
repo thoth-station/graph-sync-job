@@ -50,12 +50,15 @@ objects:
                     configMapKeyRef:
                       key: amun-api-url
                       name: thoth
-
                 - name: THOTH_SYNC_OBSERVATIONS
                   valueFrom:
                     configMapKeyRef:
                       key: sync-observations
                       name: thoth
+                - name: THOTH_SYNC_INSPECTION_ONLY_GRAPH
+                  value: "0"
+                - name: THOTH_SYNC_INSPECTION_ONLY_CEPH
+                  value: "0"
                 - name: THOTH_S3_ENDPOINT_URL
                   valueFrom:
                     configMapKeyRef:

@@ -172,6 +172,20 @@ def _print_version(ctx, _, value):
     multiple=True,
     help="Explicitly sync only the given document or documents.",
 )
+@click.option(
+    "--inspection-only-graph-sync",
+    is_flag=True,
+    envvar="THOTH_SYNC_INSPECTION_ONLY_GRAPH",
+    default=False,
+    help="Sync inspection results only to graph database, omit Ceph.",
+)
+@click.option(
+    "--inspection-only-ceph-sync",
+    is_flag=True,
+    envvar="THOTH_SYNC_INSPECTION_ONLY_CEPH",
+    default=False,
+    help="Sync inspection results only to Ceph database, omit graph database.",
+)
 def cli(
     document_ids,
     verbose,
@@ -181,6 +195,8 @@ def cli(
     only_analysis_documents,
     only_inspection_documents,
     metrics_pushgateway_url,
+    inspection_only_graph_sync,
+    inspection_only_ceph_sync,
 ):
     """Sync analyses, inspection and solver results to the graph database."""
     if verbose:
@@ -233,7 +249,26 @@ def cli(
                     "Cannot perform sync of Amun documents, no Amun API URL provided"
                 )
                 return 3
-            sync_inspection_documents(amun_api_url, document_ids, force_sync, graceful=False)
+
+            if inspection_only_ceph_sync:
+                _LOGGER.warning("Inspection results will be synced only onto Ceph")
+
+            if inspection_only_graph_sync:
+                _LOGGER.warning("Inspection results will be synced only into graph database")
+
+            sync_inspection_documents(
+                amun_api_url,
+                document_ids,
+                force_sync=force_sync,
+                graceful=False,
+                only_ceph_sync=inspection_only_ceph_sync,
+                only_graph_sync=inspection_only_graph_sync,
+            )
+        elif inspection_only_ceph_sync or inspection_only_graph_sync:
+            _LOGGER.warning(
+                "Inspection sync was not performed but --inspection-only-ceph-sync "
+                "or --inspection-only-graph-sync flags were set"
+            )
 
     if metrics_pushgateway_url:
         try:
