@@ -95,6 +95,13 @@ objects:
                     secretKeyRef:
                       name: thoth
                       key: sentry-dsn
+              livenessProbe:
+                # Give sync 2 hours, if not finished, restart it.
+                tcpSocket:
+                  port: 80
+                initialDelaySeconds: 7200
+                failureThreshold: 1
+                periodSeconds: 10
               resources:
                 requests:
                   memory: "128Mi"
