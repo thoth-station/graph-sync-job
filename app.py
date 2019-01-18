@@ -249,6 +249,13 @@ def cli(
                     "Cannot perform sync of Amun documents, no Amun API URL provided"
                 )
                 return 3
+
+            if inspection_only_ceph_sync:
+                _LOGGER.warning("Inspection results will be synced only onto Ceph")
+
+            if inspection_only_graph_sync:
+                _LOGGER.warning("Inspection results will be synced only into graph database")
+
             sync_inspection_documents(
                 amun_api_url,
                 document_ids,
