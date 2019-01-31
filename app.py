@@ -26,6 +26,7 @@ from prometheus_client import CollectorRegistry, Gauge, Counter, push_to_gateway
 from thoth.common import init_logging
 from thoth.common import __version__ as __common__version__
 from thoth.storages import __version__ as __storages__version__
+from thoth.storages import sync_adviser_documents
 from thoth.storages import sync_analysis_documents
 from thoth.storages import sync_solver_documents
 from thoth.storages import sync_inspection_documents
@@ -53,6 +54,26 @@ _METRIC_SECONDS = Gauge(
     registry=prometheus_registry,
 )
 
+_METRIC_ADVISER_RESULTS_PROCESSED = Counter(
+    "graph_sync_adviser_results_processed",
+    "Adviser results processed",
+    registry=prometheus_registry,
+)
+_METRIC_ADVISER_RESULTS_SYNCED = Counter(
+    "graph_sync_adviser_results_synced",
+    "Adviser results synced",
+    registry=prometheus_registry,
+)
+_METRIC_ADVISER_RESULTS_SKIPPED = Counter(
+    "graph_sync_adviser_results_skipped",
+    "Adviser results skipped processing",
+    registry=prometheus_registry,
+)
+_METRIC_ADVISER_RESULTS_FAILED = Counter(
+    "graph_sync_adviser_results_failed",
+    "Adviser results failed processing",
+    registry=prometheus_registry,
+)
 _METRIC_SOLVER_RESULTS_PROCESSED = Counter(
     "graph_sync_solver_results_processed",
     "Solver results processed",
@@ -137,6 +158,13 @@ def _print_version(ctx, _, value):
     help="Sync only solver documents.",
 )
 @click.option(
+    "--only-adviser-documents",
+    is_flag=True,
+    envvar="THOTH_ONLY_ADVISER_DOCUMENTS",
+    default=False,
+    help="Sync only adviser documents.",
+)
+@click.option(
     "--only-analysis-documents",
     is_flag=True,
     envvar="THOTH_ONLY_ANALYSIS_DOCUMENTS",
@@ -194,6 +222,7 @@ def cli(
     only_solver_documents,
     only_analysis_documents,
     only_inspection_documents,
+    only_adviser_documents,
     metrics_pushgateway_url,
     inspection_only_graph_sync,
     inspection_only_ceph_sync,
@@ -208,6 +237,7 @@ def cli(
             int(only_solver_documents),
             int(only_analysis_documents),
             int(only_inspection_documents),
+            int(only_adviser_documents),
         )
     )
 
@@ -239,6 +269,15 @@ def cli(
                 _METRIC_ANALYSIS_RESULTS_SYNCED, \
                 _METRIC_ANALYSIS_RESULTS_SKIPPED, \
                 _METRIC_ANALYSIS_RESULTS_FAILED = sync_analysis_documents(
+                    document_ids, force_sync, graceful=False
+                )
+
+        if not only_one_kind or only_adviser_documents:
+            _LOGGER.info("Syncing adviser results")
+            _METRIC_ADVISER_RESULTS_PROCESSED, \
+                _METRIC_ADVISER_RESULTS_SYNCED, \
+                _METRIC_ADVISER_RESULTS_SKIPPED, \
+                _METRIC_ADVISER_RESULTS_FAILED = sync_adviser_documents(
                     document_ids, force_sync, graceful=False
                 )
 
