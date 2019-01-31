@@ -1,0 +1,104 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: graph-sync-job-adviser
+  annotations:
+    description: "Thoth: Graph Sync Job for adviser documents"
+    openshift.io/display-name: "Thoth: Graph Sync Job Adviser"
+    version: 0.6.0
+    tags: thoth,ai-stacks,aistacks,graph-sync-job
+    template.openshift.io/documentation-url: https://github.com/Thoth-Station/
+    template.openshift.io/long-description: >
+      This template defines resources needed to deploy Thoth's Graph Sync Job for Advisers on OpenShift.
+    template.openshift.io/provider-display-name: Red Hat, Inc.
+  labels:
+    template: graph-sync-job-adviser
+    app: thoth
+    component: graph-sync
+
+objects:
+  - apiVersion: batch/v1
+    kind: Job
+    metadata:
+      name: "${THOTH_JOB_ID}"
+      labels:
+        app: thoth
+        component: graph-sync
+        graph-sync-document-id: "${THOTH_SYNC_DOCUMENT_ID}"
+    spec:
+      template:
+        metadata:
+          labels:
+            app: thoth
+            component: graph-sync
+        spec:
+          containers:
+            - image: graph-sync-job
+              name: graph-sync
+              env:
+                - name: THOTH_ONLY_ADVISER_DOCUMENTS
+                  value: '1'
+                - name: THOTH_SYNC_DOCUMENT_ID
+                  value: "${THOTH_SYNC_DOCUMENT_ID}"
+                - name: THOTH_DEPLOYMENT_NAME
+                  valueFrom:
+                    configMapKeyRef:
+                      key: storage-bucket-name
+                      name: thoth
+                - name: THOTH_SYNC_OBSERVATIONS
+                  valueFrom:
+                    configMapKeyRef:
+                      key: sync-observations
+                      name: thoth
+                - name: THOTH_S3_ENDPOINT_URL
+                  valueFrom:
+                    configMapKeyRef:
+                      key: ceph-host
+                      name: thoth
+                - name: THOTH_CEPH_BUCKET
+                  valueFrom:
+                    configMapKeyRef:
+                      key: ceph-bucket-name
+                      name: thoth
+                - name: THOTH_CEPH_BUCKET_PREFIX
+                  valueFrom:
+                    configMapKeyRef:
+                      key: ceph-bucket-prefix
+                      name: thoth
+                - name: THOTH_CEPH_KEY_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: thoth
+                      key: ceph-key-id
+                - name: THOTH_CEPH_SECRET_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: thoth
+                      key: ceph-secret-key
+                - name: THOTH_METRICS_PUSHGATEWAY_URL
+                  valueFrom:
+                    configMapKeyRef:
+                      name: thoth
+                      key: metrics-pushgateway-url
+                - name: SENTRY_DSN
+                  valueFrom:
+                    secretKeyRef:
+                      name: thoth
+                      key: sentry-dsn
+              resources:
+                requests:
+                  memory: "128Mi"
+                  cpu: "125m"
+                limits:
+                  memory: "256Mi"
+                  cpu: "500m"
+          restartPolicy: OnFailure
+
+parameters:
+  - name: THOTH_SYNC_DOCUMENT_ID
+    required: true
+    description: Document id to be synced.
+
+  - name: THOTH_JOB_ID
+    required: true
+    description: Graph sync job identifier.
