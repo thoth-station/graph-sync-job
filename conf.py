@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Thoth's Software Stack Synchronization Job for OpenShift documentation build configuration file, created by
 # sphinx-quickstart on Mon Sep 10 11:46:25 2018.
