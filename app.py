@@ -17,6 +17,7 @@
 
 """Graph syncing logic for the Thoth project."""
 
+import sys
 import logging
 
 import click
@@ -243,7 +244,7 @@ def cli(
 
     if only_one_kind > 1:
         _LOGGER.error("There can be only one --only-* option specified")
-        return 1
+        sys.exit(1)
 
     only_one_kind = bool(only_one_kind)
 
@@ -251,7 +252,7 @@ def cli(
         _LOGGER.error(
             "Explicitly specified documents to be synced can be specified only with one of the --only-* options"
         )
-        return 2
+        sys.exit(2)
 
     with _METRIC_SECONDS.time():
         if not only_one_kind or only_solver_documents:
@@ -287,7 +288,7 @@ def cli(
                 _LOGGER.error(
                     "Cannot perform sync of Amun documents, no Amun API URL provided"
                 )
-                return 3
+                sys.exit(3)
 
             if inspection_only_ceph_sync:
                 _LOGGER.warning("Inspection results will be synced only onto Ceph")
