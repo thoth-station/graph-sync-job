@@ -15,6 +15,7 @@ metadata:
     template: graph-sync-job-solver
     app: thoth
     component: graph-sync
+    graph-sync-type: solver
 
 objects:
   - apiVersion: batch/v1
@@ -25,6 +26,7 @@ objects:
         app: thoth
         component: graph-sync
         graph-sync-document-id: "${THOTH_SYNC_DOCUMENT_ID}"
+        graph-sync-type: solver
     spec:
       template:
         metadata:
@@ -32,6 +34,7 @@ objects:
             app: thoth
             component: graph-sync
             graph-sync-document-id: "${THOTH_SYNC_DOCUMENT_ID}"
+            graph-sync-type: solver
         spec:
           containers:
             - image: graph-sync-job
