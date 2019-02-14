@@ -31,6 +31,7 @@ from thoth.storages import sync_adviser_documents
 from thoth.storages import sync_analysis_documents
 from thoth.storages import sync_solver_documents
 from thoth.storages import sync_inspection_documents
+from thoth.storages import sync_provenance_checker_documents
 
 
 __version__ = f"0.5.3+storage.{__storages__version__}.common.{__common__version__}"
@@ -180,6 +181,13 @@ def _print_version(ctx, _, value):
     help="Sync only inspection documents.",
 )
 @click.option(
+    "--only-provenance-checker-documents",
+    is_flag=True,
+    envvar="THOTH_ONLY_PROVENANCE_CHECKER_DOCUMENTS",
+    default=False,
+    help="Sync only provenance-checker documents.",
+)
+@click.option(
     "--amun-api-url",
     type=str,
     envvar="AMUN_API_URL",
@@ -224,6 +232,7 @@ def cli(
     only_analysis_documents,
     only_inspection_documents,
     only_adviser_documents,
+    only_provenance_checker_documents,
     metrics_pushgateway_url,
     inspection_only_graph_sync,
     inspection_only_ceph_sync,
@@ -239,6 +248,7 @@ def cli(
             int(only_analysis_documents),
             int(only_inspection_documents),
             int(only_adviser_documents),
+            int(only_provenance_checker_documents),
         )
     )
 
@@ -279,6 +289,14 @@ def cli(
                 _METRIC_ADVISER_RESULTS_SYNCED, \
                 _METRIC_ADVISER_RESULTS_SKIPPED, \
                 _METRIC_ADVISER_RESULTS_FAILED = sync_adviser_documents(
+                    document_ids, force_sync, graceful=False
+                )
+        if not only_one_kind or only_adviser_documents:
+            _LOGGER.info("Syncing provenance checker results")
+            _METRIC_PROVENANCE_CHECKER_RESULTS_PROCESSED, \
+                _METRIC_PROVENANCE_CHECKER_RESULTS_SYNCED, \
+                _METRIC_PROVENANCE_CHECKER_RESULTS_SKIPPED, \
+                _METRIC_PROVENANCE_CHECKER_RESULTS_FAILED = sync_provenance_checker_documents(
                     document_ids, force_sync, graceful=False
                 )
 
