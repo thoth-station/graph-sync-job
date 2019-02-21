@@ -25,6 +25,9 @@ objects:
         app: thoth
         component: graph-sync
         graph-sync-document-id: "${THOTH_SYNC_DOCUMENT_ID}"
+        # Clean this up after one hour.
+        mark: cleanup
+        ttl: "1h"
     spec:
       template:
         metadata:
