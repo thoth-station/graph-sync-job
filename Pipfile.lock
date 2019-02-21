@@ -73,17 +73,17 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:a901f5c0fc736b30119feaff6ed03e73f3f7785bc6e865a8630b13fd8809dc2d",
-                "sha256:fa81dc71b23f98abe9a90de3c42ffcd98451b29ad7408465eb7c0a63e1fba95e"
+                "sha256:817b6f5e5277a9e370702314adbfcaa6957e138540e50d6b557a717846c6c999",
+                "sha256:8880415ca6d2531dd76c392a00824d952a3074886352bb342c8f8f1cb9403c1a"
             ],
-            "version": "==1.9.94"
+            "version": "==1.9.99"
         },
         "botocore": {
             "hashes": [
-                "sha256:48f780477904795b0ce559b335d0aab4c3bb9efa96fbdf24c418e22ef0745e08",
-                "sha256:d931f98e392af6b1f000719d1e14f7d85194d36d2c0a4121cbc59abc8ad64274"
+                "sha256:9092d61cbf8052471dcaaac29f8cd1b9dbd5687947719f40dbc30a72c87523f2",
+                "sha256:ac50b9f793164a00ca725dfe60fe2d12a967272b251e6533236139dcade1ee5c"
             ],
-            "version": "==1.12.94"
+            "version": "==1.12.99"
         },
         "certifi": {
             "hashes": [
@@ -225,10 +225,10 @@
         },
         "prometheus-client": {
             "hashes": [
-                "sha256:e8c11ff5ca53de6c3d91e1510500611cafd1d247a937ec6c588a0a7cc3bef93c"
+                "sha256:1b38b958750f66f208bcd9ab92a633c0c994d8859c831f7abc1f46724fcee490"
             ],
             "index": "pypi",
-            "version": "==0.5.0"
+            "version": "==0.6.0"
         },
         "python-dateutil": {
             "hashes": [
@@ -267,10 +267,10 @@
         },
         "rfc5424-logging-handler": {
             "hashes": [
-                "sha256:b8998dece36bfecef2b5d40c3aab8f367115bf0d9239943c19a54692208e0b93",
-                "sha256:cf977981490d977e6ebc4a0fa41c10ff0dfcaf7a291f05ded4863d58b038ed63"
+                "sha256:2025075d9a71084a0baf97a840fd419fd07cb15f63d3c06357dd21e84d5595d4",
+                "sha256:9a0665cecacaf9b6dc7841256b835a7fb7dba231684c8e64412b70bcd789b0d6"
             ],
-            "version": "==1.4.0"
+            "version": "==1.4.1"
         },
         "s3transfer": {
             "hashes": [
@@ -281,10 +281,10 @@
         },
         "sentry-sdk": {
             "hashes": [
-                "sha256:131e3b9ac11dffd86fe4f1f5d388d3dab372fc9e30d6611d1fc87096a1d67359",
-                "sha256:e925a2363178c211ad787f507cedda12ee5b0aadf5ac390950140393636a80bb"
+                "sha256:6f4e264d0ad6267c40e20431a6a50f815515805ffe8eb9815340adf931279523",
+                "sha256:ded1a85821d555dd68abdc0a8e7e4eee7b096f8a6d7a4821228b52a62a465f07"
             ],
-            "version": "==0.7.2"
+            "version": "==0.7.3"
         },
         "six": {
             "hashes": [
@@ -503,9 +503,10 @@
         },
         "cpplint": {
             "hashes": [
-                "sha256:6876139c3944c6dc84cc9095b6c4be3c5397b534b0c00230ba59c4b893936719"
+                "sha256:99b59eb2d88675f87696d709bb7213b54aa1787cc881096255a6aa3cdaec31dc",
+                "sha256:9ed01c127e0ff3742cb041706c91ae33dedb87bb2f1fb1fb4da714971d26eae5"
             ],
-            "version": "==1.3.0"
+            "version": "==1.4.3"
         },
         "decorator": {
             "hashes": [
