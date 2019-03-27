@@ -5,7 +5,7 @@ metadata:
   annotations:
     description: "Thoth: Graph Sync Job for package-extract documents"
     openshift.io/display-name: "Thoth: Graph Sync Job Solver"
-    version: 0.6.0
+    version: 0.6.1
     tags: thoth,ai-stacks,aistacks,graph-sync-job
     template.openshift.io/documentation-url: https://github.com/Thoth-Station/
     template.openshift.io/long-description: >
@@ -16,6 +16,33 @@ metadata:
     app: thoth
     component: graph-sync
     graph-sync-type: package-extract
+
+parameters:
+  - description: Registry the ImageStream to be use lives in
+    displayName: ImageStream Registry
+    required: true
+    name: IMAGE_STREAM_REGISTRY
+    value: "docker-registry.default.svc:5000"
+
+  - description: Namespace the ImageStream to be use lives in
+    displayName: ImageStream Project
+    required: true
+    name: IMAGE_STREAM_NAMESPACE
+    value: "thoth-infra-stage"
+
+  - description: Tag of the ImageStream to be use
+    displayName: ImageStream Tag
+    required: true
+    name: IMAGE_STREAM_TAG
+    value: "latest"
+
+  - name: THOTH_SYNC_DOCUMENT_ID
+    required: true
+    description: Document id to be synced.
+
+  - name: THOTH_JOB_ID
+    required: true
+    description: Graph sync job identifier.
 
 objects:
   - apiVersion: batch/v1
@@ -40,11 +67,11 @@ objects:
             graph-sync-type: package-extract
         spec:
           containers:
-            - image: graph-sync-job
-              name: graph-sync
+            - name: graph-sync
+              image: "${IMAGE_STREAM_REGISTRY}/${IMAGE_STREAM_NAMESPACE}/graph-sync-job:${IMAGE_STREAM_TAG}"
               env:
                 - name: THOTH_ONLY_ANALYSIS_DOCUMENTS
-                  value: '1'
+                  value: "1"
                 - name: THOTH_SYNC_DOCUMENT_ID
                   value: "${THOTH_SYNC_DOCUMENT_ID}"
                 - name: THOTH_DEPLOYMENT_NAME
@@ -107,12 +134,3 @@ objects:
                   memory: "256Mi"
                   cpu: "500m"
           restartPolicy: OnFailure
-
-parameters:
-  - name: THOTH_SYNC_DOCUMENT_ID
-    required: true
-    description: Document id to be synced.
-
-  - name: THOTH_JOB_ID
-    required: true
-    description: Graph sync job identifier.
