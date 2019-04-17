@@ -32,6 +32,7 @@ from thoth.storages import sync_analysis_documents
 from thoth.storages import sync_solver_documents
 from thoth.storages import sync_inspection_documents
 from thoth.storages import sync_provenance_checker_documents
+from thoth.storages import sync_dependency_monkey_documents
 
 
 __version__ = f"0.5.3+storage.{__storages__version__}.common.{__common__version__}"
@@ -181,6 +182,13 @@ def _print_version(ctx, _, value):
     help="Sync only inspection documents.",
 )
 @click.option(
+    "--only-dependency-monkey-documents",
+    is_flag=True,
+    envvar="THOTH_ONLY_DEPENDENCY_MONKEY_DOCUMENTS",
+    default=False,
+    help="Sync only Dependency Monkey documents.",
+)
+@click.option(
     "--only-provenance-checker-documents",
     is_flag=True,
     envvar="THOTH_ONLY_PROVENANCE_CHECKER_DOCUMENTS",
@@ -231,6 +239,7 @@ def cli(
     only_solver_documents,
     only_analysis_documents,
     only_inspection_documents,
+    only_dependency_monkey_documents,
     only_adviser_documents,
     only_provenance_checker_documents,
     metrics_pushgateway_url,
@@ -249,6 +258,7 @@ def cli(
             int(only_inspection_documents),
             int(only_adviser_documents),
             int(only_provenance_checker_documents),
+            int(only_dependency_monkey_documents),
         )
     )
 
@@ -297,6 +307,14 @@ def cli(
                 _METRIC_PROVENANCE_CHECKER_RESULTS_SYNCED, \
                 _METRIC_PROVENANCE_CHECKER_RESULTS_SKIPPED, \
                 _METRIC_PROVENANCE_CHECKER_RESULTS_FAILED = sync_provenance_checker_documents(
+                    document_ids, force_sync, graceful=False
+                )
+        if not only_one_kind or only_dependency_monkey_documents:
+            _LOGGER.info("Syncing dependency monkey results")
+            _METRIC_PROVENANCE_CHECKER_RESULTS_PROCESSED, \
+                _METRIC_PROVENANCE_CHECKER_RESULTS_SYNCED, \
+                _METRIC_PROVENANCE_CHECKER_RESULTS_SKIPPED, \
+                _METRIC_PROVENANCE_CHECKER_RESULTS_FAILED = sync_dependency_monkey_documents(
                     document_ids, force_sync, graceful=False
                 )
 
