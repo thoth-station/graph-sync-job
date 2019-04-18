@@ -4,7 +4,7 @@ thoth-graph-sync-job
 The graph sync job will read in all
 `solver <https://github.com/thoth-station/solver>`_ and
 `package-extract <https://github.com/thoth-station/package-extract>`_
-documents and synchronize them to the JanusGraph database. If a document has
+documents and synchronize them to the Dgraph database. If a document has
 been synchronized before, it will not be synchronized again (unless the
 synchronization is forced). The graph sync job runs runs periodically based
 on configuration of CronJob that can be found in this repository under the
