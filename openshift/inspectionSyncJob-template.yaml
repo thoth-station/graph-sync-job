@@ -128,6 +128,17 @@ objects:
                     secretKeyRef:
                       name: thoth
                       key: sentry-dsn
+                - name: GRAPH_SERVICE_HOST
+                  valueFrom:
+                    configMapKeyRef:
+                      key: graph-service-host
+                      name: thoth
+                - name: GRAPH_TLS_PATH
+                  value: "/var/run/secrets/dgraph"
+              volumeMounts:
+                - mountPath: /var/run/secrets/dgraph
+                  name: dgraph-tls-secrets
+                  readOnly: true
               livenessProbe:
                 # Give sync 2 hours, if not finished, restart it.
                 tcpSocket:
@@ -143,3 +154,8 @@ objects:
                   memory: "256Mi"
                   cpu: "500m"
           restartPolicy: OnFailure
+          volumes:
+            - name: dgraph-tls-secrets
+              secret:
+                defaultMode: 420
+                secretName: dgraph-tls
