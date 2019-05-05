@@ -301,7 +301,7 @@ def cli(
                 _METRIC_ADVISER_RESULTS_FAILED = sync_adviser_documents(
                     document_ids, force_sync, graceful=False
                 )
-        if not only_one_kind or only_adviser_documents:
+        if not only_one_kind or only_provenance_checker_documents:
             _LOGGER.info("Syncing provenance checker results")
             _METRIC_PROVENANCE_CHECKER_RESULTS_PROCESSED, \
                 _METRIC_PROVENANCE_CHECKER_RESULTS_SYNCED, \
