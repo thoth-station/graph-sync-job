@@ -74,6 +74,8 @@ objects:
                   value: "1"
                 - name: THOTH_SYNC_DOCUMENT_ID
                   value: "${THOTH_SYNC_DOCUMENT_ID}"
+                - name: THOTH_FORCE_SYNC
+                  value: "1"
                 - name: THOTH_DEPLOYMENT_NAME
                   valueFrom:
                     configMapKeyRef:
