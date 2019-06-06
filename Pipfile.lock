@@ -39,17 +39,17 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:98516650f72c02d0c7b47e6f0df69c19a0d1046d3973783ed7b0f093e8e81adb",
-                "sha256:aa06b240e49dbc8443bd96086c92baa0275281e0f7cc0439a328fef9ac254253"
+                "sha256:27f045d65476f8983e0ebff5007afa014307b6ed1da56d0a8ebccbcf41ff584e",
+                "sha256:da05388e0902a559edc523a5652d67571d6b8cf67431a06438ccc817163f3266"
             ],
-            "version": "==1.9.157"
+            "version": "==1.9.162"
         },
         "botocore": {
             "hashes": [
-                "sha256:2ded06af31f9e423fcf549e35f2fa0fd618e12995e37ebc52186dbaa870316c6",
-                "sha256:473955cd4eda6121047205fc43c56ab0e0616b93651bac5e9c747fc180603fe2"
+                "sha256:8e88b2eda4abb26bfbc53108280668b4d505821bf181f506387e74bc37cf7a53",
+                "sha256:e38526681c4b0e500faef8a75e4129f5b2201fa807bf16841a8127608b62e504"
             ],
-            "version": "==1.12.157"
+            "version": "==1.12.162"
         },
         "certifi": {
             "hashes": [
@@ -295,10 +295,10 @@
         },
         "s3transfer": {
             "hashes": [
-                "sha256:7b9ad3213bff7d357f888e0fab5101b56fa1a0548ee77d121c3a3dbfbef4cb2e",
-                "sha256:f23d5cb7d862b104401d9021fc82e5fa0e0cf57b7660a1331425aab0c691d021"
+                "sha256:6efc926738a3cd576c2a79725fed9afde92378aa5c6a957e3af010cb019fac9d",
+                "sha256:b780f2411b824cb541dbcd2c713d0cb61c7d1bcadae204cdddda2b35cef493ba"
             ],
-            "version": "==0.2.0"
+            "version": "==0.2.1"
         },
         "semantic-version": {
             "hashes": [
@@ -309,10 +309,10 @@
         },
         "sentry-sdk": {
             "hashes": [
-                "sha256:e308129104567cee9f8848ed5098de17cbccc19bd21417c8980d47f80f1409ec",
-                "sha256:f5819df450d7b0696be69a0c6d70a09e4890a3844ee8ccb7a461794135bd5965"
+                "sha256:31adb5dc65ef35cabb48e3d7ad9804d885f22e74ef606a266beb31661d59a226",
+                "sha256:52881e11649d7e5a0b04c026adcf473ab16d0ec4a1cf5e7259dd292c984264ef"
             ],
-            "version": "==0.8.0"
+            "version": "==0.9.0"
         },
         "six": {
             "hashes": [
@@ -348,10 +348,10 @@
         },
         "thoth-storages": {
             "hashes": [
-                "sha256:8bb81c8331ff3726d1aa3938ce603e1ce12b11a65746d387bb46f2fafbb2ea37"
+                "sha256:d238103c93976db4ccc1593f2448deb760d6a3efb819bc6947e20800ebfc2cc4"
             ],
             "index": "pypi",
-            "version": "==0.14.0"
+            "version": "==0.14.1"
         },
         "timestamp": {
             "hashes": [
@@ -461,9 +461,10 @@
         },
         "cmakelint": {
             "hashes": [
-                "sha256:ef26092f764ae5b4dfb46ba54d0ea447a41802ede483075014bd2f73279567b9"
+                "sha256:0cb8805eb2837dc38f0d9975105e59b8155215b62cee0f644a1fe7f9d93668fd",
+                "sha256:9336b480cb2143f05025c0d0cfd6eabbdf421b67c0b9a7338e09465fa5cee978"
             ],
-            "version": "==1.3.4.1"
+            "version": "==1.4"
         },
         "coala": {
             "hashes": [
@@ -740,9 +741,9 @@
         },
         "nltk": {
             "hashes": [
-                "sha256:3a64b1cb685bbf344adec416871fee07996671c876ff313b3e504158fa1500e1"
+                "sha256:6ba7350f7588a239764f2d04e9b20bb2d34e0a45824035ada924ed33a6fe0d58"
             ],
-            "version": "==3.4.1"
+            "version": "==3.4.2"
         },
         "packaging": {
             "hashes": [
@@ -753,10 +754,10 @@
         },
         "pbr": {
             "hashes": [
-                "sha256:6901995b9b686cb90cceba67a0f6d4d14ae003cd59bc12beb61549bdfbe3bc89",
-                "sha256:d950c64aeea5456bbd147468382a5bb77fe692c13c9f00f0219814ce5b642755"
+                "sha256:0ce920b865091450bbcd452b35cf6d6eb8a6d9ce13ad2210d6e77557f85cf32b",
+                "sha256:93d2dc6ee0c9af4dbc70bc1251d0e545a9910ca8863774761f92716dece400b6"
             ],
-            "version": "==5.2.0"
+            "version": "==5.2.1"
         },
         "polib": {
             "hashes": [
