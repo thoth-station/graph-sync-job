@@ -59,6 +59,10 @@ objects:
       triggers:
         - imageChange: {}
           type: ImageChange
+        - type: "Generic"
+          generic:
+            secretReference:
+              name: generic-webhook-secret
 
 parameters:
   - description: Git repository for Thoth's Graph Sync Job
