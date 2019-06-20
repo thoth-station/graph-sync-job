@@ -65,6 +65,8 @@ objects:
             component: graph-sync
             graph-sync-document-id: "${THOTH_SYNC_DOCUMENT_ID}"
             graph-sync-type: inspection
+            mark: cleanup
+            ttl: "1h"
         spec:
           containers:
             - name: graph-sync

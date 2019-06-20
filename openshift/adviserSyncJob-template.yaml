@@ -61,6 +61,8 @@ objects:
           labels:
             app: thoth
             component: graph-sync
+            mark: cleanup
+            ttl: "1h"
         spec:
           containers:
             - name: graph-sync
