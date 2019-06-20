@@ -43,6 +43,8 @@ _LOGGER = logging.getLogger("thoth.graph_sync_job")
 
 prometheus_registry = CollectorRegistry()
 
+_THOTH_METRICS_PUSHGATEWAY_URL = os.getenv("PROMETHEUS_PUSHGATEWAY_URL")
+
 thoth_metrics_exporter_info = Gauge(
     "graph_sync_job_info",
     "Thoth Graph Sync Job information",
@@ -146,14 +148,6 @@ def _print_version(ctx, _, value):
     help="Be more verbose about what's going on.",
 )
 @click.option(
-    "--metrics-pushgateway-url",
-    type=str,
-    default=None,
-    required=False,
-    envvar="THOTH_METRICS_PUSHGATEWAY_URL",
-    help="Send job metrics to a Prometheus pushgateway URL.",
-)
-@click.option(
     "--only-solver-documents",
     is_flag=True,
     envvar="THOTH_ONLY_SOLVER_DOCUMENTS",
@@ -242,7 +236,6 @@ def cli(
     only_dependency_monkey_documents,
     only_adviser_documents,
     only_provenance_checker_documents,
-    metrics_pushgateway_url,
     inspection_only_graph_sync,
     inspection_only_ceph_sync,
 ):
@@ -346,7 +339,7 @@ def cli(
                 "or --inspection-only-graph-sync flags were set"
             )
 
-    if metrics_pushgateway_url:
+    if _THOTH_METRICS_PUSHGATEWAY_URL:
         try:
             _LOGGER.debug(
                 "Submitting metrics to Prometheus pushgateway %r",
