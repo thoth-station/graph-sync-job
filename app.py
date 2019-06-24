@@ -56,7 +56,7 @@ thoth_metrics_exporter_info.labels(__version__).inc()
 
 _METRIC_SECONDS = Gauge(
     "graph_sync_job_runtime_seconds",
-    "Runtime of graph sync job in seconds.",
+    "Runtime of graph sync job in seconds.", ["category"]
     registry=prometheus_registry,
 )
 
@@ -268,77 +268,82 @@ def cli(
         )
         sys.exit(2)
 
-    with _METRIC_SECONDS.time():
-        if not only_one_kind or only_solver_documents:
-            _LOGGER.info("Syncing solver results")
-            _METRIC_SOLVER_RESULTS_PROCESSED, \
-                _METRIC_SOLVER_RESULTS_SYNCED, \
-                _METRIC_SOLVER_RESULTS_SKIPPED, \
-                _METRIC_SOLVER_RESULTS_FAILED = sync_solver_documents(
-                    document_ids, force_sync, graceful=False
-                )
-
-        if not only_one_kind or only_analysis_documents:
-            _LOGGER.info("Syncing image analysis results")
-            _METRIC_ANALYSIS_RESULTS_PROCESSED, \
-                _METRIC_ANALYSIS_RESULTS_SYNCED, \
-                _METRIC_ANALYSIS_RESULTS_SKIPPED, \
-                _METRIC_ANALYSIS_RESULTS_FAILED = sync_analysis_documents(
-                    document_ids, force_sync, graceful=False
-                )
-
-        if not only_one_kind or only_adviser_documents:
-            _LOGGER.info("Syncing adviser results")
-            _METRIC_ADVISER_RESULTS_PROCESSED, \
-                _METRIC_ADVISER_RESULTS_SYNCED, \
-                _METRIC_ADVISER_RESULTS_SKIPPED, \
-                _METRIC_ADVISER_RESULTS_FAILED = sync_adviser_documents(
-                    document_ids, force_sync, graceful=False
-                )
-        if not only_one_kind or only_provenance_checker_documents:
-            _LOGGER.info("Syncing provenance checker results")
-            _METRIC_PROVENANCE_CHECKER_RESULTS_PROCESSED, \
-                _METRIC_PROVENANCE_CHECKER_RESULTS_SYNCED, \
-                _METRIC_PROVENANCE_CHECKER_RESULTS_SKIPPED, \
-                _METRIC_PROVENANCE_CHECKER_RESULTS_FAILED = sync_provenance_checker_documents(
-                    document_ids, force_sync, graceful=False
-                )
-        if not only_one_kind or only_dependency_monkey_documents:
-            _LOGGER.info("Syncing dependency monkey results")
-            _METRIC_PROVENANCE_CHECKER_RESULTS_PROCESSED, \
-                _METRIC_PROVENANCE_CHECKER_RESULTS_SYNCED, \
-                _METRIC_PROVENANCE_CHECKER_RESULTS_SKIPPED, \
-                _METRIC_PROVENANCE_CHECKER_RESULTS_FAILED = sync_dependency_monkey_documents(
-                    document_ids, force_sync, graceful=False
-                )
-
-        if not only_one_kind or only_inspection_documents:
-            _LOGGER.info("Syncing data from Amun API %r", amun_api_url)
-            if not amun_api_url:
-                _LOGGER.error(
-                    "Cannot perform sync of Amun documents, no Amun API URL provided"
-                )
-                sys.exit(3)
-
-            if inspection_only_ceph_sync:
-                _LOGGER.warning("Inspection results will be synced only onto Ceph")
-
-            if inspection_only_graph_sync:
-                _LOGGER.warning("Inspection results will be synced only into graph database")
-
-            sync_inspection_documents(
-                amun_api_url,
-                document_ids,
-                force_sync=force_sync,
-                graceful=False,
-                only_ceph_sync=inspection_only_ceph_sync,
-                only_graph_sync=inspection_only_graph_sync,
+    if not only_one_kind or only_solver_documents:
+        _LOGGER.info("Syncing solver results")
+        _METRIC_SECONDS.label(category="solver").time()
+        _METRIC_SOLVER_RESULTS_PROCESSED, \
+            _METRIC_SOLVER_RESULTS_SYNCED, \
+            _METRIC_SOLVER_RESULTS_SKIPPED, \
+            _METRIC_SOLVER_RESULTS_FAILED = sync_solver_documents(
+                document_ids, force_sync, graceful=False
             )
-        elif inspection_only_ceph_sync or inspection_only_graph_sync:
-            _LOGGER.warning(
-                "Inspection sync was not performed but --inspection-only-ceph-sync "
-                "or --inspection-only-graph-sync flags were set"
+
+    if not only_one_kind or only_analysis_documents:
+        _LOGGER.info("Syncing image analysis results")
+        _METRIC_SECONDS.label(category="package-extract").time()
+        _METRIC_ANALYSIS_RESULTS_PROCESSED, \
+            _METRIC_ANALYSIS_RESULTS_SYNCED, \
+            _METRIC_ANALYSIS_RESULTS_SKIPPED, \
+            _METRIC_ANALYSIS_RESULTS_FAILED = sync_analysis_documents(
+                document_ids, force_sync, graceful=False
             )
+
+    if not only_one_kind or only_adviser_documents:
+        _LOGGER.info("Syncing adviser results")
+        _METRIC_SECONDS.label(category="adviser").time()
+        _METRIC_ADVISER_RESULTS_PROCESSED, \
+            _METRIC_ADVISER_RESULTS_SYNCED, \
+            _METRIC_ADVISER_RESULTS_SKIPPED, \
+            _METRIC_ADVISER_RESULTS_FAILED = sync_adviser_documents(
+                document_ids, force_sync, graceful=False
+            )
+    if not only_one_kind or only_provenance_checker_documents:
+        _LOGGER.info("Syncing provenance checker results")
+        _METRIC_SECONDS.label(category="provenance-checker").time()
+        _METRIC_PROVENANCE_CHECKER_RESULTS_PROCESSED, \
+            _METRIC_PROVENANCE_CHECKER_RESULTS_SYNCED, \
+            _METRIC_PROVENANCE_CHECKER_RESULTS_SKIPPED, \
+            _METRIC_PROVENANCE_CHECKER_RESULTS_FAILED = sync_provenance_checker_documents(
+                document_ids, force_sync, graceful=False
+            )
+    if not only_one_kind or only_dependency_monkey_documents:
+        _LOGGER.info("Syncing dependency monkey results")
+        _METRIC_SECONDS.label(category="dependency-monkey").time()
+        _METRIC_PROVENANCE_CHECKER_RESULTS_PROCESSED, \
+            _METRIC_PROVENANCE_CHECKER_RESULTS_SYNCED, \
+            _METRIC_PROVENANCE_CHECKER_RESULTS_SKIPPED, \
+            _METRIC_PROVENANCE_CHECKER_RESULTS_FAILED = sync_dependency_monkey_documents(
+                document_ids, force_sync, graceful=False
+            )
+
+    if not only_one_kind or only_inspection_documents:
+        _LOGGER.info("Syncing data from Amun API %r", amun_api_url)
+        _METRIC_SECONDS.label(category="inspection").time()
+        if not amun_api_url:
+            _LOGGER.error(
+                "Cannot perform sync of Amun documents, no Amun API URL provided"
+            )
+            sys.exit(3)
+
+        if inspection_only_ceph_sync:
+            _LOGGER.warning("Inspection results will be synced only onto Ceph")
+
+        if inspection_only_graph_sync:
+            _LOGGER.warning("Inspection results will be synced only into graph database")
+
+        sync_inspection_documents(
+            amun_api_url,
+            document_ids,
+            force_sync=force_sync,
+            graceful=False,
+            only_ceph_sync=inspection_only_ceph_sync,
+            only_graph_sync=inspection_only_graph_sync,
+        )
+    elif inspection_only_ceph_sync or inspection_only_graph_sync:
+        _LOGGER.warning(
+            "Inspection sync was not performed but --inspection-only-ceph-sync "
+            "or --inspection-only-graph-sync flags were set"
+        )
 
     if _THOTH_METRICS_PUSHGATEWAY_URL:
         try:
