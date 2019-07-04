@@ -270,7 +270,7 @@ def cli(
 
     if not only_one_kind or only_solver_documents:
         _LOGGER.info("Syncing solver results")
-        _METRIC_SECONDS.label(category="solver").time()
+        _METRIC_SECONDS.labels(category="solver").time()
         _METRIC_SOLVER_RESULTS_PROCESSED, \
             _METRIC_SOLVER_RESULTS_SYNCED, \
             _METRIC_SOLVER_RESULTS_SKIPPED, \
@@ -280,7 +280,7 @@ def cli(
 
     if not only_one_kind or only_analysis_documents:
         _LOGGER.info("Syncing image analysis results")
-        _METRIC_SECONDS.label(category="package-extract").time()
+        _METRIC_SECONDS.labels(category="package-extract").time()
         _METRIC_ANALYSIS_RESULTS_PROCESSED, \
             _METRIC_ANALYSIS_RESULTS_SYNCED, \
             _METRIC_ANALYSIS_RESULTS_SKIPPED, \
@@ -290,7 +290,7 @@ def cli(
 
     if not only_one_kind or only_adviser_documents:
         _LOGGER.info("Syncing adviser results")
-        _METRIC_SECONDS.label(category="adviser").time()
+        _METRIC_SECONDS.labels(category="adviser").time()
         _METRIC_ADVISER_RESULTS_PROCESSED, \
             _METRIC_ADVISER_RESULTS_SYNCED, \
             _METRIC_ADVISER_RESULTS_SKIPPED, \
@@ -299,7 +299,7 @@ def cli(
             )
     if not only_one_kind or only_provenance_checker_documents:
         _LOGGER.info("Syncing provenance checker results")
-        _METRIC_SECONDS.label(category="provenance-checker").time()
+        _METRIC_SECONDS.labels(category="provenance-checker").time()
         _METRIC_PROVENANCE_CHECKER_RESULTS_PROCESSED, \
             _METRIC_PROVENANCE_CHECKER_RESULTS_SYNCED, \
             _METRIC_PROVENANCE_CHECKER_RESULTS_SKIPPED, \
@@ -308,7 +308,7 @@ def cli(
             )
     if not only_one_kind or only_dependency_monkey_documents:
         _LOGGER.info("Syncing dependency monkey results")
-        _METRIC_SECONDS.label(category="dependency-monkey").time()
+        _METRIC_SECONDS.labels(category="dependency-monkey").time()
         _METRIC_PROVENANCE_CHECKER_RESULTS_PROCESSED, \
             _METRIC_PROVENANCE_CHECKER_RESULTS_SYNCED, \
             _METRIC_PROVENANCE_CHECKER_RESULTS_SKIPPED, \
@@ -318,7 +318,7 @@ def cli(
 
     if not only_one_kind or only_inspection_documents:
         _LOGGER.info("Syncing data from Amun API %r", amun_api_url)
-        _METRIC_SECONDS.label(category="inspection").time()
+        _METRIC_SECONDS.labels(category="inspection").time()
         if not amun_api_url:
             _LOGGER.error(
                 "Cannot perform sync of Amun documents, no Amun API URL provided"
