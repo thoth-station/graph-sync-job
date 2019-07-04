@@ -56,7 +56,7 @@ thoth_metrics_exporter_info.labels(__version__).inc()
 
 _METRIC_SECONDS = Gauge(
     "graph_sync_job_runtime_seconds",
-    "Runtime of graph sync job in seconds.", ["category"]
+    "Runtime of graph sync job in seconds.", ["category"],
     registry=prometheus_registry,
 )
 
@@ -349,10 +349,10 @@ def cli(
         try:
             _LOGGER.debug(
                 "Submitting metrics to Prometheus pushgateway %r",
-                metrics_pushgateway_url,
+                _THOTH_METRICS_PUSHGATEWAY_URL,
             )
             push_to_gateway(
-                metrics_pushgateway_url, job="graph-sync", registry=prometheus_registry
+                _THOTH_METRICS_PUSHGATEWAY_URL, job="graph-sync", registry=prometheus_registry
             )
         except Exception as exc:
             _LOGGER.exception("An error occurred pushing the metrics: %s", str(exc))
