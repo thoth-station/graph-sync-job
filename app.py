@@ -64,22 +64,22 @@ _METRIC_SECONDS = Gauge(
 )
 _METRIC_RESULTS_PROCESSED = Counter(
     "graph_sync_results_processed",
-    "Results processed", ["category"]
+    "Results processed", ["category"],
     registry=prometheus_registry,
 )
 _METRIC_RESULTS_SYNCED = Counter(
     "graph_sync_results_synced",
-    "Results synced", ["category"]
+    "Results synced", ["category"],
     registry=prometheus_registry,
 )
 _METRIC_RESULTS_SKIPPED = Counter(
     "graph_sync_results_skipped",
-    "Results skipped processing", ["category"]
+    "Results skipped processing", ["category"],
     registry=prometheus_registry,
 )
 _METRIC_RESULTS_FAILED = Counter(
     "graph_sync_results_failed",
-    "Results failed processing", ["category"]
+    "Results failed processing", ["category"],
     registry=prometheus_registry,
 )
 
