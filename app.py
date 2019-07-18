@@ -83,68 +83,6 @@ _METRIC_RESULTS_FAILED = Counter(
     registry=prometheus_registry,
 )
 
-_METRIC_ADVISER_RESULTS_PROCESSED = Counter(
-    "graph_sync_adviser_results_processed",
-    "Adviser results processed",
-    registry=prometheus_registry,
-)
-_METRIC_ADVISER_RESULTS_SYNCED = Counter(
-    "graph_sync_adviser_results_synced",
-    "Adviser results synced",
-    registry=prometheus_registry,
-)
-_METRIC_ADVISER_RESULTS_SKIPPED = Counter(
-    "graph_sync_adviser_results_skipped",
-    "Adviser results skipped processing",
-    registry=prometheus_registry,
-)
-_METRIC_ADVISER_RESULTS_FAILED = Counter(
-    "graph_sync_adviser_results_failed",
-    "Adviser results failed processing",
-    registry=prometheus_registry,
-)
-_METRIC_SOLVER_RESULTS_PROCESSED = Counter(
-    "graph_sync_solver_results_processed",
-    "Solver results processed",
-    registry=prometheus_registry,
-)
-_METRIC_SOLVER_RESULTS_SYNCED = Counter(
-    "graph_sync_solver_results_synced",
-    "Solver results synced",
-    registry=prometheus_registry,
-)
-_METRIC_SOLVER_RESULTS_SKIPPED = Counter(
-    "graph_sync_solver_results_skipped",
-    "Solver results skipped processing",
-    registry=prometheus_registry,
-)
-_METRIC_SOLVER_RESULTS_FAILED = Counter(
-    "graph_sync_solver_results_failed",
-    "Solver results failed processing",
-    registry=prometheus_registry,
-)
-
-_METRIC_ANALYSIS_RESULTS_PROCESSED = Counter(
-    "graph_sync_analysis_results_processed",
-    "Analysis results processed",
-    registry=prometheus_registry,
-)
-_METRIC_ANALYSIS_RESULTS_SYNCED = Counter(
-    "graph_sync_analysis_results_synced",
-    "Analysis results synced",
-    registry=prometheus_registry,
-)
-_METRIC_ANALYSIS_RESULTS_SKIPPED = Counter(
-    "graph_sync_analysis_results_skipped",
-    "Analysis results skipped processing",
-    registry=prometheus_registry,
-)
-_METRIC_ANALYSIS_RESULTS_FAILED = Counter(
-    "graph_sync_analysis_results_failed",
-    "Analysis results failed processing",
-    registry=prometheus_registry,
-)
-
 
 def _print_version(ctx, _, value):
     """Print package releases version and exit."""
