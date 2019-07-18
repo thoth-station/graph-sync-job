@@ -62,6 +62,26 @@ _METRIC_SECONDS = Gauge(
     "Runtime of graph sync job in seconds.", ["category"],
     registry=prometheus_registry,
 )
+_METRIC_RESULTS_PROCESSED = Counter(
+    "graph_sync_results_processed",
+    "Results processed", ["category"]
+    registry=prometheus_registry,
+)
+_METRIC_RESULTS_SYNCED = Counter(
+    "graph_sync_results_synced",
+    "Results synced", ["category"]
+    registry=prometheus_registry,
+)
+_METRIC_RESULTS_SKIPPED = Counter(
+    "graph_sync_results_skipped",
+    "Results skipped processing", ["category"]
+    registry=prometheus_registry,
+)
+_METRIC_RESULTS_FAILED = Counter(
+    "graph_sync_results_failed",
+    "Results failed processing", ["category"]
+    registry=prometheus_registry,
+)
 
 _METRIC_ADVISER_RESULTS_PROCESSED = Counter(
     "graph_sync_adviser_results_processed",
@@ -174,55 +194,68 @@ def _do_sync(
 
     if not only_one_kind or only_solver_documents:
         _LOGGER.info("Syncing solver results")
-        _METRIC_SECONDS.labels(category="solver").time()
-        _METRIC_SOLVER_RESULTS_PROCESSED, \
-            _METRIC_SOLVER_RESULTS_SYNCED, \
-            _METRIC_SOLVER_RESULTS_SKIPPED, \
-            _METRIC_SOLVER_RESULTS_FAILED = sync_solver_documents(
+        category = "solver"
+        _METRIC_SECONDS.labels(category=category).time()
+        processed, synced, skipped, failed = sync_solver_documents(
                 document_ids, force_sync, graceful=False
             )
+        _METRIC_RESULTS_PROCESSED.labels(category=category).inc(processed)
+        _METRIC_RESULTS_SYNCED.labels(category=category).inc(synced)
+        _METRIC_RESULTS_SKIPPED.labels(category=category).inc(skipped)
+        _METRIC_RESULTS_FAILED.labels(category=category).inc(failed)
 
     if not only_one_kind or only_analysis_documents:
         _LOGGER.info("Syncing image analysis results")
-        _METRIC_SECONDS.labels(category="package-extract").time()
-        _METRIC_ANALYSIS_RESULTS_PROCESSED, \
-            _METRIC_ANALYSIS_RESULTS_SYNCED, \
-            _METRIC_ANALYSIS_RESULTS_SKIPPED, \
-            _METRIC_ANALYSIS_RESULTS_FAILED = sync_analysis_documents(
+        category = "package-extract"
+        _METRIC_SECONDS.labels(category=category).time()
+        processed, synced, skipped, failed = sync_analysis_documents(
                 document_ids, force_sync, graceful=False
             )
+        _METRIC_RESULTS_PROCESSED.labels(category=category).inc(processed)
+        _METRIC_RESULTS_SYNCED.labels(category=category).inc(synced)
+        _METRIC_RESULTS_SKIPPED.labels(category=category).inc(skipped)
+        _METRIC_RESULTS_FAILED.labels(category=category).inc(failed)
 
     if not only_one_kind or only_adviser_documents:
         _LOGGER.info("Syncing adviser results")
-        _METRIC_SECONDS.labels(category="adviser").time()
-        _METRIC_ADVISER_RESULTS_PROCESSED, \
-            _METRIC_ADVISER_RESULTS_SYNCED, \
-            _METRIC_ADVISER_RESULTS_SKIPPED, \
-            _METRIC_ADVISER_RESULTS_FAILED = sync_adviser_documents(
+        category = "adviser"
+        _METRIC_SECONDS.labels(category=category).time()
+        processed, synced, skipped, failed = sync_adviser_documents(
                 document_ids, force_sync, graceful=False
             )
+        _METRIC_RESULTS_PROCESSED.labels(category=category).inc(processed)
+        _METRIC_RESULTS_SYNCED.labels(category=category).inc(synced)
+        _METRIC_RESULTS_SKIPPED.labels(category=category).inc(skipped)
+        _METRIC_RESULTS_FAILED.labels(category=category).inc(failed)
+
     if not only_one_kind or only_provenance_checker_documents:
         _LOGGER.info("Syncing provenance checker results")
-        _METRIC_SECONDS.labels(category="provenance-checker").time()
-        _METRIC_PROVENANCE_CHECKER_RESULTS_PROCESSED, \
-            _METRIC_PROVENANCE_CHECKER_RESULTS_SYNCED, \
-            _METRIC_PROVENANCE_CHECKER_RESULTS_SKIPPED, \
-            _METRIC_PROVENANCE_CHECKER_RESULTS_FAILED = sync_provenance_checker_documents(
+        category = "provenance-checker"
+        _METRIC_SECONDS.labels(category=category).time()
+        processed, synced, skipped, failed = sync_provenance_checker_documents(
                 document_ids, force_sync, graceful=False
             )
+        _METRIC_RESULTS_PROCESSED.labels(category=category).inc(processed)
+        _METRIC_RESULTS_SYNCED.labels(category=category).inc(synced)
+        _METRIC_RESULTS_SKIPPED.labels(category=category).inc(skipped)
+        _METRIC_RESULTS_FAILED.labels(category=category).inc(failed)
+
     if not only_one_kind or only_dependency_monkey_documents:
         _LOGGER.info("Syncing dependency monkey results")
-        _METRIC_SECONDS.labels(category="dependency-monkey").time()
-        _METRIC_PROVENANCE_CHECKER_RESULTS_PROCESSED, \
-            _METRIC_PROVENANCE_CHECKER_RESULTS_SYNCED, \
-            _METRIC_PROVENANCE_CHECKER_RESULTS_SKIPPED, \
-            _METRIC_PROVENANCE_CHECKER_RESULTS_FAILED = sync_dependency_monkey_documents(
+        category = "dependency-monkey"
+        _METRIC_SECONDS.labels(category=category).time()
+        processed, synced, skipped, failed = sync_dependency_monkey_documents(
                 document_ids, force_sync, graceful=False
             )
+        _METRIC_RESULTS_PROCESSED.labels(category=category).inc(processed)
+        _METRIC_RESULTS_SYNCED.labels(category=category).inc(synced)
+        _METRIC_RESULTS_SKIPPED.labels(category=category).inc(skipped)
+        _METRIC_RESULTS_FAILED.labels(category=category).inc(failed)
 
     if not only_one_kind or only_inspection_documents:
         _LOGGER.info("Syncing data from Amun API %r", amun_api_url)
-        _METRIC_SECONDS.labels(category="inspection").time()
+        category = "inspection"
+        _METRIC_SECONDS.labels(category=category).time()
         if not amun_api_url:
             _LOGGER.error(
                 "Cannot perform sync of Amun documents, no Amun API URL provided"
@@ -235,7 +268,7 @@ def _do_sync(
         if inspection_only_graph_sync:
             _LOGGER.warning("Inspection results will be synced only into graph database")
 
-        sync_inspection_documents(
+        processed, synced, skipped, failed = sync_inspection_documents(
             amun_api_url,
             document_ids,
             force_sync=force_sync,
@@ -243,6 +276,11 @@ def _do_sync(
             only_ceph_sync=inspection_only_ceph_sync,
             only_graph_sync=inspection_only_graph_sync,
         )
+        _METRIC_RESULTS_PROCESSED.labels(category=category).inc(processed)
+        _METRIC_RESULTS_SYNCED.labels(category=category).inc(synced)
+        _METRIC_RESULTS_SKIPPED.labels(category=category).inc(skipped)
+        _METRIC_RESULTS_FAILED.labels(category=category).inc(failed)
+
     elif inspection_only_ceph_sync or inspection_only_graph_sync:
         _LOGGER.warning(
             "Inspection sync was not performed but --inspection-only-ceph-sync "
