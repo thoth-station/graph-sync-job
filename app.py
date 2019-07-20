@@ -20,7 +20,7 @@
 import sys
 import logging
 import os
-from timeit import time
+import time
 from typing import List
 from typing import Optional
 
@@ -126,11 +126,9 @@ def _do_sync(
             int(only_dependency_monkey_documents),
         )
     )
-    environment_varibale = "THOTH_NAMESPACE"
-    if os.getenv(environment_varibale):
-        namespace = os.getenv(environment_varibale)
-    else:
-        _LOGGER.warning("Namespace variable not provided for ", environment_varibale)
+    environment_variable = os.getenv("THOTH_NAMESPACE")
+    if not environment_variable:
+        _LOGGER.warning("Namespace variable not provided for %r", environment_variable)
 
     if only_one_kind > 1:
         _LOGGER.error("There can be only one --only-* option specified")
@@ -147,30 +145,30 @@ def _do_sync(
     if not only_one_kind or only_solver_documents:
         _LOGGER.info("Syncing solver results")
         category = "solver"
-        start = time.time()
+        start = time.monotonic()
         processed, synced, skipped, failed = sync_solver_documents(
                 document_ids, force_sync, graceful=False
             )
-        sync_time = time.time() - start
-        _METRIC_SECONDS.labels(category=category).set(sync_time)
-        _METRIC_RESULTS_PROCESSED.labels(category=category).inc(processed)
-        _METRIC_RESULTS_SYNCED.labels(category=category).inc(synced)
-        _METRIC_RESULTS_SKIPPED.labels(category=category).inc(skipped)
-        _METRIC_RESULTS_FAILED.labels(category=category).inc(failed)
+        sync_time = time.monotonic() - start
+        _METRIC_SECONDS.labels(category=category, namespace=namespace).set(sync_time)
+        _METRIC_RESULTS_PROCESSED.labels(category=category, namespace=namespace).inc(processed)
+        _METRIC_RESULTS_SYNCED.labels(category=category, namespace=namespace).inc(synced)
+        _METRIC_RESULTS_SKIPPED.labels(category=category, namespace=namespace).inc(skipped)
+        _METRIC_RESULTS_FAILED.labels(category=category, namespace=namespace).inc(failed)
 
     if not only_one_kind or only_analysis_documents:
         _LOGGER.info("Syncing image analysis results")
         category = "package-extract"
-        start = time.time()
+        start = time.monotonic()
         processed, synced, skipped, failed = sync_analysis_documents(
                 document_ids, force_sync, graceful=False
             )
-        sync_time = time.time() - start
-        _METRIC_SECONDS.labels(category=category).set(sync_time)
-        _METRIC_RESULTS_PROCESSED.labels(category=category).inc(processed)
-        _METRIC_RESULTS_SYNCED.labels(category=category).inc(synced)
-        _METRIC_RESULTS_SKIPPED.labels(category=category).inc(skipped)
-        _METRIC_RESULTS_FAILED.labels(category=category).inc(failed)
+        sync_time = time.monotonic() - start
+        _METRIC_SECONDS.labels(category=category, namespace=namespace).set(sync_time)
+        _METRIC_RESULTS_PROCESSED.labels(category=category, namespace=namespace).inc(processed)
+        _METRIC_RESULTS_SYNCED.labels(category=category, namespace=namespace).inc(synced)
+        _METRIC_RESULTS_SKIPPED.labels(category=category, namespace=namespace).inc(skipped)
+        _METRIC_RESULTS_FAILED.labels(category=category, namespace=namespace).inc(failed)
 
     if not only_one_kind or only_package_analysis_documents:
         _LOGGER.info("Syncing package analysis results")
@@ -187,49 +185,49 @@ def _do_sync(
     if not only_one_kind or only_adviser_documents:
         _LOGGER.info("Syncing adviser results")
         category = "adviser"
-        start = time.time()
+        start = time.monotonic()
         processed, synced, skipped, failed = sync_adviser_documents(
                 document_ids, force_sync, graceful=False
             )
-        sync_time = time.time() - start
-        _METRIC_SECONDS.labels(category=category).set(sync_time)
-        _METRIC_RESULTS_PROCESSED.labels(category=category).inc(processed)
-        _METRIC_RESULTS_SYNCED.labels(category=category).inc(synced)
-        _METRIC_RESULTS_SKIPPED.labels(category=category).inc(skipped)
-        _METRIC_RESULTS_FAILED.labels(category=category).inc(failed)
+        sync_time = time.monotonic() - start
+        _METRIC_SECONDS.labels(category=category, namespace=namespace).set(sync_time)
+        _METRIC_RESULTS_PROCESSED.labels(category=category, namespace=namespace).inc(processed)
+        _METRIC_RESULTS_SYNCED.labels(category=category, namespace=namespace).inc(synced)
+        _METRIC_RESULTS_SKIPPED.labels(category=category, namespace=namespace).inc(skipped)
+        _METRIC_RESULTS_FAILED.labels(category=category, namespace=namespace).inc(failed)
 
     if not only_one_kind or only_provenance_checker_documents:
         _LOGGER.info("Syncing provenance checker results")
         category = "provenance-checker"
-        start = time.time()
+        start = time.monotonic()
         processed, synced, skipped, failed = sync_provenance_checker_documents(
                 document_ids, force_sync, graceful=False
             )
-        sync_time = time.time() - start
-        _METRIC_SECONDS.labels(category=category).set(sync_time)
-        _METRIC_RESULTS_PROCESSED.labels(category=category).inc(processed)
-        _METRIC_RESULTS_SYNCED.labels(category=category).inc(synced)
-        _METRIC_RESULTS_SKIPPED.labels(category=category).inc(skipped)
-        _METRIC_RESULTS_FAILED.labels(category=category).inc(failed)
+        sync_time = time.monotonic() - start
+        _METRIC_SECONDS.labels(category=category, namespace=namespace).set(sync_time)
+        _METRIC_RESULTS_PROCESSED.labels(category=category, namespace=namespace).inc(processed)
+        _METRIC_RESULTS_SYNCED.labels(category=category, namespace=namespace).inc(synced)
+        _METRIC_RESULTS_SKIPPED.labels(category=category, namespace=namespace).inc(skipped)
+        _METRIC_RESULTS_FAILED.labels(category=category, namespace=namespace).inc(failed)
 
     if not only_one_kind or only_dependency_monkey_documents:
         _LOGGER.info("Syncing dependency monkey results")
         category = "dependency-monkey"
-        start = time.time()
+        start = time.monotonic()
         processed, synced, skipped, failed = sync_dependency_monkey_documents(
                 document_ids, force_sync, graceful=False
             )
-        sync_time = time.time() - start
-        _METRIC_SECONDS.labels(category=category).set(sync_time)
-        _METRIC_RESULTS_PROCESSED.labels(category=category).inc(processed)
-        _METRIC_RESULTS_SYNCED.labels(category=category).inc(synced)
-        _METRIC_RESULTS_SKIPPED.labels(category=category).inc(skipped)
-        _METRIC_RESULTS_FAILED.labels(category=category).inc(failed)
+        sync_time = time.monotonic() - start
+        _METRIC_SECONDS.labels(category=category, namespace=namespace).set(sync_time)
+        _METRIC_RESULTS_PROCESSED.labels(category=category, namespace=namespace).inc(processed)
+        _METRIC_RESULTS_SYNCED.labels(category=category, namespace=namespace).inc(synced)
+        _METRIC_RESULTS_SKIPPED.labels(category=category, namespace=namespace).inc(skipped)
+        _METRIC_RESULTS_FAILED.labels(category=category, namespace=namespace).inc(failed)
 
     if not only_one_kind or only_inspection_documents:
         _LOGGER.info("Syncing data from Amun API %r", amun_api_url)
         category = "inspection"
-        start = time.time()
+        start = time.monotonic()
         if not amun_api_url:
             _LOGGER.error(
                 "Cannot perform sync of Amun documents, no Amun API URL provided"
@@ -252,12 +250,12 @@ def _do_sync(
             only_ceph_sync=inspection_only_ceph_sync,
             only_graph_sync=inspection_only_graph_sync,
         )
-        sync_time = time.time() - start
-        _METRIC_SECONDS.labels(category=category).set(sync_time)
-        _METRIC_RESULTS_PROCESSED.labels(category=category).inc(processed)
-        _METRIC_RESULTS_SYNCED.labels(category=category).inc(synced)
-        _METRIC_RESULTS_SKIPPED.labels(category=category).inc(skipped)
-        _METRIC_RESULTS_FAILED.labels(category=category).inc(failed)
+        sync_time = time.monotonic() - start
+        _METRIC_SECONDS.labels(category=category, namespace=namespace).set(sync_time)
+        _METRIC_RESULTS_PROCESSED.labels(category=category, namespace=namespace).inc(processed)
+        _METRIC_RESULTS_SYNCED.labels(category=category, namespace=namespace).inc(synced)
+        _METRIC_RESULTS_SKIPPED.labels(category=category, namespace=namespace).inc(skipped)
+        _METRIC_RESULTS_FAILED.labels(category=category, namespace=namespace).inc(failed)
 
     elif inspection_only_ceph_sync or inspection_only_graph_sync:
         _LOGGER.warning(
