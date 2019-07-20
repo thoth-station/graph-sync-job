@@ -61,27 +61,32 @@ thoth_metrics_exporter_info.labels(__version__).inc()
 
 _METRIC_SECONDS = Gauge(
     "graph_sync_job_runtime_seconds",
-    "Runtime of graph sync job in seconds.", ["category"],
+    "Runtime of graph sync job in seconds.",
+    ["category", "namespace"],
     registry=prometheus_registry,
 )
 _METRIC_RESULTS_PROCESSED = Counter(
     "graph_sync_results_processed",
-    "Results processed", ["category"],
+    "Results processed",
+    ["category", "namespace"],
     registry=prometheus_registry,
 )
 _METRIC_RESULTS_SYNCED = Counter(
     "graph_sync_results_synced",
-    "Results synced", ["category"],
+    "Results synced",
+    ["category", "namespace"],
     registry=prometheus_registry,
 )
 _METRIC_RESULTS_SKIPPED = Counter(
     "graph_sync_results_skipped",
-    "Results skipped processing", ["category"],
+    "Results skipped processing",
+    ["category", "namespace"],
     registry=prometheus_registry,
 )
 _METRIC_RESULTS_FAILED = Counter(
     "graph_sync_results_failed",
-    "Results failed processing", ["category"],
+    "Results failed processing",
+    ["category", "namespace"],
     registry=prometheus_registry,
 )
 
@@ -121,6 +126,11 @@ def _do_sync(
             int(only_dependency_monkey_documents),
         )
     )
+    environment_varibale = "THOTH_NAMESPACE"
+    if os.getenv(environment_varibale):
+        namespace = os.getenv(environment_varibale)
+    else:
+        _LOGGER.warning("Namespace variable not provided for ", environment_varibale)
 
     if only_one_kind > 1:
         _LOGGER.error("There can be only one --only-* option specified")
@@ -141,7 +151,7 @@ def _do_sync(
         processed, synced, skipped, failed = sync_solver_documents(
                 document_ids, force_sync, graceful=False
             )
-        sync_time = (time.time() - start)
+        sync_time = time.time() - start
         _METRIC_SECONDS.labels(category=category).set(sync_time)
         _METRIC_RESULTS_PROCESSED.labels(category=category).inc(processed)
         _METRIC_RESULTS_SYNCED.labels(category=category).inc(synced)
@@ -155,7 +165,7 @@ def _do_sync(
         processed, synced, skipped, failed = sync_analysis_documents(
                 document_ids, force_sync, graceful=False
             )
-        sync_time = (time.time() - start)
+        sync_time = time.time() - start
         _METRIC_SECONDS.labels(category=category).set(sync_time)
         _METRIC_RESULTS_PROCESSED.labels(category=category).inc(processed)
         _METRIC_RESULTS_SYNCED.labels(category=category).inc(synced)
@@ -181,7 +191,7 @@ def _do_sync(
         processed, synced, skipped, failed = sync_adviser_documents(
                 document_ids, force_sync, graceful=False
             )
-        sync_time = (time.time() - start)
+        sync_time = time.time() - start
         _METRIC_SECONDS.labels(category=category).set(sync_time)
         _METRIC_RESULTS_PROCESSED.labels(category=category).inc(processed)
         _METRIC_RESULTS_SYNCED.labels(category=category).inc(synced)
@@ -195,7 +205,7 @@ def _do_sync(
         processed, synced, skipped, failed = sync_provenance_checker_documents(
                 document_ids, force_sync, graceful=False
             )
-        sync_time = (time.time() - start)
+        sync_time = time.time() - start
         _METRIC_SECONDS.labels(category=category).set(sync_time)
         _METRIC_RESULTS_PROCESSED.labels(category=category).inc(processed)
         _METRIC_RESULTS_SYNCED.labels(category=category).inc(synced)
@@ -209,7 +219,7 @@ def _do_sync(
         processed, synced, skipped, failed = sync_dependency_monkey_documents(
                 document_ids, force_sync, graceful=False
             )
-        sync_time = (time.time() - start)
+        sync_time = time.time() - start
         _METRIC_SECONDS.labels(category=category).set(sync_time)
         _METRIC_RESULTS_PROCESSED.labels(category=category).inc(processed)
         _METRIC_RESULTS_SYNCED.labels(category=category).inc(synced)
@@ -230,7 +240,9 @@ def _do_sync(
             _LOGGER.warning("Inspection results will be synced only onto Ceph")
 
         if inspection_only_graph_sync:
-            _LOGGER.warning("Inspection results will be synced only into graph database")
+            _LOGGER.warning(
+                "Inspection results will be synced only into graph database"
+            )
 
         processed, synced, skipped, failed = sync_inspection_documents(
             amun_api_url,
@@ -240,7 +252,7 @@ def _do_sync(
             only_ceph_sync=inspection_only_ceph_sync,
             only_graph_sync=inspection_only_graph_sync,
         )
-        sync_time = (time.time() - start)
+        sync_time = time.time() - start
         _METRIC_SECONDS.labels(category=category).set(sync_time)
         _METRIC_RESULTS_PROCESSED.labels(category=category).inc(processed)
         _METRIC_RESULTS_SYNCED.labels(category=category).inc(synced)
@@ -402,7 +414,9 @@ def cli(
                 _THOTH_METRICS_PUSHGATEWAY_URL,
             )
             push_to_gateway(
-                _THOTH_METRICS_PUSHGATEWAY_URL, job="graph-sync", registry=prometheus_registry
+                _THOTH_METRICS_PUSHGATEWAY_URL,
+                job="graph-sync",
+                registry=prometheus_registry,
             )
         except Exception as exc:
             _LOGGER.exception("An error occurred pushing the metrics: %s", str(exc))
