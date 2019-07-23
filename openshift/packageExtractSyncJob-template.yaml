@@ -75,6 +75,8 @@ objects:
               env:
                 - name: THOTH_ONLY_ANALYSIS_DOCUMENTS
                   value: "1"
+                - name: THOTH_ONLY_PACKAGE_ANALYSIS_DOCUMENTS
+                  value: "1"
                 - name: THOTH_SYNC_DOCUMENT_ID
                   value: "${THOTH_SYNC_DOCUMENT_ID}"
                 - name: THOTH_FORCE_SYNC
