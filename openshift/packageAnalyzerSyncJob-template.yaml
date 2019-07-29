@@ -28,7 +28,7 @@ parameters:
     displayName: ImageStream Project
     required: true
     name: IMAGE_STREAM_NAMESPACE
-    value: "thoth-test-core"
+    value: "thoth-infra-stage"
 
   - description: Tag of the ImageStream to be use
     displayName: ImageStream Tag
