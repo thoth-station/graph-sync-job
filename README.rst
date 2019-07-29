@@ -2,7 +2,8 @@ thoth-graph-sync-job
 --------------------
 
 The graph sync job will read in all
-`solver <https://github.com/thoth-station/solver>`_ and
+`solver <https://github.com/thoth-station/solver>`_,
+`package-analyzer <https://github.com/thoth-station/package-analyzer>`_ and
 `package-extract <https://github.com/thoth-station/package-extract>`_
 documents and synchronize them to the Dgraph database. If a document has
 been synchronized before, it will not be synchronized again (unless the
