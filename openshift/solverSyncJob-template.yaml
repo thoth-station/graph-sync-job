@@ -84,11 +84,6 @@ objects:
                     configMapKeyRef:
                       key: storage-bucket-name
                       name: thoth
-                - name: THOTH_SYNC_OBSERVATIONS
-                  valueFrom:
-                    configMapKeyRef:
-                      key: sync-observations
-                      name: thoth
                 - name: THOTH_S3_ENDPOINT_URL
                   valueFrom:
                     configMapKeyRef:
