@@ -73,7 +73,7 @@ objects:
             - name: graph-sync
               image: "${IMAGE_STREAM_REGISTRY}/${IMAGE_STREAM_NAMESPACE}/graph-sync-job:${IMAGE_STREAM_TAG}"
               env:
-                - name: THOTH_ONLY_PACKAGE_ANALYSIS_DOCUMENTS
+                - name: THOTH_ONLY_PACKAGE_ANALYZER_DOCUMENTS
                   value: "1"
                 - name: THOTH_SYNC_DOCUMENT_ID
                   value: "${THOTH_SYNC_DOCUMENT_ID}"

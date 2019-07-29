@@ -54,9 +54,9 @@ parameters:
     required: true
     value: "0"
 
-  - name: THOTH_ONLY_PACKAGE_ANALYSIS_DOCUMENTS
-    displayName: Sync only package analysis documents
-    description: Sync only package analysis documents
+  - name: THOTH_ONLY_PACKAGE_ANALYZER_DOCUMENTS
+    displayName: Sync only package analyzer documents
+    description: Sync only package analyzer documents
     required: true
     value: "0"
 
@@ -115,8 +115,8 @@ objects:
                   value: "${THOTH_ONLY_ADVISER_DOCUMENTS}"
                 - name: THOTH_ONLY_ANALYSIS_DOCUMENTS
                   value: "${THOTH_ONLY_ANALYSIS_DOCUMENTS}"
-                - name: THOTH_ONLY_PACKAGE_ANALYSIS_DOCUMENTS
-                  value: "${THOTH_ONLY_PACKAGE_ANALYSIS_DOCUMENTS}"
+                - name: THOTH_ONLY_PACKAGE_ANALYZER_DOCUMENTS
+                  value: "${THOTH_ONLY_PACKAGE_ANALYZER_DOCUMENTS}"
                 - name: THOTH_ONLY_DEPENDENCY_MONKEY_DOCUMENTS
                   value: "${THOTH_ONLY_DEPENDENCY_MONKEY_DOCUMENTS}"
                 - name: THOTH_ONLY_PROVENANCE_CHECKER_DOCUMENTS
