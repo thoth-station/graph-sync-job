@@ -1,21 +1,21 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: graph-sync-job-inspection
+  name: graph-sync-job-package-analyzer
   annotations:
-    description: "Thoth: Graph Sync Job for inspection documents"
-    openshift.io/display-name: "Thoth: Graph Sync Job Inspection"
+    description: "Thoth: Graph Sync Job for package-analyzer documents"
+    openshift.io/display-name: "Thoth: Graph Sync Job Package-Analyzer"
     version: 0.6.1
     tags: thoth,ai-stacks,aistacks,graph-sync-job
     template.openshift.io/documentation-url: https://github.com/Thoth-Station/
     template.openshift.io/long-description: >
-      This template defines resources needed to deploy Thoth's Graph Sync Job for Inspections on OpenShift.
+      This template defines resources needed to deploy Thoth's Graph Sync Job for Package-Analyzers on OpenShift.
     template.openshift.io/provider-display-name: Red Hat, Inc.
   labels:
-    template: graph-sync-job-inspection
+    template: graph-sync-job-package-analyzer
     app: thoth
     component: graph-sync
-    graph-sync-type: inspection
+    graph-sync-type: package-analyzer
 
 parameters:
   - description: Registry the ImageStream to be use lives in
@@ -48,23 +48,24 @@ objects:
   - apiVersion: batch/v1
     kind: Job
     metadata:
-      name: ${THOTH_JOB_ID}
+      name: "${THOTH_JOB_ID}"
       labels:
         app: thoth
         component: graph-sync
         graph-sync-document-id: "${THOTH_SYNC_DOCUMENT_ID}"
-        graph-sync-type: inspection
+        graph-sync-type: package-analyzer
         # Clean this up after one hour.
         mark: cleanup
         ttl: "1h"
     spec:
+      backoffLimit: 10
       template:
         metadata:
           labels:
             app: thoth
             component: graph-sync
             graph-sync-document-id: "${THOTH_SYNC_DOCUMENT_ID}"
-            graph-sync-type: inspection
+            graph-sync-type: package-analyzer
             mark: cleanup
             ttl: "1h"
         spec:
@@ -72,7 +73,7 @@ objects:
             - name: graph-sync
               image: "${IMAGE_STREAM_REGISTRY}/${IMAGE_STREAM_NAMESPACE}/graph-sync-job:${IMAGE_STREAM_TAG}"
               env:
-                - name: THOTH_ONLY_INSPECTION_DOCUMENTS
+                - name: THOTH_ONLY_PACKAGE_ANALYSIS_DOCUMENTS
                   value: "1"
                 - name: THOTH_SYNC_DOCUMENT_ID
                   value: "${THOTH_SYNC_DOCUMENT_ID}"
@@ -83,20 +84,11 @@ objects:
                     configMapKeyRef:
                       key: storage-bucket-name
                       name: thoth
-                - name: AMUN_API_URL
-                  valueFrom:
-                    configMapKeyRef:
-                      key: amun-api-url
-                      name: thoth
                 - name: THOTH_SYNC_OBSERVATIONS
                   valueFrom:
                     configMapKeyRef:
                       key: sync-observations
                       name: thoth
-                - name: THOTH_SYNC_INSPECTION_ONLY_GRAPH
-                  value: "0"
-                - name: THOTH_SYNC_INSPECTION_ONLY_CEPH
-                  value: "0"
                 - name: THOTH_S3_ENDPOINT_URL
                   valueFrom:
                     configMapKeyRef:
@@ -143,10 +135,6 @@ objects:
                       name: thoth
                 - name: GRAPH_TLS_PATH
                   value: "/var/run/secrets/dgraph"
-              volumeMounts:
-                - mountPath: /var/run/secrets/dgraph
-                  name: dgraph-tls-secrets
-                  readOnly: true
               livenessProbe:
                 # Give sync 2 hours, if not finished, restart it.
                 tcpSocket:
@@ -161,6 +149,10 @@ objects:
                 limits:
                   memory: "256Mi"
                   cpu: "500m"
+              volumeMounts:
+                - mountPath: /var/run/secrets/dgraph
+                  name: dgraph-tls-secrets
+                  readOnly: true
           restartPolicy: OnFailure
           volumes:
             - name: dgraph-tls-secrets

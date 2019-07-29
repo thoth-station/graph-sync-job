@@ -173,14 +173,16 @@ def _do_sync(
     if not only_one_kind or only_package_analysis_documents:
         _LOGGER.info("Syncing package analysis results")
         category = "package-analyzer"
-        _METRIC_SECONDS.labels(category=category).time()
+        start = time.monotonic()
         processed, synced, skipped, failed = sync_package_analysis_documents(
                 document_ids, force_sync, graceful=False
             )
-        _METRIC_RESULTS_PROCESSED.labels(category=category).inc(processed)
-        _METRIC_RESULTS_SYNCED.labels(category=category).inc(synced)
-        _METRIC_RESULTS_SKIPPED.labels(category=category).inc(skipped)
-        _METRIC_RESULTS_FAILED.labels(category=category).inc(failed)
+        sync_time = time.monotonic() - start
+        _METRIC_SECONDS.labels(category=category, namespace=namespace).set(sync_time)
+        _METRIC_RESULTS_PROCESSED.labels(category=category, namespace=namespace).inc(processed)
+        _METRIC_RESULTS_SYNCED.labels(category=category, namespace=namespace).inc(synced)
+        _METRIC_RESULTS_SKIPPED.labels(category=category, namespace=namespace).inc(skipped)
+        _METRIC_RESULTS_FAILED.labels(category=category, namespace=namespace).inc(failed)
 
     if not only_one_kind or only_adviser_documents:
         _LOGGER.info("Syncing adviser results")
