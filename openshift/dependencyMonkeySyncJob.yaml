@@ -1,21 +1,21 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: graph-sync-job-inspection
+  name: graph-sync-job-dependency-monkey
   annotations:
-    description: "Thoth: Graph Sync Job for inspection documents"
-    openshift.io/display-name: "Thoth: Graph Sync Job Solver"
+    description: "Thoth: Graph Sync Job for Dependency Monkey"
+    openshift.io/display-name: "Thoth: Graph Sync Job Dependency Monkey"
     version: 0.6.0
     tags: thoth,ai-stacks,aistacks,graph-sync-job
     template.openshift.io/documentation-url: https://github.com/Thoth-Station/
     template.openshift.io/long-description: >
-      This template defines resources needed to deploy Thoth's Graph Sync Job for Solvers on OpenShift.
+      This template defines resources needed to deploy Thoth's Graph Sync Job for Dependency Monkey on OpenShift.
     template.openshift.io/provider-display-name: Red Hat, Inc.
   labels:
-    template: graph-sync-job-inspection
+    template: graph-sync-job-dependency-monkey
     app: thoth
     component: graph-sync
-    graph-sync-type: inspection
+    graph-sync-type: dependency-monkey
 
 objects:
   - apiVersion: batch/v1
@@ -26,7 +26,7 @@ objects:
         app: thoth
         component: graph-sync
         graph-sync-document-id: "${THOTH_SYNC_DOCUMENT_ID}"
-        graph-sync-type: inspection
+        graph-sync-type: dependency-monkey
         mark: cleanup
         ttl: "1h"
     spec:
@@ -36,7 +36,7 @@ objects:
             app: thoth
             component: graph-sync
             graph-sync-document-id: "${THOTH_SYNC_DOCUMENT_ID}"
-            graph-sync-type: inspection
+            graph-sync-type: dependency-monkey
             mark: cleanup
             ttl: "1h"
         spec:
@@ -44,8 +44,8 @@ objects:
             - image: graph-sync-job
               name: graph-sync
               env:
-                - name: THOTH_ONLY_INSPECTION_DOCUMENTS
-                  value: '1'
+                - name: THOTH_ONLY_DEPENDENCY_MONKEY_DOCUMENTS
+                  value: "1"
                 - name: THOTH_SYNC_DOCUMENT_ID
                   value: "${THOTH_SYNC_DOCUMENT_ID}"
                 - name: THOTH_FORCE_SYNC
