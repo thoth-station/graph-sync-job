@@ -4,12 +4,12 @@ metadata:
   name: graph-sync-job-package-extract
   annotations:
     description: "Thoth: Graph Sync Job for package-extract documents"
-    openshift.io/display-name: "Thoth: Graph Sync Job Solver"
+    openshift.io/display-name: "Thoth: Graph Sync Job Package-Extractor"
     version: 0.6.1
     tags: thoth,ai-stacks,aistacks,graph-sync-job
     template.openshift.io/documentation-url: https://github.com/Thoth-Station/
     template.openshift.io/long-description: >
-      This template defines resources needed to deploy Thoth's Graph Sync Job for Solvers on OpenShift.
+      This template defines resources needed to deploy Thoth's Graph Sync Job for Package-Extractors on OpenShift.
     template.openshift.io/provider-display-name: Red Hat, Inc.
   labels:
     template: graph-sync-job-package-extract
@@ -75,8 +75,6 @@ objects:
               env:
                 - name: THOTH_ONLY_ANALYSIS_DOCUMENTS
                   value: "1"
-                - name: THOTH_ONLY_PACKAGE_ANALYSIS_DOCUMENTS
-                  value: "1"
                 - name: THOTH_SYNC_DOCUMENT_ID
                   value: "${THOTH_SYNC_DOCUMENT_ID}"
                 - name: THOTH_FORCE_SYNC
@@ -85,11 +83,6 @@ objects:
                   valueFrom:
                     configMapKeyRef:
                       key: storage-bucket-name
-                      name: thoth
-                - name: THOTH_SYNC_OBSERVATIONS
-                  valueFrom:
-                    configMapKeyRef:
-                      key: sync-observations
                       name: thoth
                 - name: THOTH_S3_ENDPOINT_URL
                   valueFrom:

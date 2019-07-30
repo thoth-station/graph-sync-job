@@ -106,7 +106,7 @@ def _do_sync(
     amun_api_url: Optional[str],
     only_solver_documents: bool,
     only_analysis_documents: bool,
-    only_package_analysis_documents: bool,
+    only_package_analyzer_documents: bool,
     only_inspection_documents: bool,
     only_dependency_monkey_documents: bool,
     only_adviser_documents: bool,
@@ -119,7 +119,7 @@ def _do_sync(
         (
             int(only_solver_documents),
             int(only_analysis_documents),
-            int(only_package_analysis_documents),
+            int(only_package_analyzer_documents),
             int(only_inspection_documents),
             int(only_adviser_documents),
             int(only_provenance_checker_documents),
@@ -170,17 +170,19 @@ def _do_sync(
         _METRIC_RESULTS_SKIPPED.labels(category=category, namespace=namespace).inc(skipped)
         _METRIC_RESULTS_FAILED.labels(category=category, namespace=namespace).inc(failed)
 
-    if not only_one_kind or only_package_analysis_documents:
-        _LOGGER.info("Syncing package analysis results")
+    if not only_one_kind or only_package_analyzer_documents:
+        _LOGGER.info("Syncing package analyzer results")
         category = "package-analyzer"
-        _METRIC_SECONDS.labels(category=category).time()
+        start = time.monotonic()
         processed, synced, skipped, failed = sync_package_analysis_documents(
                 document_ids, force_sync, graceful=False
             )
-        _METRIC_RESULTS_PROCESSED.labels(category=category).inc(processed)
-        _METRIC_RESULTS_SYNCED.labels(category=category).inc(synced)
-        _METRIC_RESULTS_SKIPPED.labels(category=category).inc(skipped)
-        _METRIC_RESULTS_FAILED.labels(category=category).inc(failed)
+        sync_time = time.monotonic() - start
+        _METRIC_SECONDS.labels(category=category, namespace=namespace).set(sync_time)
+        _METRIC_RESULTS_PROCESSED.labels(category=category, namespace=namespace).inc(processed)
+        _METRIC_RESULTS_SYNCED.labels(category=category, namespace=namespace).inc(synced)
+        _METRIC_RESULTS_SKIPPED.labels(category=category, namespace=namespace).inc(skipped)
+        _METRIC_RESULTS_FAILED.labels(category=category, namespace=namespace).inc(failed)
 
     if not only_one_kind or only_adviser_documents:
         _LOGGER.info("Syncing adviser results")
@@ -302,11 +304,11 @@ def _do_sync(
     help="Sync only analysis documents.",
 )
 @click.option(
-    "--only-package-analysis-documents",
+    "--only-package-analyzer-documents",
     is_flag=True,
-    envvar="THOTH_ONLY_PACKAGE_ANALYSIS_DOCUMENTS",
+    envvar="THOTH_ONLY_PACKAGE_ANALYZER_DOCUMENTS",
     default=False,
-    help="Sync only package analysis documents.",
+    help="Sync only package analyzer documents.",
 )
 @click.option(
     "--only-inspection-documents",
@@ -372,7 +374,7 @@ def cli(
     amun_api_url,
     only_solver_documents,
     only_analysis_documents,
-    only_package_analysis_documents,
+    only_package_analyzer_documents,
     only_inspection_documents,
     only_dependency_monkey_documents,
     only_adviser_documents,
@@ -392,7 +394,7 @@ def cli(
             amun_api_url=amun_api_url,
             only_solver_documents=only_solver_documents,
             only_analysis_documents=only_analysis_documents,
-            only_package_analysis_documents=only_package_analysis_documents,
+            only_package_analyzer_documents=only_package_analyzer_documents,
             only_inspection_documents=only_inspection_documents,
             only_dependency_monkey_documents=only_dependency_monkey_documents,
             only_adviser_documents=only_adviser_documents,

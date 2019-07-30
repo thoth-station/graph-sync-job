@@ -4,12 +4,12 @@ metadata:
   name: graph-sync-job-inspection
   annotations:
     description: "Thoth: Graph Sync Job for inspection documents"
-    openshift.io/display-name: "Thoth: Graph Sync Job Solver"
+    openshift.io/display-name: "Thoth: Graph Sync Job Inspection"
     version: 0.6.1
     tags: thoth,ai-stacks,aistacks,graph-sync-job
     template.openshift.io/documentation-url: https://github.com/Thoth-Station/
     template.openshift.io/long-description: >
-      This template defines resources needed to deploy Thoth's Graph Sync Job for Solvers on OpenShift.
+      This template defines resources needed to deploy Thoth's Graph Sync Job for Inspections on OpenShift.
     template.openshift.io/provider-display-name: Red Hat, Inc.
   labels:
     template: graph-sync-job-inspection
@@ -87,11 +87,6 @@ objects:
                   valueFrom:
                     configMapKeyRef:
                       key: amun-api-url
-                      name: thoth
-                - name: THOTH_SYNC_OBSERVATIONS
-                  valueFrom:
-                    configMapKeyRef:
-                      key: sync-observations
                       name: thoth
                 - name: THOTH_SYNC_INSPECTION_ONLY_GRAPH
                   value: "0"

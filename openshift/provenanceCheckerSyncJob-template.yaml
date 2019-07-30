@@ -4,12 +4,12 @@ metadata:
   name: graph-sync-job-provenance-checker
   annotations:
     description: "Thoth: Graph Sync Job for provenance-checker documents"
-    openshift.io/display-name: "Thoth: Graph Sync Job Provenance Check"
+    openshift.io/display-name: "Thoth: Graph Sync Job Provenance Checker"
     version: 0.6.1
     tags: thoth,ai-stacks,aistacks,graph-sync-job
     template.openshift.io/documentation-url: https://github.com/Thoth-Station/
     template.openshift.io/long-description: >
-      This template defines resources needed to deploy Thoth's Graph Sync Job for provenance-checks on OpenShift.
+      This template defines resources needed to deploy Thoth's Graph Sync Job for Provenance Checkers on OpenShift.
     template.openshift.io/provider-display-name: Red Hat, Inc.
   labels:
     template: graph-sync-job-provenance-checker
@@ -79,11 +79,6 @@ objects:
                   valueFrom:
                     configMapKeyRef:
                       key: storage-bucket-name
-                      name: thoth
-                - name: THOTH_SYNC_OBSERVATIONS
-                  valueFrom:
-                    configMapKeyRef:
-                      key: sync-observations
                       name: thoth
                 - name: THOTH_S3_ENDPOINT_URL
                   valueFrom:
