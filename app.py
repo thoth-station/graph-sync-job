@@ -126,9 +126,9 @@ def _do_sync(
             int(only_dependency_monkey_documents),
         )
     )
-    environment_variable = os.getenv("THOTH_NAMESPACE")
-    if not environment_variable:
-        _LOGGER.warning("Namespace variable not provided for %r", environment_variable)
+    namespace = os.getenv("THOTH_NAMESPACE")
+    if not namespace:
+        _LOGGER.warning("Namespace variable not provided for %r", namespace)
 
     if only_one_kind > 1:
         _LOGGER.error("There can be only one --only-* option specified")
