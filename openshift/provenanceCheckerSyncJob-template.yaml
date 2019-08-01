@@ -15,6 +15,7 @@ metadata:
     template: graph-sync-job-provenance-checker
     app: thoth
     component: graph-sync
+    graph-sync-type: provenance-checker
 
 parameters:
   - description: Registry the ImageStream to be use lives in
@@ -52,6 +53,7 @@ objects:
         app: thoth
         component: graph-sync
         graph-sync-document-id: "${THOTH_SYNC_DOCUMENT_ID}"
+        graph-sync-type: provenance-checker
         # Clean this up after one hour.
         mark: cleanup
         ttl: "1h"
