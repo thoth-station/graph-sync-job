@@ -3,9 +3,13 @@ thoth-graph-sync-job
 
 The graph sync job will read in all
 `solver <https://github.com/thoth-station/solver>`_,
-`package-analyzer <https://github.com/thoth-station/package-analyzer>`_ and
-`package-extract <https://github.com/thoth-station/package-extract>`_
-documents and synchronize them to the Dgraph database. If a document has
+`package-analyzer <https://github.com/thoth-station/package-analyzer>`_,
+`package-extract <https://github.com/thoth-station/package-extract>`_,
+`adviser <https://github.com/thoth-station/adviser>`_,
+`provenance-checker <https://github.com/thoth-station/adviser/blob/master/docs/source/provenance_checks.rst>`_,
+`dependency-monkey <https://github.com/thoth-station/adviser/blob/master/docs/source/dependency_monkey.rst>`_ and
+`inspection <https://github.com/thoth-station/amun-api>`_
+documents and synchronize them to Thoth database. If a document has
 been synchronized before, it will not be synchronized again (unless the
 synchronization is forced). The graph sync job runs periodically based
 on configuration of CronJob that can be found in this repository under the
