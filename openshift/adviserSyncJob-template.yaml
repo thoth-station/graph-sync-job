@@ -64,6 +64,7 @@ objects:
           labels:
             app: thoth
             component: graph-sync
+            graph-sync-type: adviser
             mark: cleanup
             ttl: "1h"
         spec:
