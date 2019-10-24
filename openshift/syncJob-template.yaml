@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: graph-sync-job-mutliple
+  name: graph-sync-job
   annotations:
     description: "Thoth: Graph Sync Job for syncing multiple documents"
     openshift.io/display-name: "Thoth: Graph Sync Job Multiple Documents"
@@ -12,7 +12,7 @@ metadata:
       This template defines resources needed to deploy Thoth's Graph Sync Job on OpenShift.
     template.openshift.io/provider-display-name: Red Hat, Inc.
   labels:
-    template: graph-sync-job-multiple
+    template: graph-sync-job
     app: thoth
     component: graph-sync
     graph-sync-type: multiple

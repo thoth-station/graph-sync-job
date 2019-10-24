@@ -108,7 +108,7 @@ def _do_sync(
     start_time = time.monotonic()
     stats = sync_documents(
         document_ids,
-        force_sync=force_sync,
+        force=force_sync,
         graceful=False,
         inspection_only_graph_sync=inspection_only_graph_sync,
         inspection_only_ceph_sync=inspection_only_ceph_sync,
@@ -119,10 +119,18 @@ def _do_sync(
     for category, category_stats in stats.items():
         processed, synced, skipped, failed = category_stats
         _METRIC_SECONDS.labels(category=category, namespace=namespace).set(sync_time)
-        _METRIC_RESULTS_PROCESSED.labels(category=category, namespace=namespace).inc(processed)
-        _METRIC_RESULTS_SYNCED.labels(category=category, namespace=namespace).inc(synced)
-        _METRIC_RESULTS_SKIPPED.labels(category=category, namespace=namespace).inc(skipped)
-        _METRIC_RESULTS_FAILED.labels(category=category, namespace=namespace).inc(failed)
+        _METRIC_RESULTS_PROCESSED.labels(category=category, namespace=namespace).inc(
+            processed
+        )
+        _METRIC_RESULTS_SYNCED.labels(category=category, namespace=namespace).inc(
+            synced
+        )
+        _METRIC_RESULTS_SKIPPED.labels(category=category, namespace=namespace).inc(
+            skipped
+        )
+        _METRIC_RESULTS_FAILED.labels(category=category, namespace=namespace).inc(
+            failed
+        )
 
 
 @click.command()
