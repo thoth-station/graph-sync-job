@@ -5,12 +5,13 @@ metadata:
   annotations:
     description: "Thoth: Graph Sync Job for syncing multiple documents"
     openshift.io/display-name: "Thoth: Graph Sync Job Multiple Documents"
-    version: 0.0.1
+    version: 0.6.0
     tags: thoth,ai-stacks,aistacks,graph-sync-job
     template.openshift.io/documentation-url: https://github.com/Thoth-Station/
     template.openshift.io/long-description: >
       This template defines resources needed to deploy Thoth's Graph Sync Job on OpenShift.
     template.openshift.io/provider-display-name: Red Hat, Inc.
+    thoth-station.ninja/template-version: 0.6.0
   labels:
     template: graph-sync-job
     app: thoth

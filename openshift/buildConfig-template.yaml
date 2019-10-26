@@ -7,13 +7,14 @@ metadata:
       This is Thoth Graph Sync CronJob BuildConfig, this template is meant to be used by bots,
       but could also be used by humans...
     openshift.io/display-name: Thoth User API BuildConfig
-    version: 0.5.0
+    version: 0.6.0
     tags: poc,thoth,ai-stacks,graph-sync-job
     template.openshift.io/documentation-url: https://github.com/AICoE/Thoth/
     template.openshift.io/long-description: >
       This is Thoth Graph Sync CronJob BuildConfig, this template is meant to be used by bots,
       but could also be used by humans...
     template.openshift.io/provider-display-name: Red Hat, Inc.
+    thoth-station.ninja/template-version: 0.6.0
   labels:
     template: graph-sync-buildconfig
     app: thoth
@@ -59,7 +60,7 @@ objects:
             - name: "THOTH_DRY_RUN"
               value: "1"
             - name: "THOTH_ADVISE"
-              value: "1"
+              value: ${THOTH_ADVISE}
             - name: "THAMOS_VERBOSE"
               value: "1"
             - name: "THAMOS_DEBUG"
@@ -94,3 +95,9 @@ parameters:
     required: true
     name: IMAGE_STREAM_TAG
     value: "latest"
+
+  - description: Thamos Advise setup tag value
+    displayName: THOTH_ADVISE
+    required: true
+    name: THOTH_ADVISE
+    value: "1"
