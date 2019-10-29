@@ -16,7 +16,7 @@ metadata:
     template: graph-sync-job
     app: thoth
     component: graph-sync
-    graph-sync-type: multiple
+    graph-sync-type: "${THOTH_GRAPH_SYNC_TYPE}"
 
 parameters:
   - description: Registry the ImageStream to be use lives in
@@ -82,6 +82,11 @@ parameters:
   - name: THOTH_JOB_ID
     description: A unique identifier of job
     displayName: A unique identifier of job
+    required: true
+
+  - name: THOTH_GRAPH_SYNC_TYPE
+    description: Identifier to distinguish different graph sync types.
+    displayName: An identifier for graph sync type.
     required: true
 
 objects:
