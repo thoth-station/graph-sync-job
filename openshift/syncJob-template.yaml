@@ -16,7 +16,6 @@ metadata:
     template: graph-sync-job
     app: thoth
     component: graph-sync
-    graph-sync-type: "${THOTH_GRAPH_SYNC_TYPE}"
 
 parameters:
   - description: Registry the ImageStream to be use lives in
