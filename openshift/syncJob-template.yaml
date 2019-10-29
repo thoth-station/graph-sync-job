@@ -97,7 +97,7 @@ objects:
       labels:
         app: thoth
         component: graph-sync
-        graph-sync-type: multiple
+        graph-sync-type: "${THOTH_GRAPH_SYNC_TYPE}"
         mark: cleanup
         ttl: "24h"
     spec:
@@ -107,7 +107,7 @@ objects:
           labels:
             app: thoth
             component: graph-sync
-            graph-sync-type: multiple
+            graph-sync-type: "${THOTH_GRAPH_SYNC_TYPE}"
             mark: cleanup
             ttl: "24h"
         spec:
