@@ -88,6 +88,10 @@ parameters:
     displayName: An identifier for graph sync type.
     required: true
 
+  - name: THOTH_SYNC_DOCUMENT_ID
+    required: true
+    description: Document id to be synced.
+
 objects:
   - apiVersion: batch/v1
     kind: Job
@@ -116,6 +120,8 @@ objects:
               env:
                 - name: THOTH_ONLY_SOLVER_DOCUMENTS
                   value: "${THOTH_ONLY_SOLVER_DOCUMENTS}"
+                - name: THOTH_SYNC_DOCUMENT_ID
+                  value: "${THOTH_SYNC_DOCUMENT_ID}"
                 - name: THOTH_ONLY_ADVISER_DOCUMENTS
                   value: "${THOTH_ONLY_ADVISER_DOCUMENTS}"
                 - name: THOTH_ONLY_ANALYSIS_DOCUMENTS
