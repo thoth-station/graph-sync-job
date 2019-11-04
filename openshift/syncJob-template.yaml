@@ -102,7 +102,6 @@ objects:
         component: graph-sync
         graph-sync-type: "${THOTH_GRAPH_SYNC_TYPE}"
         mark: cleanup
-        ttl: "24h"
     spec:
       backoffLimit: 1
       template:
@@ -112,7 +111,6 @@ objects:
             component: graph-sync
             graph-sync-type: "${THOTH_GRAPH_SYNC_TYPE}"
             mark: cleanup
-            ttl: "24h"
         spec:
           containers:
             - name: graph-sync
