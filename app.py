@@ -99,6 +99,7 @@ def _do_sync(
     amun_api_url: Optional[str],
     inspection_only_graph_sync: bool,
     inspection_only_ceph_sync: bool,
+    is_local: bool,
 ) -> None:
     """Perform actual sync of documents."""
     namespace = os.getenv("THOTH_NAMESPACE")
@@ -113,6 +114,7 @@ def _do_sync(
         inspection_only_graph_sync=inspection_only_graph_sync,
         inspection_only_ceph_sync=inspection_only_ceph_sync,
         amun_api_url=amun_api_url,
+        is_local=is_local,
     )
     sync_time = time.monotonic() - start_time
 
@@ -185,6 +187,13 @@ def _do_sync(
     default=False,
     help="Sync inspection results only to Ceph database, omit graph database.",
 )
+@click.option(
+    "--local-file",
+    is_flag=True,
+    envvar="THOTH_SYNC_LOCAL_FILE",
+    default=False,
+    help="Sync results present on the local filesystem instead of using Ceph adapters to retrieve them.",
+)
 def cli(
     document_ids,
     verbose,
@@ -192,6 +201,7 @@ def cli(
     amun_api_url,
     inspection_only_graph_sync,
     inspection_only_ceph_sync,
+    local_file,
 ):
     """Sync analyses, inspection and solver results to the graph database."""
     if verbose:
@@ -204,6 +214,7 @@ def cli(
         amun_api_url=amun_api_url,
         inspection_only_graph_sync=inspection_only_graph_sync,
         inspection_only_ceph_sync=inspection_only_ceph_sync,
+        is_local=local_file,
     )
 
     if _THOTH_METRICS_PUSHGATEWAY_URL:
