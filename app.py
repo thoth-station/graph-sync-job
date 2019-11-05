@@ -34,7 +34,9 @@ from thoth.storages import __version__ as __storages__version__
 from thoth.storages import sync_documents
 
 
-__version__ = f"0.5.3+storage.{__storages__version__}.common.{__common__version__}"
+__version__ = (
+    f"0.6.0+thoth_storage.{__storages__version__}+thoth_common.{__common__version__}"
+)
 
 
 init_logging()
