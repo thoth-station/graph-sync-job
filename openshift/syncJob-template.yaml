@@ -103,7 +103,7 @@ objects:
         graph-sync-type: "${THOTH_GRAPH_SYNC_TYPE}"
         mark: cleanup
     spec:
-      backoffLimit: 1
+      backoffLimit: 7
       template:
         metadata:
           labels:
