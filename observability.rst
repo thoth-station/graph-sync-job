@@ -18,7 +18,7 @@ The following table shows all the metrics exported by the graph sync job.
     graph_sync_solver_results_synced,  graph-sync,  Solver results synced.
     graph_sync_solver_results_skipped,  graph-sync,  Solver results skipped processing.
     graph_sync_solver_results_failed,  graph-sync,  Solver results failed processing.
-    graph_sync_analysis_results_processed,  graph-sync,  Analysis results processed. 
+    graph_sync_analysis_results_processed,  graph-sync,  Analysis results processed.
     graph_sync_analysis_results_synced,  graph-sync,  Analysis results synced.
     graph_sync_analysis_results_skiped,  graph-sync,  Analysis results skipped processing.
-    graph_sync_analysis_results_failed,  graph-sync,  Analysis results failed processing. 
+    graph_sync_analysis_results_failed,  graph-sync,  Analysis results failed processing.

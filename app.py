@@ -122,16 +122,16 @@ def _do_sync(
         processed, synced, skipped, failed = category_stats
         _METRIC_SECONDS.labels(category=category, namespace=namespace).set(sync_time)
         _METRIC_RESULTS_PROCESSED.labels(category=category, namespace=namespace).inc(
-            processed
+            processed,
         )
         _METRIC_RESULTS_SYNCED.labels(category=category, namespace=namespace).inc(
-            synced
+            synced,
         )
         _METRIC_RESULTS_SKIPPED.labels(category=category, namespace=namespace).inc(
-            skipped
+            skipped,
         )
         _METRIC_RESULTS_FAILED.labels(category=category, namespace=namespace).inc(
-            failed
+            failed,
         )
 
 
