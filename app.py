@@ -32,11 +32,9 @@ from thoth.common import init_logging
 from thoth.common import __version__ as __common__version__
 from thoth.storages import __version__ as __storages__version__
 from thoth.storages import sync_documents
+from version import __version__
 
-
-__version__ = (
-    f"0.6.0+thoth_storage.{__storages__version__}+thoth_common.{__common__version__}"
-)
+__service_version__ = f"{__version__}+thoth_storage.{__storages__version__}+thoth_common.{__common__version__}"
 
 
 init_logging()
@@ -52,7 +50,7 @@ thoth_metrics_exporter_info = Gauge(
     ["version"],
     registry=prometheus_registry,
 )
-thoth_metrics_exporter_info.labels(__version__).inc()
+thoth_metrics_exporter_info.labels(__service_version__).inc()
 
 _METRIC_SECONDS = Gauge(
     "graph_sync_job_runtime_seconds",
@@ -91,7 +89,7 @@ def _print_version(ctx, _, value):
     if not value or ctx.resilient_parsing:
         return
     # Reuse thoth-storages version as we rely on it.
-    click.echo(__version__)
+    click.echo(__service_version__)
     ctx.exit()
 
 
@@ -124,16 +122,16 @@ def _do_sync(
         processed, synced, skipped, failed = category_stats
         _METRIC_SECONDS.labels(category=category, namespace=namespace).set(sync_time)
         _METRIC_RESULTS_PROCESSED.labels(category=category, namespace=namespace).inc(
-            processed
+            processed,
         )
         _METRIC_RESULTS_SYNCED.labels(category=category, namespace=namespace).inc(
-            synced
+            synced,
         )
         _METRIC_RESULTS_SKIPPED.labels(category=category, namespace=namespace).inc(
-            skipped
+            skipped,
         )
         _METRIC_RESULTS_FAILED.labels(category=category, namespace=namespace).inc(
-            failed
+            failed,
         )
 
 
@@ -235,5 +233,5 @@ def cli(
 
 
 if __name__ == "__main__":
-    _LOGGER.info(f"graph-sync-job v{__version__} starting...")
+    _LOGGER.info(f"graph-sync-job v{__service_version__} starting...")
     cli()
