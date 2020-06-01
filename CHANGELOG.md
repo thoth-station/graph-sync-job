@@ -460,3 +460,14 @@ Set resource limits of BuildConfig and Deployment to reasonable values, this wil
 * Add graph syncing logic
 * Add .travis.yml file
 * Initial project import
+
+## Release 0.6.2 (2020-06-01T14:10:54)
+* :pushpin: Automatic update of dependency autopep8 from 1.5.2 to 1.5.3
+* :pushpin: Automatic update of dependency thoth-common from 0.13.7 to 0.13.8
+* :pushpin: Automatic update of dependency thoth-storages from 0.22.11 to 0.22.12
+* :pushpin: Automatic update of dependency thoth-common from 0.13.6 to 0.13.7
+* :pushpin: Automatic update of dependency prometheus-client from 0.7.1 to 0.8.0
+* :pushpin: Automatic update of dependency thoth-common from 0.13.5 to 0.13.6
+* :pushpin: Automatic update of dependency thoth-common from 0.13.4 to 0.13.5
+* :pushpin: Automatic update of dependency thoth-storages from 0.22.10 to 0.22.11
+* :pushpin: Automatic update of dependency thoth-common from 0.13.3 to 0.13.4
