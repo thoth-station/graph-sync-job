@@ -471,3 +471,20 @@ Set resource limits of BuildConfig and Deployment to reasonable values, this wil
 * :pushpin: Automatic update of dependency thoth-common from 0.13.4 to 0.13.5
 * :pushpin: Automatic update of dependency thoth-storages from 0.22.10 to 0.22.11
 * :pushpin: Automatic update of dependency thoth-common from 0.13.3 to 0.13.4
+
+## Release 0.6.3 (2020-07-29T13:48:25)
+* :pushpin: Automatic update of dependency thoth-storages from 0.24.3 to 0.24.5 (#450)
+* :pushpin: Automatic update of dependency thoth-storages from 0.24.3 to 0.24.5 (#449)
+* Remove latest versions limitation (#446)
+* :pushpin: Automatic update of dependency thoth-common from 0.13.13 to 0.14.2 (#445)
+* :pushpin: Automatic update of dependency thoth-common from 0.13.13 to 0.14.2 (#444)
+* :pushpin: Automatic update of dependency thoth-storages from 0.24.0 to 0.24.3 (#443)
+* Fix trailing whitespace (#442)
+* :pushpin: Automatic update of dependency sphinx-rtd-theme from 0.4.3 to 0.5.0 (#441)
+* :pushpin: Automatic update of dependency sphinx-rtd-theme from 0.4.3 to 0.5.0 (#440)
+* :pushpin: Automatic update of dependency thoth-common from 0.13.8 to 0.13.13 (#439)
+* :pushpin: Automatic update of dependency thoth-common from 0.13.8 to 0.13.13 (#438)
+* :pushpin: Automatic update of dependency thoth-storages from 0.22.12 to 0.24.0 (#437)
+* Remove OpenShift templates as they are part of thoth-application (#436)
+* Update OWNERS
+* Remove registry related bits
