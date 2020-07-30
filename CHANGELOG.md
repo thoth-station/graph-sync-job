@@ -488,3 +488,9 @@ Set resource limits of BuildConfig and Deployment to reasonable values, this wil
 * Remove OpenShift templates as they are part of thoth-application (#436)
 * Update OWNERS
 * Remove registry related bits
+
+## Release 0.7.0 (2020-07-30T09:57:33)
+* :pushpin: Automatic update of dependency thoth-storages from 0.24.5 to 0.25.0 (#457)
+* :8ball: include ci config file and remove migrated files (#455)
+* :pushpin: Automatic update of dependency thoth-common from 0.14.2 to 0.15.0 (#454)
+* :pushpin: Automatic update of dependency thoth-common from 0.14.2 to 0.15.0 (#453)
