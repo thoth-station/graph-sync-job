@@ -494,3 +494,6 @@ Set resource limits of BuildConfig and Deployment to reasonable values, this wil
 * :8ball: include ci config file and remove migrated files (#455)
 * :pushpin: Automatic update of dependency thoth-common from 0.14.2 to 0.15.0 (#454)
 * :pushpin: Automatic update of dependency thoth-common from 0.14.2 to 0.15.0 (#453)
+
+## Release 0.7.1 (2020-07-30T10:24:29)
+* :pushpin: Automatic update of dependency thoth-common from 0.15.0 to 0.16.0 (#461)
