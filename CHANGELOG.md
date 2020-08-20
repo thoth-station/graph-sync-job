@@ -497,3 +497,12 @@ Set resource limits of BuildConfig and Deployment to reasonable values, this wil
 
 ## Release 0.7.1 (2020-07-30T10:24:29)
 * :pushpin: Automatic update of dependency thoth-common from 0.15.0 to 0.16.0 (#461)
+
+## Release 0.7.2 (2020-08-20T15:49:06)
+* :pushpin: Automatic update of dependency autopep8 from 1.5.3 to 1.5.4 (#468)
+* :pushpin: Automatic update of dependency autopep8 from 1.5.3 to 1.5.4 (#467)
+* :pushpin: Automatic update of dependency thoth-common from 0.16.0 to 0.16.1 (#466)
+* :pushpin: Automatic update of dependency thoth-common from 0.16.0 to 0.16.1 (#465)
+* :pushpin: Automatic update of dependency thoth-storages from 0.25.0 to 0.25.2 (#464)
+* :arrow_down: removed the files as they are no longer required
+* updated to use latest image release
