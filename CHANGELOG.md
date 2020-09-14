@@ -506,3 +506,16 @@ Set resource limits of BuildConfig and Deployment to reasonable values, this wil
 * :pushpin: Automatic update of dependency thoth-storages from 0.25.0 to 0.25.2 (#464)
 * :arrow_down: removed the files as they are no longer required
 * updated to use latest image release
+
+## Release 0.7.3 (2020-09-14T15:08:56)
+### Features
+* Update .thoth.yaml (#489)
+### Automatic Updates
+* :pushpin: Automatic update of dependency thoth-common from 0.18.2 to 0.18.3
+* :pushpin: Automatic update of dependency thoth-storages from 0.25.7 to 0.25.8 (#486)
+* :pushpin: Automatic update of dependency thoth-common from 0.18.1 to 0.18.2 (#484)
+* :pushpin: Automatic update of dependency thoth-storages from 0.25.5 to 0.25.7 (#479)
+* :pushpin: Automatic update of dependency thoth-common from 0.16.1 to 0.18.1 (#478)
+* :pushpin: Automatic update of dependency thoth-storages from 0.25.5 to 0.25.7 (#477)
+* :pushpin: Automatic update of dependency thoth-storages from 0.25.3 to 0.25.5 (#474)
+* :pushpin: Automatic update of dependency thoth-storages from 0.25.2 to 0.25.3 (#472)
