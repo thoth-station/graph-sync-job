@@ -519,3 +519,10 @@ Set resource limits of BuildConfig and Deployment to reasonable values, this wil
 * :pushpin: Automatic update of dependency thoth-storages from 0.25.5 to 0.25.7 (#477)
 * :pushpin: Automatic update of dependency thoth-storages from 0.25.3 to 0.25.5 (#474)
 * :pushpin: Automatic update of dependency thoth-storages from 0.25.2 to 0.25.3 (#472)
+
+## Release 0.7.4 (2020-09-17T07:01:22)
+### Features
+* Add @pacospace to .thoth.yaml
+### Automatic Updates
+* :pushpin: Automatic update of dependency thoth-common from 0.18.3 to 0.19.0 (#494)
+* :pushpin: Automatic update of dependency thoth-storages from 0.25.8 to 0.25.10 (#493)
