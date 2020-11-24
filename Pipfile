@@ -20,4 +20,4 @@ sphinx-rtd-theme = "*"
 keep_outdated = true
 
 [requires]
-python_version = "3.6"
+python_version = "3.8"
