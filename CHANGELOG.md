@@ -526,3 +526,11 @@ Set resource limits of BuildConfig and Deployment to reasonable values, this wil
 ### Automatic Updates
 * :pushpin: Automatic update of dependency thoth-common from 0.18.3 to 0.19.0 (#494)
 * :pushpin: Automatic update of dependency thoth-storages from 0.25.8 to 0.25.10 (#493)
+
+## Release 0.8.0 (2020-12-01T09:34:17)
+### Features
+* :arrow_up: Automatic update of dependencies by kebechet. (#506)
+* update .aicoe-ci.yaml (#505)
+* port to python 38 (#504)
+### Automatic Updates
+* :pushpin: Automatic update of dependency thoth-storages from 0.25.10 to 0.25.11 (#502)
