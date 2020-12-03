@@ -534,3 +534,7 @@ Set resource limits of BuildConfig and Deployment to reasonable values, this wil
 * port to python 38 (#504)
 ### Automatic Updates
 * :pushpin: Automatic update of dependency thoth-storages from 0.25.10 to 0.25.11 (#502)
+
+## Release 0.8.1 (2020-12-03T18:39:55)
+### Features
+* Update lock for release (#514)
