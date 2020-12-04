@@ -538,3 +538,7 @@ Set resource limits of BuildConfig and Deployment to reasonable values, this wil
 ## Release 0.8.1 (2020-12-03T18:39:55)
 ### Features
 * Update lock for release (#514)
+
+## Release 0.8.2 (2020-12-04T11:39:51)
+### Bug Fixes
+* fix unstatisfied markers issue for py3.8 (#517)
