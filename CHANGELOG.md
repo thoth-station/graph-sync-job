@@ -542,3 +542,10 @@ Set resource limits of BuildConfig and Deployment to reasonable values, this wil
 ## Release 0.8.2 (2020-12-04T11:39:51)
 ### Bug Fixes
 * fix unstatisfied markers issue for py3.8 (#517)
+
+## Release 0.8.3 (2020-12-04T17:02:27)
+### Features
+* :arrow_up: Automatic update of dependencies by kebechet. (#526)
+* :arrow_up: Automatic update of dependencies by kebechet. (#523)
+* :arrow_up: Automatic update of dependencies by kebechet. (#522)
+* :arrow_up: Automatic update of dependencies by kebechet. (#521)
