@@ -10,7 +10,6 @@ thoth-common = "*"
 prometheus-client = "*"
 
 [dev-packages]
-coala-bears = "*"
 "autopep8" = "*"
 sphinx = "==1.4.9"
 recommonmark = "*"
