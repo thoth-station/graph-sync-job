@@ -19,4 +19,4 @@
 """Graph syncing logic for the Thoth project."""
 
 
-__version__ = "0.8.4"
+__version__ = "0.9.0"
