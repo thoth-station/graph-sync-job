@@ -553,3 +553,10 @@ Set resource limits of BuildConfig and Deployment to reasonable values, this wil
 ## Release 0.8.4 (2020-12-08T16:46:18)
 ### Features
 * Added corrected pipfile (#531)
+
+## Release 0.9.0 (2021-01-20T19:46:18)
+### Features
+* Add metric to expose revision (#536)
+* :arrow_up: Automatic update of dependencies by kebechet. (#535)
+### Improvements
+* removed bissenbay, thanks for your contributions!
