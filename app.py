@@ -32,6 +32,7 @@ from thoth.common import init_logging
 from thoth.common import __version__ as __common__version__
 from thoth.storages import __version__ as __storages__version__
 from thoth.storages import sync_documents
+from thoth.storages import GraphDatabase
 from version import __version__
 
 __service_version__ = f"{__version__}+thoth_storage.{__storages__version__}+thoth_common.{__common__version__}"
@@ -42,6 +43,7 @@ _LOGGER = logging.getLogger("thoth.graph_sync_job")
 
 prometheus_registry = CollectorRegistry()
 
+_THOTH_DEPLOYMENT_NAME = os.getenv("THOTH_DEPLOYMENT_NAME")
 _THOTH_METRICS_PUSHGATEWAY_URL = os.getenv("PROMETHEUS_PUSHGATEWAY_URL")
 
 thoth_metrics_exporter_info = Gauge(
@@ -51,6 +53,19 @@ thoth_metrics_exporter_info = Gauge(
     registry=prometheus_registry,
 )
 thoth_metrics_exporter_info.labels(__service_version__).inc()
+
+_METRIC_DATABASE_SCHEMA_SCRIPT = Gauge(
+    "thoth_database_schema_revision_script",
+    "Thoth database schema revision from script",
+    ["component", "revision", "env"],
+    registry=prometheus_registry,
+)
+
+_METRIC_DATABASE_SCHEMA_SCRIPT.labels(
+    "graph-sync",
+    GraphDatabase().get_script_alembic_version_head(),
+    _THOTH_DEPLOYMENT_NAME
+).inc()
 
 _METRIC_SECONDS = Gauge(
     "graph_sync_job_runtime_seconds",
