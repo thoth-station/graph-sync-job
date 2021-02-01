@@ -35,6 +35,7 @@ from thoth.storages import sync_documents
 from thoth.storages import GraphDatabase
 from version import __version__
 
+__version__ = "0.10.0"
 __service_version__ = f"{__version__}+thoth_storage.{__storages__version__}+thoth_common.{__common__version__}"
 
 
@@ -64,7 +65,7 @@ _METRIC_DATABASE_SCHEMA_SCRIPT = Gauge(
 _METRIC_DATABASE_SCHEMA_SCRIPT.labels(
     "graph-sync",
     GraphDatabase().get_script_alembic_version_head(),
-    _THOTH_DEPLOYMENT_NAME
+    _THOTH_DEPLOYMENT_NAME,
 ).inc()
 
 _METRIC_SECONDS = Gauge(
