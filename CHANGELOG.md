@@ -560,3 +560,9 @@ Set resource limits of BuildConfig and Deployment to reasonable values, this wil
 * :arrow_up: Automatic update of dependencies by kebechet. (#535)
 ### Improvements
 * removed bissenbay, thanks for your contributions!
+
+## Release 0.10.0 (2021-02-01T19:33:56)
+### Features
+* :arrow_up: Automatic update of dependencies by kebechet. (#542)
+* :arrow_up: Automatic update of dependencies by kebechet. (#541)
+* Add Kebechet issue templates (#540)
