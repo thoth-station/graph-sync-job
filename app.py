@@ -65,7 +65,7 @@ _METRIC_DATABASE_SCHEMA_SCRIPT = Gauge(
 _METRIC_DATABASE_SCHEMA_SCRIPT.labels(
     "graph-sync",
     GraphDatabase().get_script_alembic_version_head(),
-    _THOTH_DEPLOYMENT_NAME
+    _THOTH_DEPLOYMENT_NAME,
 ).inc()
 
 _METRIC_SECONDS = Gauge(
