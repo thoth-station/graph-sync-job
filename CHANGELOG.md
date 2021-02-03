@@ -577,3 +577,8 @@ Set resource limits of BuildConfig and Deployment to reasonable values, this wil
 ## Release 0.10.2 (2021-02-03T01:46:46)
 ### Features
 * Fix the reference issue of version string
+
+## Release 0.10.3 (2021-02-03T11:14:34)
+### Features
+* :arrow_up: Automatic update of dependencies by Kebechet (#559)
+* :arrow_up: Automatic update of dependencies by Kebechet (#556)
