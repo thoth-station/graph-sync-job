@@ -573,3 +573,7 @@ Set resource limits of BuildConfig and Deployment to reasonable values, this wil
 * Add missing templates (#545)
 ### Improvements
 * Simplify sources, use just one module for component (#544)
+
+## Release 0.10.2 (2021-02-03T01:46:46)
+### Features
+* Fix the reference issue of version string
