@@ -33,7 +33,6 @@ from thoth.common import __version__ as __common__version__
 from thoth.storages import __version__ as __storages__version__
 from thoth.storages import sync_documents
 from thoth.storages import GraphDatabase
-from version import __version__
 
 __version__ = "0.10.1"
 __service_version__ = f"{__version__}+thoth_storage.{__storages__version__}+thoth_common.{__common__version__}"
