@@ -588,3 +588,11 @@ Set resource limits of BuildConfig and Deployment to reasonable values, this wil
 * update the maintainers
 * prow config for pre-commit checks
 * :arrow_up: Automatic update of dependencies by Kebechet
+
+## Release 0.10.5 (2021-03-17T07:14:15)
+### Features
+* :arrow_up: Automatic update of dependencies by Kebechet
+* :arrow_up: Automatic update of dependencies by Kebechet (#569)
+* include thoth issue template for kebechet update
+### Bug Fixes
+* fix thoth issue template for kebechet update
