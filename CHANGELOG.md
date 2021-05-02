@@ -596,3 +596,7 @@ Set resource limits of BuildConfig and Deployment to reasonable values, this wil
 * include thoth issue template for kebechet update
 ### Bug Fixes
 * fix thoth issue template for kebechet update
+
+## Release 0.10.6 (2021-05-02T23:14:20)
+### Features
+* :arrow_up: Automatic update of dependencies by Kebechet (#574)
