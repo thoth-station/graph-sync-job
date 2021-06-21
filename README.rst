@@ -1,6 +1,14 @@
 thoth-graph-sync-job
 --------------------
 
+.. image:: https://img.shields.io/github/v/tag/thoth-station/graph-sync-job?style=plastic
+  :target: https://github.com/thoth-station/graph-sync-job/releases
+  :alt: GitHub tag (latest by date)
+
+.. image:: https://quay.io/repository/thoth-station/graph-sync-job/status
+  :target: https://quay.io/repository/thoth-station/graph-sync-job?tab=tags
+  :alt: Quay - Build
+
 The graph sync job will read in all
 `solver <https://github.com/thoth-station/solver>`_,
 `package-analyzer <https://github.com/thoth-station/package-analyzer>`_,
