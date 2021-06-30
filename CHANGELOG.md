@@ -615,3 +615,8 @@ Set resource limits of BuildConfig and Deployment to reasonable values, this wil
 ## Release 0.10.9 (2021-06-09T11:59:21)
 ### Features
 * :arrow_up: Automatic update of dependencies by Kebechet
+
+## Release 0.10.10 (2021-06-30T01:22:50)
+### Features
+* :arrow_up: Automatic update of dependencies by Kebechet
+* :medal_sports: set badges for easy access to content
