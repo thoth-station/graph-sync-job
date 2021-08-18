@@ -1,5 +1,9 @@
 # Changelog
 
+## Release 0.10.13 (2021-08-18T09:32:44)
+### Features
+* Dependency update
+
 ## [0.5.0] - 2018-Sep-10 - goern
 
 ### Added
