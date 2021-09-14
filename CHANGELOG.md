@@ -1,5 +1,9 @@
 # Changelog
 
+## Release 0.10.14 (2021-09-14T21:20:52)
+### Features
+* Removed the sphinx constraint for the dependency update
+
 ## Release 0.10.13 (2021-08-18T09:32:44)
 ### Features
 * Dependency update
