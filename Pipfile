@@ -11,12 +11,9 @@ prometheus-client = "*"
 
 [dev-packages]
 "autopep8" = "*"
-sphinx = "==1.4.9"
+sphinx = "*"
 recommonmark = "*"
 sphinx-rtd-theme = "*"
-
-[pipenv]
-keep_outdated = true
 
 [requires]
 python_version = "3.8"
