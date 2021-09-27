@@ -1,5 +1,9 @@
 # Changelog
 
+## Release 0.10.15 (2021-09-27T20:52:25)
+### Features
+* :arrow_up: Automatic update of dependencies by Kebechet for the ubi8 environment
+
 ## Release 0.10.14 (2021-09-14T21:20:52)
 ### Features
 * Removed the sphinx constraint for the dependency update
