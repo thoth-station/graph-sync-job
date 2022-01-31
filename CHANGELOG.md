@@ -1,5 +1,12 @@
 # Changelog
 
+## Release 0.10.19 (2022-01-31T21:49:22)
+* :arrow_up: Automatic update of dependencies by Kebechet for the ubi8 environment
+* :arrow_up: Automatic update of dependencies by Kebechet for the ubi8 environment
+* Remove unused .thothTemplate.yaml
+* :arrow_up: Automatic update of dependencies by Kebechet for the ubi8 environment
+* Enable TLS verification
+
 ## Release 0.10.18 (2021-12-21T19:31:32)
 * :arrow_up: Automatic update of dependencies by Kebechet for the ubi8 environment
 
