@@ -1,5 +1,10 @@
 # Changelog
 
+## Release 0.10.20 (2022-05-09T19:37:03)
+* 0d78eed :arrow_up: Automatic update of dependencies by Kebechet for the ubi8 environment
+* 95a6a65 :arrow_up: Automatic update of dependencies by Kebechet for the ubi8 environment
+* cc77ba5 updating pre-commit protocol
+
 ## Release 0.10.19 (2022-01-31T21:49:22)
 * :arrow_up: Automatic update of dependencies by Kebechet for the ubi8 environment
 * :arrow_up: Automatic update of dependencies by Kebechet for the ubi8 environment
