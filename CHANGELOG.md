@@ -1,5 +1,8 @@
 # Changelog
 
+## Release 0.10.21 (2022-05-12T14:36:06)
+* 40a0361 :arrow_up: Automatic update of dependencies by Kebechet for the ubi8 environment
+
 ## Release 0.10.20 (2022-05-09T19:37:03)
 * 0d78eed :arrow_up: Automatic update of dependencies by Kebechet for the ubi8 environment
 * 95a6a65 :arrow_up: Automatic update of dependencies by Kebechet for the ubi8 environment
