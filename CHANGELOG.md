@@ -1,5 +1,12 @@
 # Changelog
 
+## Release 0.10.22 (2022-08-23T02:55:54)
+* e07cf07 :arrow_up: Automatic update of dependencies by Kebechet for the ubi8 environment (#662)
+* ab0d54c :arrow_up: Automatic update of dependencies by Kebechet for the ubi8 environment
+* 4ffccd3 Autoupdate pre-commit hooks
+* 3225b6c Upgrade pre-commit image version
+* 0e223f0 :arrow_up: Automatic update of dependencies by Kebechet for the ubi8 environment
+
 ## Release 0.10.21 (2022-05-12T14:36:06)
 * 40a0361 :arrow_up: Automatic update of dependencies by Kebechet for the ubi8 environment
 
