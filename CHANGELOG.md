@@ -1,5 +1,13 @@
 # Changelog
 
+## Release 0.10.23 (2022-09-20T01:28:11)
+* de8621a Update the precommit and owners file
+* 8e7ccc5 :arrow_up: Automatic update of dependencies by Kebechet for the ubi8 environment
+* e517bc2 :ship: Bump up base image initialized in CI.
+* 2c3af80 :arrow_up: Automatic update of dependencies by Kebechet for the ubi8 environment
+* 87a0b1b :ship: Bump up base image initialized in CI.
+* 22b8f3c :arrow_up: Automatic update of dependencies by Kebechet for the ubi8 environment
+
 ## Release 0.10.22 (2022-08-23T02:55:54)
 * e07cf07 :arrow_up: Automatic update of dependencies by Kebechet for the ubi8 environment (#662)
 * ab0d54c :arrow_up: Automatic update of dependencies by Kebechet for the ubi8 environment
