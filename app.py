@@ -111,9 +111,6 @@ def _print_version(ctx, _, value):
 def _do_sync(
     document_ids: Optional[List[str]],
     force_sync: bool,
-    amun_api_url: Optional[str],
-    inspection_only_graph_sync: bool,
-    inspection_only_ceph_sync: bool,
     is_local: bool,
 ) -> None:
     """Perform actual sync of documents."""
@@ -126,9 +123,6 @@ def _do_sync(
         document_ids,
         force=force_sync,
         graceful=False,
-        inspection_only_graph_sync=inspection_only_graph_sync,
-        inspection_only_ceph_sync=inspection_only_ceph_sync,
-        amun_api_url=amun_api_url,
         is_local=is_local,
     )
     sync_time = time.monotonic() - start_time
@@ -167,13 +161,6 @@ def _do_sync(
     help="Be more verbose about what's going on.",
 )
 @click.option(
-    "--amun-api-url",
-    type=str,
-    envvar="AMUN_API_URL",
-    default=None,
-    help="Amun API url to retrieve inspections from.",
-)
-@click.option(
     "--force-sync",
     is_flag=True,
     envvar="THOTH_FORCE_SYNC",
@@ -189,20 +176,6 @@ def _do_sync(
     help="Explicitly sync only the given document or documents.",
 )
 @click.option(
-    "--inspection-only-graph-sync",
-    is_flag=True,
-    envvar="THOTH_SYNC_INSPECTION_ONLY_GRAPH",
-    default=False,
-    help="Sync inspection results only to graph database, omit Ceph.",
-)
-@click.option(
-    "--inspection-only-ceph-sync",
-    is_flag=True,
-    envvar="THOTH_SYNC_INSPECTION_ONLY_CEPH",
-    default=False,
-    help="Sync inspection results only to Ceph database, omit graph database.",
-)
-@click.option(
     "--local-file",
     is_flag=True,
     envvar="THOTH_SYNC_LOCAL_FILE",
@@ -213,9 +186,6 @@ def cli(
     document_ids,
     verbose,
     force_sync,
-    amun_api_url,
-    inspection_only_graph_sync,
-    inspection_only_ceph_sync,
     local_file,
 ):
     """Sync analyses, inspection and solver results to the graph database."""
@@ -226,9 +196,6 @@ def cli(
     _do_sync(
         document_ids=document_ids,
         force_sync=force_sync,
-        amun_api_url=amun_api_url,
-        inspection_only_graph_sync=inspection_only_graph_sync,
-        inspection_only_ceph_sync=inspection_only_ceph_sync,
         is_local=local_file,
     )
 
