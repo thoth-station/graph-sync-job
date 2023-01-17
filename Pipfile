@@ -11,7 +11,7 @@ prometheus-client = "*"
 
 [dev-packages]
 "autopep8" = "*"
-sphinx = "*"
+sphinx = "==4.1.2"
 recommonmark = "*"
 sphinx-rtd-theme = "*"
 
