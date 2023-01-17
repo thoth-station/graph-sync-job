@@ -1,5 +1,11 @@
 # Changelog
 
+## Release 0.11.0 (2023-01-17T20:37:15)
+* 2bddff3 :pushpin: Update graph-sync python dependencies
+* 22531e7 :ship: Bump up base image initialized in CI.
+* c994369 :face_in_clouds: Remove unsupported env var in graph-sync job
+* d8fad0b ':arrow_up: Automatic update of dependencies by Kebechet for the ubi8 environment'
+
 ## Release 0.10.23 (2022-09-20T01:28:11)
 * de8621a Update the precommit and owners file
 * 8e7ccc5 :arrow_up: Automatic update of dependencies by Kebechet for the ubi8 environment
