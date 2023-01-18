@@ -1,5 +1,8 @@
 # Changelog
 
+## Release 0.11.1 (2023-01-18T22:30:33)
+* 68b861d ':arrow_up: Automatic update of dependencies by Kebechet for the ubi8 environment'
+
 ## Release 0.11.0 (2023-01-17T20:37:15)
 * 2bddff3 :pushpin: Update graph-sync python dependencies
 * 22531e7 :ship: Bump up base image initialized in CI.
